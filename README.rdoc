@@ -4,6 +4,7 @@
 
   git git@github.com:cloudspace/rss.cloudspace.com.git
   cd ./rss.cloudspace.com
+  librarian-chef install
   vagrant up
 
 <b>After the box is up, <tt>vagrant ssh</tt> and configure it</b>
