@@ -1,0 +1,11 @@
+EmptyLinesAroundBody:
+  Enabled: false
+
+LineLength:
+  Max: 120
+
+MethodLength:
+  Max: 15
+
+WhileUntilModifier:
+  Enabled: false

@@ -1,0 +1,12 @@
+language: ruby
+env: RAILS_ENV=test
+rvm:
+  - "2.0.0"
+before_script:
+  - bundle exec rake db:create --trace
+script:
+  - bundle exec rake db:migrate --trace
+  - bundle exec rake db:test:prepare
+  - bundle exec rspec
+  - bundle exec rails_best_practices .
+  - bundle exec rubocop --rails --config ./config/rubocop_settings.yml ./lib ./spec ./app ./config

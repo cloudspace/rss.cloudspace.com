@@ -1,0 +1,4 @@
+'app/**/#.rb'
+'db/schema.rb'
+--markup-provider=redcarpet
+--markup=markdown
