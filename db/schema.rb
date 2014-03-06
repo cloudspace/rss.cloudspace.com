@@ -11,9 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20140306201720) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "feeds", force: true do |t|
+    t.string   "name"
+    t.string   "url"
+    t.string   "feed_url"
+    t.text     "summary"
+    t.string   "etag"
+    t.datetime "last_modified_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "feeds", ["last_modified_at"], name: "index_feeds_on_last_modified_at", using: :btree
 
 end
