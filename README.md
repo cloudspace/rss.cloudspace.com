@@ -7,6 +7,8 @@ __Create and launch the vagrant box__
     librarian-chef install
     vagrant up
 
+__Environment Variables__ - You will need to obtain a .env file and place it in the root of the project. This contains passwords that cannot be committed to the repo. Use `.env.sample` as a template.
+
 __After the box is up, `vagrant ssh`__
   
     sudo gem install bundler
@@ -101,6 +103,7 @@ __Returns__
 - HTTP 201 and the resource created if the feed is successfully parsed and created
 - HTTP 422 (Unprocessable Entity) if `url` cannot be parsed as a feed
 
+---
 ##### `GET /v2/feed_items`
 <small>Returns (up to) the most recent 10 `feed_item` entities (created since the date specified) for each feed specified.</small>
 
