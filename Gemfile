@@ -1,66 +1,46 @@
 source 'https://rubygems.org'
 
+gem 'rails', '4.0.3'
+gem 'pg'
+
 # loads environment variables
 gem 'dotenv-rails'
 
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.3'
-
-# # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
-# gem 'turbolinks'
-
-# # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-# gem 'jbuilder', '~> 1.2'
-
-# Use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.1.2'
-
-# Use unicorn as the app server
-# gem 'unicorn'
-
-# Use debugger
-# gem 'debugger', group: [:development, :test]
-
-gem 'nokogiri'
-gem 'feedzirra'
-gem 'ruby-readability'
-gem 'link_thumbnailer'
-gem 'mini_magick'
-gem 'pg'
-# gem 'node'
-# gem 'fastimage'
-gem 'whenever', :require => false
-# gem 'socksify'
-gem 'paperclip'
-# gem 'haml'
+gem 'active_model_serializers'
 gem 'aws-sdk'
 gem 'dalli'
-gem 'www-favicon'
-
-# activeadmin requirements
-# gem 'activeadmin', github: 'gregbell/active_admin'
-
-gem 'jquery-rails'
-gem 'active_model_serializers'
-gem 'thread_safe'
+gem 'feedzirra'
 gem 'httparty'
-
-# Deploy with Capistrano
-gem 'capistrano'
-gem 'capistrano-bundler'
-gem 'capistrano-rails'
+gem 'jquery-rails'
+gem 'nokogiri'
+gem 'paperclip'
+gem 'whenever', :require => false
 
 group :production, :staging do
   gem 'unicorn'
 end
 
+# Use debugger
+gem 'debugger', group: [:development, :test]
+
 group :development do
-  gem 'debugger'
+  # Deploy with Capistrano
+  gem 'capistrano'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rails'
 
   # Code Metric Gems
   gem 'rails_best_practices'
   gem 'rubocop'
   gem 'metric_fu'
+end
+
+group :test do
+  # rspec
+  gem 'rspec'
+  gem 'rspec-rails'
+  gem 'shoulda'
+  gem 'database_cleaner'
 end
 
 # Gems used only for assets and not required
@@ -74,17 +54,31 @@ group :assets do
   gem 'uglifier', '>= 1.3'
 end
 
-group :test do
-  # rspec
-  gem 'rspec'
-  gem 'rspec-rails'
-  gem 'shoulda'
-  gem 'database_cleaner'
-end
-
 group :doc do
   gem 'yard', '~> 0.8.7.3'
   gem 'yard-activerecord', '~> 0.0.11'
   gem 'redcarpet', '~> 3.0.0'
   gem 'github-markup', '~> 1.0.0'
 end
+
+# gem 'ruby-readability'
+# gem 'link_thumbnailer'
+# gem 'mini_magick'
+# gem 'node'
+# gem 'fastimage'
+# gem 'socksify'
+# gem 'haml'
+# gem 'www-favicon'
+# gem 'thread_safe'
+
+# activeadmin requirements
+# gem 'activeadmin', github: 'gregbell/active_admin'
+
+# # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
+# gem 'turbolinks'
+
+# # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+# gem 'jbuilder', '~> 1.2'
+
+# Use ActiveModel has_secure_password
+# gem 'bcrypt-ruby', '~> 3.1.2'
