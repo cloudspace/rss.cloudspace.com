@@ -1,39 +1,37 @@
 development:
-  adapter: mysql2
+  adapter: postgresql
   encoding: utf8
-  reconnect: false
   database: cloudspace_rss_development
-  pool: 5
-  username: root
-  password:
+  pool: 50
+  username: postgres
+  password: postgres
   host: localhost
 
 test:
-  adapter: mysql2
+  adapter: postgresql
   encoding: utf8
-  reconnect: false
   database: cloudspace_rss_testing
-  pool: 5
-  username: root
-  password:
+  pool: 50
+  username: postgres
+  password: postgres
   host: localhost
 
 staging:
-  adapter: mysql2
+  adapter: postgresql
   encoding: utf8
-  reconnect: false
-  database: cloudspace_rss_staging
-  pool: 5
-  username: root
-  password:
-  host: localhost
+  database: <%= ENV['STAGING_POSTGRES_DATABASE'] %>
+  pool: 50
+  username: <%= ENV['STAGING_POSTGRES_USERNAME'] %>
+  password: <%= ENV['STAGING_POSTGRES_PASSWORD'] %>
+  host: <%= ENV['STAGING_POSTGRES_HOST'] %>
+  port: <%= ENV['STAGING_POSTGRES_PORT'] %>
 
 production:
-  adapter: mysql2
+  adapter: postgresql
   encoding: utf8
-  reconnect: false
-  database: cloudspace_rss_production
-  pool: 5
-  username: root
-  password: 
-  host: localhost
+  database: <%= ENV['PRODUCTION_POSTGRES_DATABASE'] %>
+  pool: 50
+  username: <%= ENV['PRODUCTION_POSTGRES_USERNAME'] %>
+  password: <%= ENV['PRODUCTION_POSTGRES_PASSWORD'] %>
+  host: <%= ENV['PRODUCTION_POSTGRES_HOST'] %>
+  port: <%= ENV['PRODUCTION_POSTGRES_PORT'] %>

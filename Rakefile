@@ -3,4 +3,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-RssCloudspaceCom::Application.load_tasks
+CloudspaceRss::Application.load_tasks

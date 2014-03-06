@@ -23,3 +23,7 @@ cookbooks
 .DS_Store
 *.DS_Store
 mini_magick*.shtml
+NOTES
+
+# ignore environment variables
+.env
