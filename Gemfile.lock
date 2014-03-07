@@ -310,7 +310,7 @@ DEPENDENCIES
   dotenv-rails
   factory_girl
   feedzirra
-  github-markup (~> 1.0.0)
+  github-markup
   httparty
   jquery-rails
   metric_fu
@@ -319,15 +319,15 @@ DEPENDENCIES
   pg
   rails (= 4.0.3)
   rails_best_practices
-  redcarpet (~> 3.0.0)
+  redcarpet
   rspec
   rspec-rails
   rubocop
   sass-rails
   shoulda
   therubyracer
-  uglifier (>= 1.3)
+  uglifier
   unicorn
   whenever
-  yard (~> 0.8.7.3)
-  yard-activerecord (~> 0.0.11)
+  yard
+  yard-activerecord

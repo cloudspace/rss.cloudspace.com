@@ -56,10 +56,10 @@ group :assets do
 end
 
 group :doc do
-  gem 'yard', '~> 0.8.7.3'
-  gem 'yard-activerecord', '~> 0.0.11'
-  gem 'redcarpet', '~> 3.0.0'
-  gem 'github-markup', '~> 1.0.0'
+  gem 'yard'
+  gem 'yard-activerecord'
+  gem 'redcarpet'
+  gem 'github-markup'
 end
 
 # gem 'ruby-readability'
