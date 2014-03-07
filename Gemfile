@@ -7,9 +7,10 @@ gem 'pg'
 gem 'dotenv-rails'
 
 gem 'active_model_serializers'
+gem 'rails-api'
+
 gem 'aws-sdk'
 gem 'dalli'
-gem 'factory_girl'
 gem 'feedzirra'
 gem 'httparty'
 gem 'nokogiri'
@@ -20,10 +21,9 @@ group :production, :staging do
   gem 'unicorn'
 end
 
-# Use debugger
-gem 'debugger', group: [:development, :test]
+group :development, :test do
+  gem 'debugger'
 
-group :development do
   # Deploy with Capistrano
   gem 'capistrano'
   gem 'capistrano-bundler'
@@ -33,14 +33,15 @@ group :development do
   gem 'rails_best_practices'
   gem 'rubocop'
   gem 'metric_fu'
-end
 
-group :test do
   # rspec
   gem 'rspec'
   gem 'rspec-rails'
   gem 'shoulda'
   gem 'database_cleaner'
+
+  gem 'factory_girl'
+  gem 'faker'
 end
 
 # Gems used only for assets and not required
@@ -62,15 +63,15 @@ group :doc do
   gem 'github-markup'
 end
 
-# gem 'ruby-readability'
+# gem 'fastimage'
+# gem 'haml'
 # gem 'link_thumbnailer'
 # gem 'mini_magick'
 # gem 'node'
-# gem 'fastimage'
+# gem 'ruby-readability'
 # gem 'socksify'
-# gem 'haml'
-# gem 'www-favicon'
 # gem 'thread_safe'
+# gem 'www-favicon'
 
 # activeadmin requirements
 # gem 'activeadmin', github: 'gregbell/active_admin'
