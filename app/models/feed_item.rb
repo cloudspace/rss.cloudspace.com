@@ -11,12 +11,4 @@ class FeedItem < ActiveRecord::Base
     created_at = FeedItem.arel_table[:created_at]
     where(created_at.gt(since))
   }
-
-  def published_at
-    if self.published_at > Time.now
-      self.created_at
-    else
-      self.published_at
-    end
-  end
 end
