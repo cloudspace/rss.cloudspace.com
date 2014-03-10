@@ -34,7 +34,7 @@ describe V2::FeedsController do
 
     it 'returns only default feeds and not normal feeds' do
       feeds = JSON.parse(response.body)['feeds']
-      expect(feeds.map{|f| f['id']}).to eq([@default_feed.id])
+      expect(feeds.map { |f| f['id'] }).to eq([@default_feed.id])
     end
   end
 
@@ -51,12 +51,12 @@ describe V2::FeedsController do
     end
 
     it 'should return 200 if a name is specified' do
-      get :search, { name: 'baz' }
+      get :search, name: 'baz'
       expect(response.status).to eq(200)
     end
 
     it 'should return only feeds with name attributes containing "name" parameter' do
-      get :search, { name: 'foo' }
+      get :search, name: 'foo'
 
       feed_ids = JSON.parse(response.body)['feeds'].map { |f| f['id'] }
       expect(feed_ids).to include(@foo.id)
@@ -73,13 +73,13 @@ describe V2::FeedsController do
 
     it 'should return a 422 if the url cannot be processed' do
       Feed.stub(:generate_from_url).and_return(false)
-      post :create, {url: 'foo'}
+      post :create, url: 'foo'
       expect(response.status).to eq(422)
     end
 
     it 'should return a 201 if the feed was created sucessfully' do
       Feed.stub(:generate_from_url).and_return(true)
-      post :create, {url: 'foo'}
+      post :create, url: 'foo'
       expect(response.status).to eq(201)
     end
   end

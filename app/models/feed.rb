@@ -16,6 +16,6 @@ class Feed < ActiveRecord::Base
   # generates an url
   def self.generate_from_url
     # TODO: make this make feed and verify it that it exists and is parseable
-    return true
+    true
   end
 end
