@@ -22,7 +22,7 @@ group :production, :staging do
 end
 
 group :development, :test do
-  gem 'debugger'
+  gem 'pry-debugger'
 
   # Deploy with Capistrano
   gem 'capistrano'

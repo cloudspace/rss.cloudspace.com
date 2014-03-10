@@ -56,4 +56,23 @@ CloudspaceRss::Application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+
+  namespace :v2 do
+    resources :feeds do
+      member do
+        post 'create'
+      end
+
+      collection do
+        get 'default'
+        get 'search'
+      end
+    end
+
+    resources :feed_items do
+      collection do
+        get 'index'
+      end
+    end
+  end
 end
