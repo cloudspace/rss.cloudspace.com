@@ -3,6 +3,8 @@ require 'spec_helper'
 describe V2::FeedItemsController do
   describe '#feed_items' do
 
+    # if you set up any feeds for testing, make sure the id does not match one
+    # of @bad_feed_ids
     before(:all) do
       @good_feed_ids = [1, 2, 3]
       @bad_feed_ids = [4, 5, 6]
