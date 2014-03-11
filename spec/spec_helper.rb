@@ -45,4 +45,15 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = 'random'
+
+  # cleanup the database after each suite
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  # only accept the expect syntax
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
+  end
 end
