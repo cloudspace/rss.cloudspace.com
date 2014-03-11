@@ -17,7 +17,7 @@ FactoryGirl.define do
       end
 
       after(:create) do |feed, evaluator|
-        create_list(:feed_item, evaluator.feed_items_count, { feed: feed })
+        create_list(:feed_item, evaluator.feed_items_count, feed: feed)
       end
     end
   end

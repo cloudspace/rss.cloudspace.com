@@ -23,9 +23,10 @@ class V2::FeedItemsController < ApplicationController
 
   def serialized_feed_items(feed_items)
     {
-      feed_items: ActiveModel::ArraySerializer.new(feed_items, {
+      feed_items: ActiveModel::ArraySerializer.new(
+        feed_items,
         each_serializer: V2::FeedItems::FeedItemSerializer
-      })
+      )
     }
   end
 

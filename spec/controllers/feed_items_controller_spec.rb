@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe V2::FeedItemsController do
-  describe "#feed_items" do
+  describe '#feed_items' do
 
     before(:all) do
       @good_feed_ids = [1, 2, 3]
       @bad_feed_ids = [4, 5, 6]
       @feeds = @good_feed_ids.each do |id|
-        feed = FactoryGirl.create(:feed_with_feed_items, id: id)
+        FactoryGirl.create(:feed_with_feed_items, id: id)
       end
     end
 
