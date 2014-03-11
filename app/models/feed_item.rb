@@ -8,7 +8,17 @@ class FeedItem < ActiveRecord::Base
   scope :with_feed_ids, ->(feed_ids = []) { where(feed_id: feed_ids) }
 
   scope :since, lambda { |since = nil|
-    created_at = FeedItem.arel_table[:created_at]
-    where(created_at.gt(since))
+    where(FeedItem.arel_table[since_field].gt(since))
   }
+
+  private
+
+  # Sets up the since field alias.
+  #
+  # The alias_attribute call below MUST be located AFTER since_field is
+  # defined.
+  def self.since_field
+    :created_at
+  end
+  alias_attribute :since, since_field
 end

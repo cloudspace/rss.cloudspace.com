@@ -14,10 +14,11 @@ FactoryGirl.define do
     factory :feed_with_feed_items do
       ignore do
         feed_items_count 5
+        since nil
       end
 
       after(:create) do |feed, evaluator|
-        create_list(:feed_item, evaluator.feed_items_count, feed: feed)
+        create_list(:feed_item, evaluator.feed_items_count, feed: feed, since: evaluator.since)
       end
     end
   end

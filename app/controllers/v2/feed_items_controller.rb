@@ -11,8 +11,8 @@ class V2::FeedItemsController < ApplicationController
 
     status = bad_feed_ids.blank? ? :ok : :partial_content
     render json: { feed_items: feed_items, bad_feed_ids: bad_feed_ids },
-      status: status,
-      serializer: V2::FeedItems::FeedItemsSerializer
+           status: status,
+           serializer: V2::FeedItems::FeedItemsSerializer
   end
 
   private
