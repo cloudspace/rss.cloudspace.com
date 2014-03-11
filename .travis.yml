@@ -1,5 +1,7 @@
 language: ruby
-env: RAILS_ENV=test
+env:
+  RAILS_ENV=test
+  SECRET_KEY_BASE="$(bundle exec rake secret)"
 rvm:
   - "2.0.0"
 before_script:
@@ -9,4 +11,4 @@ script:
   - bundle exec rake db:test:prepare
   - bundle exec rspec
   - bundle exec rails_best_practices .
-  - bundle exec rubocop --rails --config ./config/rubocop_settings.yml ./lib ./spec ./app ./config
+  - bundle exec rake rubocop
