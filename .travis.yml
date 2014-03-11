@@ -1,4 +1,5 @@
 language: ruby
+cache: bundler
 env:
   RAILS_ENV=test
   SECRET_KEY_BASE="$(bundle exec rake secret)"
