@@ -56,7 +56,7 @@ describe Feed do
     end
 
     describe 'search_name' do
-      before(:each) do
+      before(:all) do
         @foo = FactoryGirl.create(:feed, name: 'foo')
         @bar = FactoryGirl.create(:feed, name: 'bar')
         @foobar = FactoryGirl.create(:feed, name: 'foobar')
