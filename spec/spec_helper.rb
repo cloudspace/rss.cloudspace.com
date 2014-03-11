@@ -46,7 +46,7 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = 'random'
 
-  # cleanup the database after each suite
+  # cleanup the database before each spec
   config.before(:all) do
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)

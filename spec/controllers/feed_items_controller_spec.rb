@@ -6,14 +6,14 @@ describe V2::FeedItemsController do
     # if you set up any feeds for testing, make sure the id does not match one
     # of @bad_feed_ids
     before(:all) do
-      @good_feed_ids = [1, 2, 3]
-      @bad_feed_ids = [4, 5, 6]
+      @bad_feed_ids = [1, 2, 3]
+      @good_feed_ids = [4, 5, 6]
       @feeds = @good_feed_ids.each do |id|
         FactoryGirl.create(:feed_with_feed_items, id: id)
       end
     end
 
-    context 'response status codes' do
+    describe 'response status codes' do
       it 'has a 404 response status when no feed ids were provided' do
         get :feed_items
         expect(response.status).to eql(404)
@@ -35,7 +35,7 @@ describe V2::FeedItemsController do
       end
     end
 
-    context 'json responses' do
+    describe 'json responses' do
       context 'all of the feed ids exist' do
         before do
           get :feed_items, feed_ids: @good_feed_ids

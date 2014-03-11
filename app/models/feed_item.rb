@@ -4,6 +4,7 @@ class FeedItem < ActiveRecord::Base
 
   validates :title, presence: true
   validates :url, presence: true
+  validates :feed, presence: true
 
   scope :with_feed_ids, ->(feed_ids = []) { where(feed_id: feed_ids) }
 
