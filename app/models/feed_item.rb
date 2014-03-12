@@ -9,8 +9,10 @@ class FeedItem < ActiveRecord::Base
   scope :with_feed_ids, ->(feed_ids = []) { where(feed_id: feed_ids) }
 
   scope :since, lambda { |since = nil|
-    where(FeedItem.arel_table[since_field].gt(since))
+    where(FeedItem.arel_table[since_field].gteq(since))
   }
+
+  scope :most_recent, -> { order(since_field => :desc).limit(10) }
 
   private
 
