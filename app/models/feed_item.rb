@@ -18,10 +18,42 @@ class FeedItem < ActiveRecord::Base
 
   # Sets up the since field alias.
   #
-  # The alias_attribute call below MUST be located AFTER since_field is
+  # The alias_attribute call below this MUST be located AFTER since_field is
   # defined.
   def self.since_field
     :created_at
   end
   alias_attribute :since, since_field
+
+  # Sets the paperclip options based on storage.
+  #
+  # The paperclip methods below this MUST be located AFTER paperclip_options is
+  # defined.
+  def self.paperclip_options(storage = nil)
+    options = {
+      styles: {
+        :'640x800' => '640x800#', # iphone
+        :'768x960' => '768x960#', # ipad_mini
+        :'1526x1920' => '1526x1920#' # ipad
+      },
+      convert_options: { all: '-quality 40 -strip' }
+    }
+
+    case storage
+    when :s3
+      options.merge!({
+        storage: :s3,
+        s3_credentials: Rails.root.join('config', 's3.yml'),
+        s3_permissions: :public,
+        path: ':class/:id/:style.:content_type_extension',
+      })
+    else
+      options.merge!({
+        path: ':rails_root/public/system/:class/:id/:style.:content_type_extension'
+      })
+    end
+  end
+  has_attached_file(:image, paperclip_options(ENV['PAPERCLIP_STORAGE']))
+  validates_attachment_content_type :image, content_type: ['image/jpeg', 'image/gif', 'image/png']
+  do_not_validate_attachment_file_type :image
 end

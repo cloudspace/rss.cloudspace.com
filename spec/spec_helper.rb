@@ -3,6 +3,7 @@ ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
+require 'paperclip/matchers'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -46,6 +47,9 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = 'random'
 
+  # defines the paperclip shoulda matchers
+  config.include Paperclip::Shoulda::Matchers
+
   # cleanup the database before each spec
   config.before(:all) do
     DatabaseCleaner.strategy = :transaction
@@ -55,13 +59,5 @@ RSpec.configure do |config|
   # only accept the expect syntax
   config.expect_with :rspec do |c|
     c.syntax = :expect
-  end
-
-  config.before(:each) do
-    DatabaseCleaner.start
-  end
-
-  config.after(:each) do
-    DatabaseCleaner.clean
   end
 end

@@ -31,6 +31,22 @@ describe FeedItem do
     end
   end
 
+  describe 'image paperclip attachment' do
+    before do
+      @feed_item = FactoryGirl.build(:feed_item)
+    end
+
+    it 'has an image paperclip attachment field' do
+      expect(@feed_item.image).to be_a(Paperclip::Attachment)
+    end
+
+    it 'validates the attached paperclip image' do
+      expect(@feed_item).to validate_attachment_content_type(:image).
+        allowing('image/gif', 'image/jpeg', 'image/png').
+        rejecting('text/plain', 'text/xml')
+    end
+  end
+
   describe 'scopes' do
     describe 'with_feed_ids' do
       before do
