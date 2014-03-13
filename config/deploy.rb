@@ -1,8 +1,6 @@
 # config valid only for Capistrano 3.1
 lock '3.1.0'
 
-set :application, 'easy_reader_api'
-
 puts "ENV: #{ENV['REPOSITORY_URL']}"
 
 # the repository url is set in config/environment_variables.rb
@@ -13,9 +11,6 @@ set :default_stage, 'staging'
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
-
-# Default deploy_to directory is /var/www/my_app
-set :deploy_to, '/srv/www/staging.rss.cloudspace.com'
 
 # Default value for :scm is :git
 set :scm, :git

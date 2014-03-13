@@ -6,6 +6,10 @@ set :rails_env, 'staging'
 
 set :default_environment, 'RAILS_ENV' => 'staging'
 
+set :application, 'staging.rss.cloudspace.com'
+
+set :deploy_to, '/srv/www/staging.rss.cloudspace.com'
+
 namespace :deploy do
   task :start do
     on roles(:app) do
