@@ -39,8 +39,7 @@ describe V2::FeedsController do
   end
 
   describe '#search' do
-    before(:all) do
-      DatabaseCleaner.start
+    before(:each) do
       @foo = FactoryGirl.create(:feed, default: true, name: 'foo')
       @bar = FactoryGirl.create(:feed, default: false, name: 'bar')
       @foobar = FactoryGirl.create(:feed, default: false, name: 'foobar')
@@ -63,10 +62,6 @@ describe V2::FeedsController do
       expect(feed_ids).to include(@foo.id)
       expect(feed_ids).to include(@foobar.id)
       expect(feed_ids).not_to include(@bar.id)
-    end
-
-    after(:all) do
-      DatabaseCleaner.clean
     end
   end
 
