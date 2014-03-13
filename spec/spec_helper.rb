@@ -47,7 +47,7 @@ RSpec.configure do |config|
   config.order = 'random'
 
   # cleanup the database after each suite
-  config.before(:suite) do
+  config.before(:all) do
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
   end
