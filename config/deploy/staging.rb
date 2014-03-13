@@ -13,7 +13,7 @@ set :deploy_to, '/srv/www/staging.rss.cloudspace.com'
 namespace :deploy do
   task :start do
     on roles(:app) do
-      execute "cd #{current_release} && bundle exec unicorn -E staging -c /etc/unicorn/staging.rss.cloudspace.com.rb -D"
+      execute "cd /srv/www/staging.rss.cloudspace.com/current && bundle exec unicorn -E staging -c /etc/unicorn/staging.rss.cloudspace.com.rb -D"
     end
   end
 
@@ -23,7 +23,7 @@ namespace :deploy do
     end
   end
 
-  task :restart, :roles => :app, :except => { :no_release => true } do
+  task :restart do
     on roles(:app) do
       execute "kill -USR2 $(cat /var/run/staging.rss.cloudspace.com_unicorn.pid)"
     end
