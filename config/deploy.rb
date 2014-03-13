@@ -23,7 +23,7 @@ set :log_level, :debug
 # set :pty, true
 
 # Default value for :linked_files is []
-# set :linked_files, %w{config/database.yml}
+set :linked_files, %w{.env}
 
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
@@ -38,15 +38,6 @@ set :keep_releases, 5
 set :ssh_options, keys: ['~/.ssh/id_rsa'], forward_agent: true, user: 'root'
 
 namespace :deploy do
-  desc 'Upload environment_variables to release folder'
-  task :upload_config do
-    on roles(:app) do
-      within release_path do
-        upload!('.env', "#{release_path}/.env")
-      end
-    end
-  end
-
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
@@ -70,7 +61,6 @@ namespace :deploy do
   task(:seed) { foreground_rake('db:seed') }
 end
 
-before 'deploy:updated', 'deploy:upload_config'
 after 'deploy', 'bundler:install'
 
 # runs the specified rake task on the server in the background, without blocking the ssh session
