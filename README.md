@@ -10,13 +10,13 @@ __Create and launch the vagrant box__
 __Environment Variables__ - You will need to obtain a .env file and place it in the root of the project. This contains passwords that cannot be committed to the repo. Use `.env.sample` as a template.
 
 __After the box is up, `vagrant ssh`__
-  
+
     sudo gem install bundler
     cd /srv/rss.cloudspace.com
     bundle
     rake db:setup
     rails s
-    
+
 ***
 
 #API Specification
@@ -33,7 +33,7 @@ __After the box is up, `vagrant ssh`__
     	"icon": "http://s3.amazonaws.com/rss.cloudspace.com/feed/16/icon.png",
     	"feed_items": [...]
     }
-    
+
 ### feed_item
 <small>Represents a `FeedItem` object. Associated with a feed.</small>
 
@@ -67,7 +67,7 @@ __Returns__
     }
 
 - HTTP 200 and an array of feed entities
-  
+
 ---
 ##### `GET /v2/feeds/search`
 <small>Searches through available feeds based on supplied parameters.</small>
@@ -82,11 +82,11 @@ __Returns__
         feeds: [...]
     }
 
-- HTTP 200 and an array of feed entities if any are found
-- HTTP 404 if no matches are found
+- HTTP 200 and an array of feed entities (empty if no matches are found)
+- HTTP 400 if no `name` parameter is provided
 
 ---
-##### `POST /v2/feeds/create`
+##### `POST /v2/feeds`
 <small>Submits a feed to the API, which then attempts to parse it and return an array containing a single feed object.</small>
 
 __Parameters__
@@ -96,12 +96,11 @@ __Parameters__
 __Returns__
 
 
-    {
-        feeds: [...]
-    }
+    NO CONTENT
 
-- HTTP 201 and the resource created if the feed is successfully parsed and created
+- HTTP 201 if the feed is successfully parsed and created
 - HTTP 422 (Unprocessable Entity) if `url` cannot be parsed as a feed
+- HTTP 400 if no `url` parameter is provided or the request is bad for any other reason
 
 ---
 ##### `GET /v2/feed_items`

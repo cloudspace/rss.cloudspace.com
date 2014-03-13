@@ -47,7 +47,7 @@ RSpec.configure do |config|
   config.order = 'random'
 
   # cleanup the database after each suite
-  config.before(:suite) do
+  config.before(:all) do
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
   end
@@ -55,5 +55,13 @@ RSpec.configure do |config|
   # only accept the expect syntax
   config.expect_with :rspec do |c|
     c.syntax = :expect
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
   end
 end
