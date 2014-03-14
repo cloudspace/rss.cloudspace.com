@@ -50,10 +50,18 @@ RSpec.configure do |config|
   # defines the paperclip shoulda matchers
   config.include Paperclip::Shoulda::Matchers
 
-  # cleanup the database before each spec
-  config.before(:all) do
+  # cleanup the database before the test suite runs
+  config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
   end
 
   # only accept the expect syntax

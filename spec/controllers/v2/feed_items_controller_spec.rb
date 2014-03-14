@@ -5,7 +5,7 @@ describe V2::FeedItemsController do
 
     # if you set up any feeds for testing, make sure the id does not match one
     # of @bad_feed_ids
-    before :all do
+    before do
       @bad_feed_ids = [1, 2, 3]
       @good_feed_ids = [4, 5, 6]
       @feeds = @good_feed_ids.each do |id|
@@ -141,6 +141,12 @@ describe V2::FeedItemsController do
           expect(@json['feed_items']).to match_array(@serialized_today_feed_items['feed_items'])
           expect(@json['feed_items']).not_to include(@serialized_yesterday_feed_item)
           expect(@json['feed_items'].length).to eql(10)
+        end
+      end
+
+      context 'a feed item has an image attachment' do
+        it 'returns the url to each image size' do
+          pending
         end
       end
     end

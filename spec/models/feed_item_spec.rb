@@ -31,19 +31,43 @@ describe FeedItem do
     end
   end
 
-  describe 'image paperclip attachment' do
-    before do
-      @feed_item = FactoryGirl.build(:feed_item)
+  describe 'paperclip attachment' do
+    describe 'the setup' do
+      before do
+        @feed_item = FactoryGirl.build(:feed_item)
+      end
+
+      it 'has an image paperclip attachment field' do
+        expect(@feed_item.image).to be_a(Paperclip::Attachment)
+      end
+
+      it 'validates the content type of the attached paperclip image' do
+        expect(@feed_item).to validate_attachment_content_type(:image)
+          .allowing('image/gif', 'image/jpeg', 'image/png')
+          .rejecting('text/plain', 'text/xml')
+      end
     end
 
-    it 'has an image paperclip attachment field' do
-      expect(@feed_item.image).to be_a(Paperclip::Attachment)
-    end
+    # #{RAILS_ROOT}/spec/fixtures/donkey.jpg must exist
+    describe 'after attaching the image' do
+      before(:all) do
+        DatabaseCleaner.start
+        donkey = File.open(Rails.root.join('spec', 'fixtures', 'donkey.jpg'))
+        @paperclip_feed_item = FactoryGirl.build(:feed_item, image: donkey)
+        donkey.close
+      end
 
-    it 'validates the attached paperclip image' do
-      expect(@feed_item).to validate_attachment_content_type(:image)
-        .allowing('image/gif', 'image/jpeg', 'image/png')
-        .rejecting('text/plain', 'text/xml')
+      after(:all) do
+        DatabaseCleaner.clean
+      end
+
+      it 'is valid when the image exists and is a jpg' do
+        expect(@paperclip_feed_item).to be_valid
+      end
+
+      it 'has an image url' do
+        expect(@paperclip_feed_item.image.url).not_to be_nil
+      end
     end
   end
 
