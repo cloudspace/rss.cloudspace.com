@@ -25,5 +25,8 @@ cookbooks
 mini_magick*.shtml
 NOTES
 
-# ignore environment variables
+# Ignore environment variables
 .env
+
+# Ignore filesystem paperclip attachments
+/public/system

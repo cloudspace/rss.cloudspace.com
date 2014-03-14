@@ -26,7 +26,7 @@ describe Feed do
 
   describe 'scopes' do
     describe 'default' do
-      before(:each) do
+      before do
         @default_feed = FactoryGirl.create(:feed, default: true)
         @non_default_feed = FactoryGirl.create(:feed, default: false)
       end
@@ -41,7 +41,7 @@ describe Feed do
     end
 
     describe 'approved' do
-      before(:each) do
+      before do
         @approved_feed = FactoryGirl.create(:feed, approved: true)
         @non_approved_feed = FactoryGirl.create(:feed, approved: false)
       end
@@ -56,7 +56,7 @@ describe Feed do
     end
 
     describe 'search_name' do
-      before(:all) do
+      before do
         @foo = FactoryGirl.create(:feed, name: 'foo')
         @bar = FactoryGirl.create(:feed, name: 'bar')
         @foobar = FactoryGirl.create(:feed, name: 'foobar')

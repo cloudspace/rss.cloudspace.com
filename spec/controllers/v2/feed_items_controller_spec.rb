@@ -5,7 +5,7 @@ describe V2::FeedItemsController do
 
     # if you set up any feeds for testing, make sure the id does not match one
     # of @bad_feed_ids
-    before :all do
+    before do
       @bad_feed_ids = [1, 2, 3]
       @good_feed_ids = [4, 5, 6]
       @feeds = @good_feed_ids.each do |id|
@@ -15,22 +15,22 @@ describe V2::FeedItemsController do
 
     describe 'response status codes' do
       it 'has a 404 response status when no feed ids were provided' do
-        get :feed_items
+        get :index
         expect(response.status).to eql(404)
       end
 
       it 'has a 404 response status when none of the feed ids exist' do
-        get :feed_items, feed_ids: @bad_feed_ids
+        get :index, feed_ids: @bad_feed_ids
         expect(response.status).to eql(404)
       end
 
       it 'has a 200 response status when all of the feed ids exist' do
-        get :feed_items, feed_ids: @good_feed_ids
+        get :index, feed_ids: @good_feed_ids
         expect(response.status).to eql(200)
       end
 
       it 'has a 206 response status when some of the feed ids exist' do
-        get :feed_items, feed_ids: @good_feed_ids + @bad_feed_ids
+        get :index, feed_ids: @good_feed_ids + @bad_feed_ids
         expect(response.status).to eql(206)
       end
     end
@@ -38,7 +38,7 @@ describe V2::FeedItemsController do
     describe 'json responses' do
       context 'all of the feed ids exist' do
         before do
-          get :feed_items, feed_ids: @good_feed_ids
+          get :index, feed_ids: @good_feed_ids
           @json = JSON.parse(response.body)
         end
 
@@ -54,7 +54,7 @@ describe V2::FeedItemsController do
 
       context 'some of the feed ids exist' do
         before do
-          get :feed_items, feed_ids: @good_feed_ids + @bad_feed_ids
+          get :index, feed_ids: @good_feed_ids + @bad_feed_ids
           @json = JSON.parse(response.body)
         end
 
@@ -72,7 +72,7 @@ describe V2::FeedItemsController do
       context 'no feed items exist for a valid feed id' do
         before do
           @feed_without_feed_items = FactoryGirl.create(:feed, id: 101)
-          get :feed_items, feed_ids: [@feed_without_feed_items.id]
+          get :index, feed_ids: [@feed_without_feed_items.id]
           @json = JSON.parse(response.body)
         end
 
@@ -104,7 +104,7 @@ describe V2::FeedItemsController do
           ).to_json)
 
           # trying to pull from feed_yesterday, too, but it shouldn't show up
-          get :feed_items,
+          get :index,
               feed_ids: [tomorrow_feed.id, today_feed.id, yesterday_feed.id],
               since: now
           @json = JSON.parse(response.body)
@@ -133,7 +133,7 @@ describe V2::FeedItemsController do
             yesterday_feed_item
           ).to_json)
 
-          get :feed_items, feed_ids: [feed.id]
+          get :index, feed_ids: [feed.id]
           @json = JSON.parse(response.body)
         end
 
@@ -141,6 +141,53 @@ describe V2::FeedItemsController do
           expect(@json['feed_items']).to match_array(@serialized_today_feed_items['feed_items'])
           expect(@json['feed_items']).not_to include(@serialized_yesterday_feed_item)
           expect(@json['feed_items'].length).to eql(10)
+        end
+      end
+
+      context 'a feed item has an image attachment' do
+        before(:all) do
+          DatabaseCleaner.start
+          donkey = File.open(Rails.root.join('spec', 'fixtures', 'donkey.jpg'))
+          @feed_item = FactoryGirl.create(:feed_item, image: donkey)
+          donkey.close
+
+          @expected_styles = FeedItem.send(:paperclip_styles).keys.map(&:to_s)
+        end
+
+        after(:all) do
+          DatabaseCleaner.clean
+        end
+
+        before do
+          get :index, feed_ids: [@feed_item.feed_id]
+          @json = JSON.parse(response.body)
+        end
+
+        it 'returns a list of image sizes with associated urls' do
+          expect(@json['feed_items'][0]['images'].keys).to match_array(@expected_styles)
+          @expected_styles.each do |style|
+            expect(@json['feed_items'][0]['images'][style]).not_to be_nil
+          end
+        end
+      end
+
+      context 'a feed item does not have an image attachment' do
+        before do
+          DatabaseCleaner.start
+          @feed_item = FactoryGirl.create(:feed_item)
+          @expected_styles = FeedItem.send(:paperclip_styles).keys.map(&:to_s)
+        end
+
+        before do
+          get :index, feed_ids: [@feed_item.feed_id]
+          @json = JSON.parse(response.body)
+        end
+
+        it 'returns a list of image sizes with nil values' do
+          expect(@json['feed_items'][0]['images'].keys).to match_array(@expected_styles)
+          @expected_styles.each do |style|
+            expect(@json['feed_items'][0]['images'][style]).to be_nil
+          end
         end
       end
     end

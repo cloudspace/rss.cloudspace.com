@@ -1,6 +1,6 @@
 # Controls the feed items.
 class V2::FeedItemsController < ApplicationController
-  def feed_items
+  def index
     feed_ids = Array(params[:feed_ids])
     good_feed_ids = Feed.where(id: feed_ids).pluck(:id).map(&:to_s)
     bad_feed_ids = feed_ids - good_feed_ids

@@ -1,27 +1,8 @@
 require 'spec_helper'
 
 describe V2::FeedsController do
-  # describe "#feed_items" do
-  #   before(:all) do
-  #     @feeds = [1, 2, 3].each do |id|
-  #       feed = FactoryGirl.create(:feed_with_feed_items, id: id)
-  #     end
-  #   end
-  #
-  #   # response codes
-  #   it 'has 404 status code when no feed ids were provided' do
-  #     get :feed_items
-  #     expect(response.status).to eql(404)
-  #   end
-  #
-  #   it 'has 404 status code when none of the feed ids exist' do
-  #     get :feed_items, { feed_ids: [-1, 'bad feed id', nil] }
-  #     expect(response.status).to eql(404)
-  #   end
-  # end
-
   describe '#default' do
-    before(:each) do
+    before do
       @default_feed = FactoryGirl.create(:feed, default: true)
       @normal_feed = FactoryGirl.create(:feed, default: false)
 
@@ -39,7 +20,7 @@ describe V2::FeedsController do
   end
 
   describe '#search' do
-    before(:each) do
+    before do
       @foo = FactoryGirl.create(:feed, default: true, name: 'foo')
       @bar = FactoryGirl.create(:feed, default: false, name: 'bar')
       @foobar = FactoryGirl.create(:feed, default: false, name: 'foobar')
@@ -65,7 +46,7 @@ describe V2::FeedsController do
     end
   end
 
-  describe 'create' do
+  describe '#create' do
     it 'should return a 400 if no url parameter is provided' do
       post :create
       expect(response.status).to eq(400)

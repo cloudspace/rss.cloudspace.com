@@ -31,6 +31,46 @@ describe FeedItem do
     end
   end
 
+  describe 'paperclip attachment' do
+    describe 'the setup' do
+      before do
+        @feed_item = FactoryGirl.build(:feed_item)
+      end
+
+      it 'has an image paperclip attachment field' do
+        expect(@feed_item.image).to be_a(Paperclip::Attachment)
+      end
+
+      it 'validates the content type of the attached paperclip image' do
+        expect(@feed_item).to validate_attachment_content_type(:image)
+          .allowing('image/gif', 'image/jpeg', 'image/png')
+          .rejecting('text/plain', 'text/xml')
+      end
+    end
+
+    # #{RAILS_ROOT}/spec/fixtures/donkey.jpg must exist
+    describe 'after attaching the image' do
+      before(:all) do
+        DatabaseCleaner.start
+        donkey = File.open(Rails.root.join('spec', 'fixtures', 'donkey.jpg'))
+        @feed_item = FactoryGirl.build(:feed_item, image: donkey)
+        donkey.close
+      end
+
+      after(:all) do
+        DatabaseCleaner.clean
+      end
+
+      it 'is valid when the image exists and is a jpg' do
+        expect(@feed_item).to be_valid
+      end
+
+      it 'has an image url' do
+        expect(@feed_item.image.url).not_to be_nil
+      end
+    end
+  end
+
   describe 'scopes' do
     describe 'with_feed_ids' do
       before do
@@ -78,6 +118,27 @@ describe FeedItem do
       it 'returns feed items at or after some date and not before' do
         expect(@returned_feed_item_ids).to match_array(@tomorrow_feed_item_ids + @today_feed_item_ids)
         expect(@returned_feed_item_ids).not_to include(*@yesterday_feed_item_ids)
+      end
+    end
+
+    describe 'most_recent' do
+      before do
+        now = DateTime.now
+        feed = FactoryGirl.create(:feed)
+
+        @today_feed_item_ids = []
+        10.times do
+          @today_feed_item_ids << FactoryGirl.create(:feed_item, feed: feed, since: now).id
+        end
+
+        @yesterday_feed_item_id = FactoryGirl.create(:feed_item, feed: feed, since: now.yesterday).id
+        @returned_feed_item_ids = FeedItem.most_recent.pluck(:id).uniq
+      end
+
+      it 'returns the 10 most recent feed items' do
+        expect(@returned_feed_item_ids).to match_array(@today_feed_item_ids)
+        expect(@returned_feed_item_ids).not_to include(@yesterday_feed_item_id)
+        expect(@returned_feed_item_ids.length).to eql(10)
       end
     end
   end
