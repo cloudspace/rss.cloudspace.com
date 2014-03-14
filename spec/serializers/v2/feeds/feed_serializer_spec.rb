@@ -27,6 +27,10 @@ describe V2::Feeds::FeedSerializer do
       it 'icon' do
         expect(hash[:icon]).to eq(nil)
       end
+
+      it 'feed_items' do
+        expect(hash[:feed_items]).to eq([])
+      end
     end
   end
 end
