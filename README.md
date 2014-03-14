@@ -38,15 +38,20 @@ __After the box is up, `vagrant ssh`__
 <small>Represents a `FeedItem` object. Associated with a feed.</small>
 
     {
-    	"id": 255,
-    	"feed_id": 16,
-    	"title": "Lorem ipsum dolor sit amet",
-    	"summary": "Ut enim ad minim veniam, quis nostrud exercitation ullamco",
-    	"image": "http://s3.amazonaws.com/rss.cloudspace.com/feed_items/255/image.png",
+        "id": 255,
+        "feed_id": 16,
+        "title": "Lorem ipsum dolor sit amet",
+        "summary": "Ut enim ad minim veniam, quis nostrud exercitation ullamco",
+        "author": "Fred Flintstone",
+        "images": {
+            "iphone_retina": "https://s3.amazonaws.com/rss.cloudspace.com/feed_items/255/iphone_retina.jpg",
+            "ipad": "https://s3.amazonaws.com/rss.cloudspace.com/feed_items/255/ipad.jpg",
+            "ipad_retina": "https://s3.amazonaws.com/rss.cloudspace.com/feed_items/255/ipad_retina.jpg"
+		},
     	"url": "http://engadget.com/articles/lorem.html",
     	"created_at": "2014-03-05T22:32:32+00:00",
     	"updated_at": "2014-03-05T22:32:32+00:00",
-    	"published_at": "2014-03-04T19:52:13+00:00",
+    	"published_at": "2014-03-04T19:52:13+00:00"
     }
 
 ---
@@ -67,6 +72,24 @@ __Returns__
     }
 
 - HTTP 200 and an array of feed entities
+
+---
+##### `GET /v2/feeds/:id`
+<small>Returns a single feed entity.</small>
+
+__Parameters__
+
+- _Required_ `id` - The id of the feed to be returned
+
+__Returns__
+
+
+    {
+        feeds: [...]
+    }
+
+- HTTP 200 and an array containing a single feed entity if the feed exists
+- HTTP 404 if the feed specified does not exist
 
 ---
 ##### `GET /v2/feeds/search`
@@ -95,12 +118,16 @@ __Parameters__
 
 __Returns__
 
+		{
+				feeds: [...]
+		}
 
-    NO CONTENT
-
-- HTTP 201 if the feed is successfully parsed and created
+- HTTP 200 if a feed with the specified `url` previously existed
+- HTTP 201 if a feed with the specified `url` did not previously exist in the database and the feed is successfully parsed and created
 - HTTP 422 (Unprocessable Entity) if `url` cannot be parsed as a feed
 - HTTP 400 if no `url` parameter is provided or the request is bad for any other reason
+- If the feed already exists and is parsed, returns up to 10 `feed_item` entities
+- If the feed did not previously exist, return the feed entity with an empty `feed_items` array
 
 ---
 ##### `GET /v2/feed_items`
