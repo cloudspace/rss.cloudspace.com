@@ -31,9 +31,9 @@ class FeedItem < ActiveRecord::Base
 
   def self.paperclip_styles
     {
-      :'640x800' => '640x800#', # iphone
-      :'768x960' => '768x960#', # ipad_mini
-      :'1526x1920' => '1526x1920#' # ipad
+      iphone_retina: '640x800#', # iphone
+      ipad: '768x960#', # ipad_mini
+      ipad_retina: '1526x1920#' # ipad
     }
   end
 
