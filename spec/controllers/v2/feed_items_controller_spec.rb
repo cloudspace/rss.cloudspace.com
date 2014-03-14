@@ -145,8 +145,49 @@ describe V2::FeedItemsController do
       end
 
       context 'a feed item has an image attachment' do
-        it 'returns the url to each image size' do
-          pending
+        before(:all) do
+          DatabaseCleaner.start
+          donkey = File.open(Rails.root.join('spec', 'fixtures', 'donkey.jpg'))
+          @feed_item = FactoryGirl.create(:feed_item, image: donkey)
+          donkey.close
+
+          @expected_styles = FeedItem.send(:paperclip_styles).keys.map(&:to_s)
+        end
+
+        after(:all) do
+          DatabaseCleaner.clean
+        end
+
+        before do
+          get :index, feed_ids: [@feed_item.feed_id]
+          @json = JSON.parse(response.body)
+        end
+
+        it 'returns a list of image sizes with associated urls' do
+          expect(@json['feed_items'][0]['images'].keys).to match_array(@expected_styles)
+          @expected_styles.each do |style|
+            expect(@json['feed_items'][0]['images'][style]).not_to be_nil
+          end
+        end
+      end
+
+      context 'a feed item does not have an image attachment' do
+        before do
+          DatabaseCleaner.start
+          @feed_item = FactoryGirl.create(:feed_item)
+          @expected_styles = FeedItem.send(:paperclip_styles).keys.map(&:to_s)
+        end
+
+        before do
+          get :index, feed_ids: [@feed_item.feed_id]
+          @json = JSON.parse(response.body)
+        end
+
+        it 'returns a list of image sizes with nil values' do
+          expect(@json['feed_items'][0]['images'].keys).to match_array(@expected_styles)
+          @expected_styles.each do |style|
+            expect(@json['feed_items'][0]['images'][style]).to be_nil
+          end
         end
       end
     end

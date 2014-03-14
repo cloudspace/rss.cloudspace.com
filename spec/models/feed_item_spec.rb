@@ -53,7 +53,7 @@ describe FeedItem do
       before(:all) do
         DatabaseCleaner.start
         donkey = File.open(Rails.root.join('spec', 'fixtures', 'donkey.jpg'))
-        @paperclip_feed_item = FactoryGirl.build(:feed_item, image: donkey)
+        @feed_item = FactoryGirl.build(:feed_item, image: donkey)
         donkey.close
       end
 
@@ -62,11 +62,11 @@ describe FeedItem do
       end
 
       it 'is valid when the image exists and is a jpg' do
-        expect(@paperclip_feed_item).to be_valid
+        expect(@feed_item).to be_valid
       end
 
       it 'has an image url' do
-        expect(@paperclip_feed_item.image.url).not_to be_nil
+        expect(@feed_item.image.url).not_to be_nil
       end
     end
   end
@@ -118,6 +118,27 @@ describe FeedItem do
       it 'returns feed items at or after some date and not before' do
         expect(@returned_feed_item_ids).to match_array(@tomorrow_feed_item_ids + @today_feed_item_ids)
         expect(@returned_feed_item_ids).not_to include(*@yesterday_feed_item_ids)
+      end
+    end
+
+    describe 'most_recent' do
+      before do
+        now = DateTime.now
+        feed = FactoryGirl.create(:feed)
+
+        @today_feed_item_ids = []
+        10.times do
+          @today_feed_item_ids << FactoryGirl.create(:feed_item, feed: feed, since: now).id
+        end
+
+        @yesterday_feed_item_id = FactoryGirl.create(:feed_item, feed: feed, since: now.yesterday).id
+        @returned_feed_item_ids = FeedItem.most_recent.pluck(:id).uniq
+      end
+
+      it 'returns the 10 most recent feed items' do
+        expect(@returned_feed_item_ids).to match_array(@today_feed_item_ids)
+        expect(@returned_feed_item_ids).not_to include(@yesterday_feed_item_id)
+        expect(@returned_feed_item_ids.length).to eql(10)
       end
     end
   end

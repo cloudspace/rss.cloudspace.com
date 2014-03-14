@@ -46,7 +46,7 @@ describe V2::FeedsController do
     end
   end
 
-  describe 'create' do
+  describe '#create' do
     it 'should return a 400 if no url parameter is provided' do
       post :create
       expect(response.status).to eq(400)
