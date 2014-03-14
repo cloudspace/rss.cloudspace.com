@@ -15,22 +15,22 @@ describe V2::FeedItemsController do
 
     describe 'response status codes' do
       it 'has a 404 response status when no feed ids were provided' do
-        get :feed_items
+        get :index
         expect(response.status).to eql(404)
       end
 
       it 'has a 404 response status when none of the feed ids exist' do
-        get :feed_items, feed_ids: @bad_feed_ids
+        get :index, feed_ids: @bad_feed_ids
         expect(response.status).to eql(404)
       end
 
       it 'has a 200 response status when all of the feed ids exist' do
-        get :feed_items, feed_ids: @good_feed_ids
+        get :index, feed_ids: @good_feed_ids
         expect(response.status).to eql(200)
       end
 
       it 'has a 206 response status when some of the feed ids exist' do
-        get :feed_items, feed_ids: @good_feed_ids + @bad_feed_ids
+        get :index, feed_ids: @good_feed_ids + @bad_feed_ids
         expect(response.status).to eql(206)
       end
     end
@@ -38,7 +38,7 @@ describe V2::FeedItemsController do
     describe 'json responses' do
       context 'all of the feed ids exist' do
         before do
-          get :feed_items, feed_ids: @good_feed_ids
+          get :index, feed_ids: @good_feed_ids
           @json = JSON.parse(response.body)
         end
 
@@ -54,7 +54,7 @@ describe V2::FeedItemsController do
 
       context 'some of the feed ids exist' do
         before do
-          get :feed_items, feed_ids: @good_feed_ids + @bad_feed_ids
+          get :index, feed_ids: @good_feed_ids + @bad_feed_ids
           @json = JSON.parse(response.body)
         end
 
@@ -72,7 +72,7 @@ describe V2::FeedItemsController do
       context 'no feed items exist for a valid feed id' do
         before do
           @feed_without_feed_items = FactoryGirl.create(:feed, id: 101)
-          get :feed_items, feed_ids: [@feed_without_feed_items.id]
+          get :index, feed_ids: [@feed_without_feed_items.id]
           @json = JSON.parse(response.body)
         end
 
@@ -104,7 +104,7 @@ describe V2::FeedItemsController do
           ).to_json)
 
           # trying to pull from feed_yesterday, too, but it shouldn't show up
-          get :feed_items,
+          get :index,
               feed_ids: [tomorrow_feed.id, today_feed.id, yesterday_feed.id],
               since: now
           @json = JSON.parse(response.body)
@@ -133,7 +133,7 @@ describe V2::FeedItemsController do
             yesterday_feed_item
           ).to_json)
 
-          get :feed_items, feed_ids: [feed.id]
+          get :index, feed_ids: [feed.id]
           @json = JSON.parse(response.body)
         end
 

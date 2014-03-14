@@ -62,7 +62,7 @@ CloudspaceRss::Application.routes.draw do
       end
     end
 
-    # resources :feed_items, only: [:feed_items]
-    get 'feed_items' => 'feed_items#feed_items'
+    # resources :feed_items, only: [:index]
+    get 'feed_items' => 'feed_items#index'
   end
 end
