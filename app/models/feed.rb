@@ -13,9 +13,15 @@ class Feed < ActiveRecord::Base
   # search for a feed by name. returns partial or complete matches
   scope :search_name, ->(str) { approved.where(arel_table[:name].matches("%#{str}%")) }
 
-  # generates an url
-  def self.generate_from_url
-    # TODO: make this make feed and verify it that it exists and is parseable
-    true
+  # generates, saves, and returns a Feed based on a URL, or returns false upon failure
+  def self.find_or_generate_by_url(feed_url)
+    normalized_uri = URI(feed_url).normalize.to_s
+    feed = Feed.find_by(feed_url: normalized_uri)
+    if feed
+      feed
+    else
+      parser = Service::Parser::Feed.parse(normalized_uri)
+      parser.success? ? Feed.create(parser.attributes) : false
+    end
   end
 end

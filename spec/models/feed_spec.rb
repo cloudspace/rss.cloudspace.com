@@ -75,4 +75,31 @@ describe Feed do
       end
     end
   end
+
+  describe 'class methods' do
+    describe 'find_or_generate_by_url' do
+      let(:feed) { FactoryGirl.build(:feed) }
+
+      it 'should return a pre-existing feed if one already exists with the specified url' do
+        Feed.stub(:find_by).with({feed_url: "http://feeds.thingy.com/"}).and_return(feed)
+        expect(Feed.find_or_generate_by_url('http://feeds.thingy.com/')).to eq(feed)
+      end
+
+      it 'should create and return a new feed if none exists with the specified url' do
+        parser = double(Service::Parser::Feed)
+        parser.stub(:attributes) { { hey: 'you' } }
+        parser.stub(:success?) { true }
+        Service::Parser::Feed.stub(:parse) { parser }
+        Feed.stub(:create).with({ hey: 'you' }).and_return(feed)
+        expect(Feed.find_or_generate_by_url('http://feeds.thingy.com/')).to eq(feed)
+      end
+
+      it 'should return false if the parser fails (returns false)' do
+        parser = double(Service::Parser::Feed)
+        parser.stub(:success?) { false }
+        Service::Parser::Feed.stub(:parse) { parser }
+        expect(Feed.find_or_generate_by_url('http://feeds.thingy.com/')).to eq(false)
+      end
+    end
+  end
 end
