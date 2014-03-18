@@ -91,6 +91,7 @@ describe Feed do
         parser.stub(:success?) { true }
         Service::Parser::Feed.stub(:parse) { parser }
         Feed.stub(:create).with(hey: 'you').and_return(feed)
+        expect(feed).to receive(:generate_feed_items)
         expect(Feed.find_or_generate_by_url('http://feeds.thingy.com/')).to eq(feed)
       end
 

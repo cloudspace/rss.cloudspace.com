@@ -15,13 +15,33 @@ class Feed < ActiveRecord::Base
 
   # generates, saves, and returns a Feed based on a URL, or returns false upon failure
   def self.find_or_generate_by_url(feed_url)
-    normalized_uri = URI(feed_url).normalize.to_s
-    feed = Feed.find_by(feed_url: normalized_uri)
-    if feed
-      feed
-    else
-      parser = Service::Parser::Feed.parse(normalized_uri)
-      parser.success? ? Feed.create(parser.attributes) : false
+    feed = Feed.find_by(feed_url: normalize_uri(feed_url))
+    unless feed
+      parser = Service::Parser::Feed.parse(feed_url)
+      if parser.success?
+        feed = Feed.create(parser.attributes)
+        feed.generate_feed_items
+      end
     end
+    feed || false
+  end
+
+  # fetches and parses the feed, and generates feed items for the feed
+  def generate_feed_items
+    parser = Service::Parser::Feed.parse(feed_url)
+    if parser
+      parser.entries_attributes.each do |attrs|
+        entry_url = Feed.normalize_uri(attrs[:url])
+        FeedItem.find_or_initialize_by(feed_id: id, url: entry_url).update_attributes(attrs)
+      end
+    else
+      false
+    end
+  end
+
+  private
+
+  def self.normalize_uri(uri)
+    URI(uri).normalize.to_s
   end
 end

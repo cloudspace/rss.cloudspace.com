@@ -2,21 +2,17 @@ module Service
   module Parser
     # wraps feedzirra feed entries and provides some handy utility methods
     class FeedItem < Base
-      attr_accessor :title, :url, :author, :summary, :content, :published, :categories
+      attr_accessor :title, :author, :summary, :content, :published, :categories
+      attributes :title, :url, :author, :summary, :content, published_at: :published
+      delegate_methods :title, :author, :summary, :content, :published, :categories, to: :fz_entry_parser
 
+      def url
+        URI(@fz_entry_parser.url).normalize.to_s
+      end
+
+      # accepts a feedzilla parser object. normally only constructed by Service::Parser::Feed
       def initialize(parser)
-        @parser = parser
-      end
-
-      def parse
-        transcribe_attrs
-      end
-
-      private
-
-      # properties copied over from the @parser verbatim
-      def transcribed_fields
-        %i{title url author summary content published categories}
+        @fz_entry_parser = parser
       end
     end
   end
