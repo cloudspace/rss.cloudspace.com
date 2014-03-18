@@ -2,8 +2,8 @@ module Service
   module Parser
     # parses feeds using feedzirra and provides some handy utility methods
     class Feed < Base
-      attr_accessor :code, :success, :feed_type, :description, :etag,
-                    :feed_url, :url, :hubs, :last_modified, :title
+      attr_reader :code, :success, :feed_type, :description, :etag,
+                  :feed_url, :url, :hubs, :last_modified, :title
 
       def initialize(feed_url)
         @feed_url = feed_url
@@ -33,10 +33,10 @@ module Service
       # produces a hash of attributes which can be used to create a Feed in rails
       def attributes
         @attributes ||= {}.tap do |attrs|
-          translations.each_pair do |before, after|
+          attribute_translations.each_pair do |before, after|
             attrs[after] = send(before)
           end
-          transcriptions.each do |var|
+          attribute_transcriptions.each do |var|
             attrs[var] = send(var)
           end
         end
@@ -45,12 +45,12 @@ module Service
       private
 
       # fields that are renamed in the attributes (keys are 'before', values 'after')
-      def translations
+      def attribute_translations
         { title: :name, last_modified: :last_modified_at, description: :summary }
       end
 
       # fields that are used as-is in the attributes
-      def transcriptions
+      def attribute_transcriptions
         %i{url feed_url etag}
       end
 
