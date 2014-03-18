@@ -144,14 +144,12 @@ describe V2::FeedItemsController do
         end
       end
 
-      context 'a feed item has an image attachment' do
+      context 'a feed item that has an image attachment' do
         before(:all) do
           DatabaseCleaner.start
           donkey = File.open(Rails.root.join('spec', 'fixtures', 'donkey.jpg'))
           @feed_item = FactoryGirl.create(:feed_item, image: donkey)
           donkey.close
-
-          @expected_styles = FeedItem.send(:paperclip_styles).keys.map(&:to_s)
         end
 
         after(:all) do
@@ -163,19 +161,19 @@ describe V2::FeedItemsController do
           @json = JSON.parse(response.body)
         end
 
-        it 'returns a list of image sizes with associated urls' do
-          expect(@json['feed_items'][0]['images'].keys).to match_array(@expected_styles)
-          @expected_styles.each do |style|
-            expect(@json['feed_items'][0]['images'][style]).not_to be_nil
+        %i{iphone_retina ipad ipad_retina}.each do |size|
+          it "should return an image for #{size}" do
+            image = @json['feed_items'][0]["#{size}_image"]
+            expect(image).to_not be_nil
+            expect(image).to eq(@feed_item.image.url(size))
           end
         end
       end
 
-      context 'a feed item does not have an image attachment' do
+      context 'a feed item that does not have an image attachment' do
         before do
           DatabaseCleaner.start
           @feed_item = FactoryGirl.create(:feed_item)
-          @expected_styles = FeedItem.send(:paperclip_styles).keys.map(&:to_s)
         end
 
         before do
@@ -183,10 +181,9 @@ describe V2::FeedItemsController do
           @json = JSON.parse(response.body)
         end
 
-        it 'returns a list of image sizes with nil values' do
-          expect(@json['feed_items'][0]['images'].keys).to match_array(@expected_styles)
-          @expected_styles.each do |style|
-            expect(@json['feed_items'][0]['images'][style]).to be_nil
+        it 'should return nil values for image sizes' do
+          %i{iphone_retina_image ipad_image ipad_retina_image}.each do |key|
+            expect(@json['feed_items'][0][key.to_s]).to be_nil
           end
         end
       end
