@@ -22,7 +22,7 @@ class V2::FeedsController < ApplicationController
   # POST /v2/feeds/create
   def create
     if params[:url].present?
-      new_feed = Feed.generate_from_url(params[:url])
+      new_feed = Feed.find_or_generate_by_url(params[:url])
       if new_feed
         status = :created
       else

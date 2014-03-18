@@ -53,13 +53,13 @@ describe V2::FeedsController do
     end
 
     it 'should return a 422 if the url cannot be processed' do
-      Feed.stub(:generate_from_url).and_return(false)
+      Feed.stub(:find_or_generate_by_url).and_return(false)
       post :create, url: 'foo'
       expect(response.status).to eq(422)
     end
 
     it 'should return a 201 if the feed was created sucessfully' do
-      Feed.stub(:generate_from_url).and_return(true)
+      Feed.stub(:find_or_generate_by_url).and_return(true)
       post :create, url: 'foo'
       expect(response.status).to eq(201)
     end
