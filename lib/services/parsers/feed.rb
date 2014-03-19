@@ -1,3 +1,5 @@
+require_relative 'base.rb'
+
 module Service
   module Parser
     # parses feeds using feedzirra and provides some handy utility methods
