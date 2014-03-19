@@ -6,13 +6,15 @@ class FeedItem < ActiveRecord::Base
   validates :url, presence: true
   validates :feed, presence: true
 
-  scope :with_feed_ids, ->(feed_ids = []) { where(feed_id: feed_ids) }
+  scope :processed, -> { where(processed: true) }
+
+  scope :with_feed_ids, ->(feed_ids = []) { processed.where(feed_id: feed_ids) }
 
   scope :since, lambda { |since = nil|
-    where(FeedItem.arel_table[since_field].gteq(since))
+    processed.where(FeedItem.arel_table[since_field].gteq(since))
   }
 
-  scope :most_recent, -> { order(since_field => :desc).limit(10) }
+  scope :most_recent, -> { processed.order(since_field => :desc).limit(10) }
 
   private
 

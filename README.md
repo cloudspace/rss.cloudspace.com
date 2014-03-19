@@ -43,11 +43,9 @@ __After the box is up, `vagrant ssh`__
         "title": "Lorem ipsum dolor sit amet",
         "summary": "Ut enim ad minim veniam, quis nostrud exercitation ullamco",
         "author": "Fred Flintstone",
-        "images": {
-            "iphone_retina": "https://s3.amazonaws.com/rss.cloudspace.com/feed_items/255/iphone_retina.jpg",
-            "ipad": "https://s3.amazonaws.com/rss.cloudspace.com/feed_items/255/ipad.jpg",
-            "ipad_retina": "https://s3.amazonaws.com/rss.cloudspace.com/feed_items/255/ipad_retina.jpg"
-		},
+        "iphone_retina": "https://s3.amazonaws.com/rss.cloudspace.com/feed_items/255/iphone_retina.jpg",
+        "ipad": "https://s3.amazonaws.com/rss.cloudspace.com/feed_items/255/ipad.jpg",
+        "ipad_retina": "https://s3.amazonaws.com/rss.cloudspace.com/feed_items/255/ipad_retina.jpg",
     	"url": "http://engadget.com/articles/lorem.html",
     	"created_at": "2014-03-05T22:32:32+00:00",
     	"updated_at": "2014-03-05T22:32:32+00:00",

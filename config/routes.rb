@@ -55,7 +55,7 @@ CloudspaceRss::Application.routes.draw do
   #   end
 
   namespace :v2 do
-    resources :feeds, only: [:create] do
+    resources :feeds, only: [:create, :show] do
       collection do
         get 'default'
         get 'search'

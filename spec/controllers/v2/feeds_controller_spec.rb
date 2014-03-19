@@ -1,6 +1,26 @@
 require 'spec_helper'
 
 describe V2::FeedsController do
+  describe '#show' do
+    let(:feed) { FactoryGirl.create(:feed) }
+
+    it 'should return 200' do
+      get :show, id: feed.id
+      expect(response.status).to eq(200)
+    end
+
+    it 'should return only the feed specified' do
+      get :show, id: feed.id
+      feed_ids = JSON.parse(response.body)['feeds'].map { |f| f['id'] }
+      expect(feed_ids).to eq([feed.id])
+    end
+
+    it 'should return 404 if the feed with the specified id does not exist' do
+      get :show, id: feed.id + 1
+      expect(response.status).to eq(404)
+    end
+  end
+
   describe '#default' do
     before do
       @default_feed = FactoryGirl.create(:feed, default: true)
@@ -47,6 +67,8 @@ describe V2::FeedsController do
   end
 
   describe '#create' do
+    let(:feed) { FactoryGirl.create(:feed) }
+
     it 'should return a 400 if no url parameter is provided' do
       post :create
       expect(response.status).to eq(400)
@@ -58,10 +80,19 @@ describe V2::FeedsController do
       expect(response.status).to eq(422)
     end
 
-    it 'should return a 201 if the feed was created sucessfully' do
-      Feed.stub(:find_or_generate_by_url).and_return(true)
+    it 'should return a 200 with a feed if a feed with the same url already existed' do
+      Feed.stub(:find_by).with(feed_url: 'foo').and_return(feed)
+      post :create, url: 'foo'
+      expect(response.status).to eq(200)
+      expect(JSON.parse(response.body)['feeds'].map { |f| f['id'] }).to eq([feed.id])
+    end
+
+    it 'should return a 201 with a feed if the feed did not exist and was created sucessfully' do
+      Feed.stub(:find_by).with(feed_url: 'foo').and_return(nil)
+      Feed.stub(:find_or_generate_by_url).and_return(feed)
       post :create, url: 'foo'
       expect(response.status).to eq(201)
+      expect(JSON.parse(response.body)['feeds'].map { |f| f['id'] }).to eq([feed.id])
     end
   end
 end

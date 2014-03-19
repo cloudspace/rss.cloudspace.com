@@ -11,5 +11,6 @@ FactoryGirl.define do
     title
     url
     feed
+    processed { true }
   end
 end
