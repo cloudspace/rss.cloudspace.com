@@ -72,6 +72,19 @@ describe FeedItem do
   end
 
   describe 'scopes' do
+    describe 'processed' do
+      before do
+        @processed_item = FactoryGirl.create(:feed_item, processed: true)
+        @unprocessed_item = FactoryGirl.create(:feed_item, processed: false)
+
+        @returned_feeds = FeedItem.processed
+      end
+
+      it 'returns only feed_items which are flagged as processed and none that are not' do
+        expect(@returned_feeds).to eq([@processed_item])
+      end
+    end
+
     describe 'with_feed_ids' do
       before do
         @these_feed_ids = [1, 2, 3]

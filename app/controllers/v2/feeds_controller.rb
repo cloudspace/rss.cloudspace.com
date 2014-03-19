@@ -1,5 +1,15 @@
 # For the v2/feeds endpoints
 class V2::FeedsController < ApplicationController
+  # GET /v2/feeds/:id
+  def show
+    feed = Feed.find_by(id: params[:id])
+    if feed
+      render json: [feed], status: status, each_serializer: V2::Feeds::FeedSerializer
+    else
+      render nothing: true, status: :not_found
+    end
+  end
+
   # GET /v2/feeds/default
   def default
     feeds = Feed.default
@@ -22,16 +32,18 @@ class V2::FeedsController < ApplicationController
   # POST /v2/feeds/create
   def create
     if params[:url].present?
-      new_feed = Feed.find_or_generate_by_url(params[:url])
-      if new_feed
-        status = :created
+      feed = Feed.find_by(feed_url: URI(params[:url]).normalize.to_s)
+      if feed
+        status = :ok
       else
-        status = :unprocessable_entity
+        feed = Feed.find_or_generate_by_url(params[:url])
+        return render nothing: true, status: :unprocessable_entity unless feed
+        status = :created
       end
     else
-      status = :bad_request
+      return render nothing: true, status: :bad_request
     end
 
-    render nothing: true, status: status
+    render json: [feed], status: status, each_serializer: V2::Feeds::FeedSerializer
   end
 end
