@@ -10,13 +10,13 @@ describe Feed do
   end
 
   describe 'validations' do
-    it { expect(@feed).to validate_presence_of :feed_url }
+    it { expect(@feed).to validate_presence_of :url }
   end
 
   describe 'fields' do
     it { expect(@feed).to respond_to :name }
     it { expect(@feed).to respond_to :url }
-    it { expect(@feed).to respond_to :feed_url }
+    it { expect(@feed).to respond_to :site_url }
     it { expect(@feed).to respond_to :summary }
     it { expect(@feed).to respond_to :etag }
     it { expect(@feed).to respond_to :last_modified_at }
@@ -78,21 +78,24 @@ describe Feed do
 
   describe 'class methods' do
     describe 'find_or_generate_by_url' do
-      let(:feed) { FactoryGirl.build(:feed) }
+      before do
+        @feed = FactoryGirl.create(:feed)
+      end
 
       it 'should return a pre-existing feed if one already exists with the specified url' do
-        Feed.stub(:find_by).with(feed_url: 'http://feeds.thingy.com/').and_return(feed)
-        expect(Feed.find_or_generate_by_url('http://feeds.thingy.com/')).to eq(feed)
+        Feed.stub(:find_by).with(url: @feed.url).and_return(@feed)
+        expect(Feed.find_or_generate_by_url(@feed.url)).to eq(@feed)
       end
 
       it 'should create and return a new feed if none exists with the specified url' do
         parser = double(Service::Parser::Feed)
-        parser.stub(:attributes) { { hey: 'you' } }
+        parser.stub(:attributes) { { url: 'foo' } }
         parser.stub(:success?) { true }
+        parser.stub(:entries_attributes) { [] }
         Service::Parser::Feed.stub(:parse) { parser }
-        Feed.stub(:create).with(hey: 'you').and_return(feed)
-        expect(feed).to receive(:generate_feed_items)
-        expect(Feed.find_or_generate_by_url('http://feeds.thingy.com/')).to eq(feed)
+        Feed.stub(:create).with(url: 'foo').and_return(@feed)
+        expect(@feed).to receive(:fetch_and_process)
+        expect(Feed.find_or_generate_by_url('foo')).to eq(@feed)
       end
 
       it 'should return false if the parser fails (returns false)' do

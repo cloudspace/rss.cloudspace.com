@@ -1,5 +1,8 @@
 # Contains the metadata and content of an individual feed item.
 class FeedItem < ActiveRecord::Base
+  include Queueable
+  include Parseable
+
   belongs_to :feed
 
   validates :title, presence: true
@@ -8,6 +11,8 @@ class FeedItem < ActiveRecord::Base
 
   scope :processed, -> { where(processed: true) }
 
+  scope :not_processed, -> { where(processed: false) }
+
   scope :with_feed_ids, ->(feed_ids = []) { processed.where(feed_id: feed_ids) }
 
   scope :since, lambda { |since = nil|
@@ -15,6 +20,18 @@ class FeedItem < ActiveRecord::Base
   }
 
   scope :most_recent, -> { processed.order(since_field => :desc).limit(10) }
+
+  # returns all items that are unprocessed and not currenty processing
+  scope :ready_for_processing, lambda {
+    not_processing.not_processed.order(:created_at)
+  }
+
+  # fetches, parses, and updates the feed item and images
+  def fetch_and_process
+    if parser
+      update_attributes(parser.attributes)
+    end
+  end
 
   private
 

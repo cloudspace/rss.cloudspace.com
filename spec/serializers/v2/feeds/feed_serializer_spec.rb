@@ -21,7 +21,11 @@ describe V2::Feeds::FeedSerializer do
       end
 
       it 'url' do
-        expect(hash[:feed]).to eq(feed.url)
+        expect(hash[:url]).to eq(feed.url)
+      end
+
+      it 'site_url' do
+        expect(hash[:site_url]).to eq(feed.site_url)
       end
 
       it 'icon' do

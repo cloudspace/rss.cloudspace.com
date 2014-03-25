@@ -1,8 +1,11 @@
 # Contains the metadata of a feed.
 class Feed < ActiveRecord::Base
+  include Queueable
+  include Parseable
+
   has_many :feed_items
 
-  validates :feed_url, presence: true
+  validates :url, presence: true
 
   # feeds that should be shown on a fresh app install
   scope :default, -> { where(default: true) }
@@ -11,37 +14,64 @@ class Feed < ActiveRecord::Base
   scope :approved, -> { where(approved: true) }
 
   # search for a feed by name. returns partial or complete matches
-  scope :search_name, ->(str) { approved.where(arel_table[:name].matches("%#{str}%")) }
+  scope :search_name, ->(str) { approved.where(feeds[:name].matches("%#{str}%")) }
+
+  # returns all feeds that are scheduled and ready for processing,
+  # with those most past their scheduled processig time first
+  scope :ready_for_processing, lambda {
+    not_processing
+    .where(feeds[:next_parse_at].lteq(Time.now)
+    .or(feeds[:last_parsed_at].eq(nil)))
+    .order(:next_parse_at)
+  }
 
   # generates, saves, and returns a Feed based on a URL, or returns false upon failure
-  def self.find_or_generate_by_url(feed_url)
-    feed = Feed.find_by(feed_url: normalize_uri(feed_url))
+  # returns falsy if feed fails to parse, doesn't exist, or fails to save
+  # returns a feed if the feed exists, parses, and saves successfully
+  def self.find_or_generate_by_url(url)
+    feed = Feed.find_by(url: normalize_uri(url))
     unless feed
-      parser = Service::Parser::Feed.parse(feed_url)
-      if parser.success?
-        feed = Feed.create(parser.attributes)
-        feed.generate_feed_items
-      end
+      feed = Feed.new(url: url)
+      feed.fetch_and_process if feed.parser.success?
     end
-    feed || false
+    !feed.new_record? && feed
   end
 
-  # fetches and parses the feed, and generates feed items for the feed
-  def generate_feed_items
-    parser = Service::Parser::Feed.parse(feed_url)
+  # fetches, parses, and updates the feed, and generates feed items for the feed
+  # also increments/resets backoff interval and sets next parse time
+  def fetch_and_process
     if parser
+      update_attributes(parser.attributes)
       parser.entries_attributes.each do |attrs|
         entry_url = Feed.normalize_uri(attrs[:url])
-        FeedItem.find_or_initialize_by(feed_id: id, url: entry_url).update_attributes(attrs)
+        item = FeedItem.find_or_initialize_by(feed_id: id, url: entry_url)
+        @new_item_found = true if item.new_record?
+        item.update_attributes(attrs)
       end
-    else
-      false
     end
+    queue_next_parse(@new_item_found)
   end
 
   private
 
+  # Increments/resets the exponential backoff level, and sets the last and next
+  # parse times.
+  #
+  # @param [Boolean, nil] new_item_found true to reset backoff, false/nil to increment it
+  def queue_next_parse(new_item_found)
+    self.parse_backoff_level = new_item_found ? 0 : [parse_backoff_level + 1, 9].min
+    interval = [2**(parse_backoff_level + 2), 1440].min
+    self.last_parsed_at = Time.now
+    self.next_parse_at = Time.now + interval.minutes
+    save
+  end
+
   def self.normalize_uri(uri)
     URI(uri).normalize.to_s
+  end
+
+  # used for arel
+  def self.feeds
+    arel_table
   end
 end

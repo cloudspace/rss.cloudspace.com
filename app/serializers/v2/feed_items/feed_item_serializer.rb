@@ -1,19 +1,19 @@
 # Creates serialized output (JSON) for a FeedItem.
 class V2::FeedItems::FeedItemSerializer < ActiveModel::Serializer
   attributes :id, :title, :url, :author, :summary, :published_at, :created_at, :updated_at,
-             :feed_id, :iphone_retina_image, :ipad_image, :ipad_retina_image
+             :feed_id, :image_iphone_retina, :image_ipad, :image_ipad_retina
 
-  def iphone_retina_image
+  def image_iphone_retina
     url = @object.image.url(:iphone_retina)
     url.present? ? url : nil
   end
 
-  def ipad_image
+  def image_ipad
     url = @object.image.url(:ipad)
     url.present? ? url : nil
   end
 
-  def ipad_retina_image
+  def image_ipad_retina
     url = @object.image.url(:ipad_retina)
     url.present? ? url : nil
   end
