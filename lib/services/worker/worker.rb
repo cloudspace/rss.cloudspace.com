@@ -64,7 +64,6 @@ module Service
     #
     # @param [String] text the text to be logged
     def log(text)
-      puts text
       File.open("log/worker#{(@id ? '_' + @id.to_s : '')}.log", 'a') { |f| f.puts(text) }
     end
 

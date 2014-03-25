@@ -89,13 +89,11 @@ describe Feed do
 
       it 'should create and return a new feed if none exists with the specified url' do
         parser = double(Service::Parser::Feed)
-        parser.stub(:attributes) { { url: 'foo' } }
         parser.stub(:success?) { true }
-        parser.stub(:entries_attributes) { [] }
-        Service::Parser::Feed.stub(:parse) { parser }
-        Feed.stub(:create).with(url: 'foo').and_return(@feed)
-        expect(@feed).to receive(:fetch_and_process)
-        expect(Feed.find_or_generate_by_url('foo')).to eq(@feed)
+        Feed.any_instance.stub(:parser).and_return(parser)
+        Feed.any_instance.stub(:fetch_and_process)
+        Feed.any_instance.stub(:new_record?).and_return(false)
+        expect(Feed.find_or_generate_by_url('foo').class.name).to eq('Feed')
       end
 
       it 'should return false if the parser fails (returns false)' do

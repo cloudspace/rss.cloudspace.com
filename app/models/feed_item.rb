@@ -28,9 +28,7 @@ class FeedItem < ActiveRecord::Base
 
   # fetches, parses, and updates the feed item and images
   def fetch_and_process
-    if parser
-      update_attributes(parser.attributes)
-    end
+    update_attributes(parser.attributes) if parser
   end
 
   private

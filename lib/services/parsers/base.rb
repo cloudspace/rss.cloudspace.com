@@ -62,7 +62,7 @@ module Service
             attrs[var] = send(var)
           end
         end
-        @attributes.reject { |k,v| v.nil? }
+        @attributes.reject { |k, v| v.nil? }
       end
 
       # a simple alias method. was the parsing successful?
