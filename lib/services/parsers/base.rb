@@ -13,11 +13,11 @@ module Service
       # define either translations or transcriptions
       def self.attributes(*args)
         args = args.map { |a| a.respond_to?(:to_sym) ? a.to_sym : a.symbolize_keys }
-        attr_splitter = lambda do |*array, **hash|
+        splattr = lambda do |*array, **hash|
           transcribe_attributes(array)
           translate_attributes(hash)
         end
-        attr_splitter.call(*args)
+        splattr.call(*args)
       end
 
       # define attributes to be included aliased in the output of the #attributes instance method
@@ -34,12 +34,20 @@ module Service
 
       # delegate methods on the parser to some specified instance variable named as a symbol
       def self.delegate_methods(*method_names, to: nil)
-        method_names.each do |m|
-          recipient_symbol = "@#{to}".to_sym
-          define_method(m) do |*args, &blk|
-            recipient = instance_variable_get(recipient_symbol)
+        method_names.each do |method_name|
+          delegate_method(method_name, to: to)
+        end
+      end
+
+      # delegate a method on the parser to some specified instance variable named as a symbol
+      def self.delegate_method(method_name, to: nil)
+        define_method(method_name) do |*args, &blk|
+          recipient = instance_variable_get(to)
+          if recipient
             @cached_delegates ||= {}
-            @cached_delegates[m] ||= recipient.send(m, *args, &blk)
+            @cached_delegates[method_name] ||= recipient.send(method_name, *args, &blk)
+          else
+            nil
           end
         end
       end
@@ -54,6 +62,7 @@ module Service
             attrs[var] = send(var)
           end
         end
+        @attributes.reject { |k, v| v.nil? }
       end
 
       # a simple alias method. was the parsing successful?
@@ -62,8 +71,7 @@ module Service
       end
 
       # abstract method. will be called on subclass instance construction if defined
-      def parse(*)
-      end
+      def parse(*); end
     end
   end
 end

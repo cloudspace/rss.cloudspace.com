@@ -11,11 +11,12 @@ gem 'rails-api'
 
 gem 'aws-sdk'
 gem 'dalli'
-gem 'feedzirra'
+gem 'feedjira'
 gem 'httparty'
 gem 'nokogiri'
 gem 'paperclip'
 gem 'whenever', :require => false
+gem 'fastimage' # needed to rapidly find the largest image on a page
 
 group :production, :staging do
   gem 'unicorn'

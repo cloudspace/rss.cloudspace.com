@@ -1,15 +1,7 @@
 FactoryGirl.define do
-  sequence :name do |n|
-    "Example Feed #{n}"
-  end
-
-  sequence :feed_url do |n|
-    "http://www.example.org/feed/#{n}"
-  end
-
   factory :feed do
-    name
-    feed_url
+    sequence(:name) { |n| "Example Feed #{n}" }
+    sequence(:url) { |n| "http://www.example.org/feed/#{n}" }
 
     factory :feed_with_feed_items do
       ignore do

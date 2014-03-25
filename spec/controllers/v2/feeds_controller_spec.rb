@@ -81,14 +81,14 @@ describe V2::FeedsController do
     end
 
     it 'should return a 200 with a feed if a feed with the same url already existed' do
-      Feed.stub(:find_by).with(feed_url: 'foo').and_return(feed)
+      Feed.stub(:find_by).with(url: 'foo').and_return(feed)
       post :create, url: 'foo'
       expect(response.status).to eq(200)
       expect(JSON.parse(response.body)['feeds'].map { |f| f['id'] }).to eq([feed.id])
     end
 
     it 'should return a 201 with a feed if the feed did not exist and was created sucessfully' do
-      Feed.stub(:find_by).with(feed_url: 'foo').and_return(nil)
+      Feed.stub(:find_by).with(url: 'foo').and_return(nil)
       Feed.stub(:find_or_generate_by_url).and_return(feed)
       post :create, url: 'foo'
       expect(response.status).to eq(201)
