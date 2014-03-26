@@ -37,12 +37,12 @@ module Service
 
         log "processing #{@element.class} #{@element.id}..."
         @element.fetch_and_process
-        @element.mark_as_processed!
-        log "ELEMENT AFTER PROCESSING: #{@element.inspect}"
       rescue StandardError => e
-        @element.unlock_element!
         record_error(e)
+      ensure
+        @element.mark_as_processed! if @element
       end
+      log "ELEMENT AFTER PROCESSING: #{@element.inspect}"
       true
     end
 

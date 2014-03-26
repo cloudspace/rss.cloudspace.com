@@ -9,7 +9,7 @@ module Service
       end
 
       def image
-        largest_image_url ? open(largest_image_url) : nil
+        URI.parse(image_url) if image_url
       end
 
       def raw_page
@@ -55,7 +55,19 @@ module Service
       #   end
       # end
 
-      def largest_image_url(min: 25)
+      def image_url
+        if defined? @image_url
+          @image_url
+        else
+          @image_url = twitter['image'] || og['image'] || largest_image_url
+        end
+      end
+
+      def image?
+        !!image_url
+      end
+
+      def largest_image_url(min: 300)
         largest_area = 0
         @largest_image_url = nil
 
@@ -74,7 +86,7 @@ module Service
       end
 
       def all_images
-        @all_images ||= document.css('img').map { |image| image['src'] } + [*twitter['image']] + [*og['image']]
+        @all_images ||= document.css('img').map { |image| image['src'] }
       end
     end
   end

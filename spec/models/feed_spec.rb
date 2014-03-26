@@ -74,6 +74,10 @@ describe Feed do
         expect(Feed.search_name('foo')).not_to include(@bar)
       end
     end
+
+    describe 'fetch_and_process'
+    describe 'process_feed_items'
+    describe 'queue_next_parse'
   end
 
   describe 'class methods' do

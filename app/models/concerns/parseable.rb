@@ -6,6 +6,10 @@ module Parseable
   extend ActiveSupport::Concern
 
   def parser
-    @parser ||= "Service::Parser::#{self.class.name}".constantize.parse(url)
+    if defined? @cached_parser
+      @cached_parser
+    else
+      @cached_parser = "Service::Parser::#{self.class.name}".constantize.parse(url)
+    end
   end
 end
