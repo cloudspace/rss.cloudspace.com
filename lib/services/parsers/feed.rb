@@ -37,7 +37,11 @@ module Service
 
       # lazily parses and memoizes the feed_items for this feed
       def entries
-        @entries ||= @fz_feed_parser.entries.map { |e| Service::Parser::FeedItem.parse(e) }
+        if defined? @entries
+          @entries
+        else
+          @entries = @fz_feed_parser ? @fz_feed_parser.entries.map { |e| Service::Parser::FeedItem.parse(e) } : []
+        end
       end
 
       # retuens an array of hashes each representing the attributes for a feed ietm in this feed

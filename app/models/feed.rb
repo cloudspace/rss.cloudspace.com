@@ -4,6 +4,7 @@ class Feed < ActiveRecord::Base
   include Parseable
 
   has_many :feed_items
+  has_many :worker_errors, as: :element
 
   validates :url, presence: true
 
@@ -41,7 +42,7 @@ class Feed < ActiveRecord::Base
   # also increments/resets backoff interval and sets next parse time
   def fetch_and_process
     new_item_found = false
-    if parser
+    if parser && parser.success?
       update_attributes(parser.attributes)
       new_item_found = process_feed_items(parser)
     end
@@ -73,7 +74,7 @@ class Feed < ActiveRecord::Base
   end
 
   def self.normalize_uri(uri)
-    URI(uri).normalize.to_s
+    uri && URI(uri).normalize.to_s
   end
 
   # used for arel

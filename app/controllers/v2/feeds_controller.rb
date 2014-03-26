@@ -32,7 +32,7 @@ class V2::FeedsController < ApplicationController
   # POST /v2/feeds/create
   def create
     if params[:url].present?
-      feed = Feed.find_by(url: URI(params[:url]).normalize.to_s)
+      feed = Feed.find_by(url: params[:url] && URI(params[:url]).normalize.to_s)
       if feed
         status = :ok
       else

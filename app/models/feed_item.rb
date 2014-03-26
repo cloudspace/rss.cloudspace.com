@@ -4,6 +4,7 @@ class FeedItem < ActiveRecord::Base
   include Parseable
 
   belongs_to :feed
+  has_many :worker_errors, as: :element
 
   validates :title, presence: true
   validates :url, presence: true
