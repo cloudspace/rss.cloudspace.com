@@ -1,3 +1,5 @@
+require_relative 'base.rb'
+
 module Service
   module Parser
     # parses documents for opengraph and twitter metadata, as well as the largest image
