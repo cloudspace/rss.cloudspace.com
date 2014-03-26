@@ -1,11 +1,12 @@
+# yay linter
 class WorkerError < ActiveRecord::Base
-  belongs_to :element, :polymorphic => true
+  belongs_to :element, polymorphic: true
 
   def self.log(element, exception)
-    create( element: element,
-            element_state: element.inspect,
-            message: exception.message,
-            backtrace: exception.backtrace.join("\n"))
+    create(element: element,
+           element_state: element.inspect,
+           message: exception.message,
+           backtrace: exception.backtrace.join("\n"))
   end
 
   def self.glance

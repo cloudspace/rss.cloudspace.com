@@ -2,9 +2,10 @@
 
 FactoryGirl.define do
   factory :worker_error do
-    element_type "MyString"
+    element_type 'Feed'
     element_id 1
-    element_state "MyText"
-    backtrace "MyText"
+    element_state '<#Feed blah blah blah>'
+    Message 'Something went wrong!'
+    backtrace 'stack trace'
   end
 end
