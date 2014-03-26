@@ -18,7 +18,7 @@ module Queueable
 
   # flags an element to indicate it is being processed
   # also accepts additional hash-style arguments with which to update the object
-  def mark_for_processing!(**attrs)
+  def lock_element!(**attrs)
     update_attributes(attrs.merge(processing: true))
   end
 
@@ -26,6 +26,11 @@ module Queueable
   # also accepts additional hash-style arguments with which to update the object
   def mark_as_processed!(**attrs)
     attrs.merge!(processed: true) if self.class.columns.map(&:name).include?('processed')
+    unlock_element!(attrs)
+  end
+
+  # flags an element to indicate it is no longer processing
+  def unlock_element!(**attrs)
     update_attributes(attrs.merge(processing: false))
   end
 
@@ -45,7 +50,7 @@ module Queueable
         element = ready_for_processing.first
         if element
           Rails.logger.info "Dequeueing #{self} element: #{element.inspect}"
-          element.mark_for_processing!
+          element.lock_element!
         else
           Rails.logger.info "There's nothing to dequeue!"
         end
