@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140321174700) do
+ActiveRecord::Schema.define(version: 20140325201204) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,5 +61,18 @@ ActiveRecord::Schema.define(version: 20140321174700) do
   add_index "feeds", ["last_parsed_at"], name: "index_feeds_on_last_parsed_at", using: :btree
   add_index "feeds", ["next_parse_at"], name: "index_feeds_on_next_parse_at", using: :btree
   add_index "feeds", ["processing"], name: "index_feeds_on_processing", using: :btree
+
+  create_table "worker_errors", force: true do |t|
+    t.string   "element_type"
+    t.integer  "element_id"
+    t.text     "element_state"
+    t.text     "message"
+    t.text     "backtrace"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "worker_errors", ["element_id"], name: "index_worker_errors_on_element_id", using: :btree
+  add_index "worker_errors", ["element_type"], name: "index_worker_errors_on_element_type", using: :btree
 
 end

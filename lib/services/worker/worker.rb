@@ -40,6 +40,7 @@ module Service
         @element.mark_as_processed!
         log "ELEMENT AFTER PROCESSING: #{@element.inspect}"
       rescue StandardError => e
+        @element.unlock_element!
         record_error(e)
       end
       true
@@ -71,6 +72,7 @@ module Service
     # it triggers the error_threshold_reached method also
     # logs the error text to the logfile and on the element itself
     def record_error(exception)
+      WorkerError.log(@element, exception)
       @error = exception.message + "\n" + exception.backtrace.join("\n") +
         "\n#{('-' * 90)}\nQUEUE ELEMENT:\n#{@element.inspect}"
       log(('=' * 90) + "\nERROR processing data!" + @error)
