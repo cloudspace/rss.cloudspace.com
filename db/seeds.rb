@@ -378,6 +378,7 @@ feeds = [
   {url: 'http://xkcd.com/rss.xml'},  
 ]
 
-feeds.each do |feed|
-  Feed.find_or_initialize_by(url: URI(feed[:url]).normalize.to_s).update_attributes(feed.reject{|k,v| k == :url})
+feeds.each do |feed_attrs|
+  feed = Feed.find_or_initialize_by(url: feed_attrs[:url] && URI(feed_attrs[:url]).normalize.to_s)
+  feed.update_attributes(feed_attrs.reject{|k,v| k == :url})
 end

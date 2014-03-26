@@ -17,7 +17,7 @@ module Service
           @image_parser = Service::Parser::Metadata.parse(@url)
         else
           @parser = arg
-          @url = URI(@parser[:url]).normalize.to_s
+          @url = @parser[:url] && URI(@parser[:url]).normalize.to_s
         end
       end
     end

@@ -11,15 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140325201204) do
+ActiveRecord::Schema.define(version: 20140326193645) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "feed_items", force: true do |t|
-    t.string   "title"
-    t.string   "url"
-    t.string   "author"
+    t.text     "title"
+    t.text     "url"
+    t.text     "author"
     t.text     "summary"
     t.text     "content"
     t.datetime "published_at"
@@ -39,9 +39,9 @@ ActiveRecord::Schema.define(version: 20140325201204) do
   add_index "feed_items", ["processing"], name: "index_feed_items_on_processing", using: :btree
 
   create_table "feeds", force: true do |t|
-    t.string   "name"
-    t.string   "site_url"
-    t.string   "url"
+    t.text     "name"
+    t.text     "site_url"
+    t.text     "url"
     t.text     "summary"
     t.string   "etag"
     t.datetime "last_modified_at"
