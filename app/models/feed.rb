@@ -40,16 +40,22 @@ class Feed < ActiveRecord::Base
   # fetches, parses, and updates the feed, and generates feed items for the feed
   # also increments/resets backoff interval and sets next parse time
   def fetch_and_process
+    new_item_found = false
     if parser
       update_attributes(parser.attributes)
-      parser.entries_attributes.each do |attrs|
-        entry_url = Feed.normalize_uri(attrs[:url])
-        item = FeedItem.find_or_initialize_by(feed_id: id, url: entry_url)
-        @new_item_found = true if item.new_record?
-        item.update_attributes(attrs)
-      end
+      new_item_found = process_feed_items(parser)
     end
-    queue_next_parse(@new_item_found)
+    queue_next_parse(new_item_found)
+  end
+
+  def process_feed_items(parser)
+    new_item_found = false
+    parser.entries_attributes.each do |attrs|
+      entry_url = Feed.normalize_uri(attrs[:url])
+      item = FeedItem.find_or_initialize_by(feed_id: id, url: entry_url)
+      new_item_found = !!(item.new_record? && item.update_attributes(attrs))
+    end
+    new_item_found
   end
 
   private
