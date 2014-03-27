@@ -145,7 +145,7 @@ describe FeedItem do
         end
 
         @yesterday_feed_item_id = FactoryGirl.create(:feed_item, feed: feed, since: now.yesterday).id
-        @returned_feed_item_ids = FeedItem.most_recent.pluck(:id).uniq
+        @returned_feed_item_ids = FeedItem.most_recent(10).pluck(:id).uniq
       end
 
       it 'returns the 10 most recent feed items' do

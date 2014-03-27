@@ -31,7 +31,15 @@ class FeedItem < ActiveRecord::Base
 
   # limits the results to (default 10) feed items per distinct feed
   scope :limit_per_feed, lambda { |max = 10|
-    where("id IN (SELECT id FROM (SELECT ROW_NUMBER() OVER (PARTITION BY feed_id order by #{FeedItem.since_field} DESC) AS r, t.* from feed_items t) x where x.r <= #{max})")
+    where(<<-EOS
+      id IN (
+        SELECT id FROM (
+          SELECT ROW_NUMBER() OVER (
+            PARTITION BY feed_id order by #{FeedItem.since_field} DESC)
+          AS r, t.* from feed_items t)
+        x where x.r <= #{max})
+    EOS
+    )
   }
 
   # destroys all but the newest 100 feed items per feed

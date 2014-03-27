@@ -26,7 +26,7 @@ module Service
       # TODO: find a better way to handle interrupts gracefully
       Kernel.trap('INT') { stop_workers }
 
-      while @workers.count < num_workers.to_i do
+      while @workers.count < num_workers.to_i
         @worker_threads << Thread.new(@workers.count) do |thread_index|
           worker = create_worker(thread_index + 1)
           worker.start

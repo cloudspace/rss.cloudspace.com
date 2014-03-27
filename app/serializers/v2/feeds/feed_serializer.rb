@@ -4,7 +4,7 @@ class V2::Feeds::FeedSerializer < ActiveModel::Serializer
 
   def feed_items
     ActiveModel::ArraySerializer.new(@object.feed_items.most_recent(10),
-                                     each_serializer: V2::FeedItems::FeedItemSerializer)
+                                     each_serializer: V2::FeedItems::FeedItemSerializer).as_json
   end
 
   def icon
