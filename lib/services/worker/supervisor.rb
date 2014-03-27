@@ -18,7 +18,7 @@ module Service
     # than the number of workers for best results
     #
     # @return [Array<Thread>] an array of threads, returned upon completion
-    def start_workers(workers = 10)
+    def start_workers(num_workers = 5)
 
       # this allows interrupts to be caught and stop the workers
       # there has to be a better way than this, but i couldn't
@@ -26,12 +26,15 @@ module Service
       # TODO: find a better way to handle interrupts gracefully
       Kernel.trap('INT') { stop_workers }
 
-      workers.to_i.times do |index|
-        @worker_threads << Thread.new(index) do |thread_index|
+      while @workers.count < num_workers.to_i do
+        @worker_threads << Thread.new(@workers.count) do |thread_index|
           worker = create_worker(thread_index + 1)
           worker.start
         end
+        sleep 0.1
       end
+
+      @workers.each(&:start)
       @worker_threads.each(&:join)
       log 'all workers are now stopped'
     end
