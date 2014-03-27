@@ -10,8 +10,8 @@ class WorkerError < ActiveRecord::Base
   end
 
   def self.glance
-    Rails.logger.info '=' * 80
     msgs = pluck(:message)
+    Rails.logger.info '=' * 80
     Rails.logger.info msgs.uniq.map { |msg| "(#{msgs.count(msg)}) #{msg}" }.join("\n#{'-' * 80}\n")
     Rails.logger.info '=' * 80
     nil

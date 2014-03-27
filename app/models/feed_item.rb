@@ -14,18 +14,38 @@ class FeedItem < ActiveRecord::Base
 
   scope :not_processed, -> { where(processed: false) }
 
-  scope :with_feed_ids, ->(feed_ids = []) { processed.where(feed_id: feed_ids) }
+  scope :with_feed_ids, ->(feed_ids = []) { where(feed_id: feed_ids) }
 
   scope :since, lambda { |since = nil|
-    processed.where(FeedItem.arel_table[since_field].gteq(since))
+    where(FeedItem.arel_table[since_field].gteq(since))
   }
 
-  scope :most_recent, -> { processed.order(since_field => :desc).limit(10) }
+  # orders results with the most recent first. if a parameter is provided,
+  # results are limited to the specified number
+  scope :most_recent, ->(max = nil) { order(since_field => :desc).limit(max) }
 
   # returns all items that are unprocessed and not currenty processing
   scope :ready_for_processing, lambda {
     not_processing.not_processed.order(:created_at)
   }
+
+  # limits the results to (default 10) feed items per distinct feed
+  scope :limit_per_feed, lambda { |max = 10|
+    where(<<-EOS
+      id IN (
+        SELECT id FROM (
+          SELECT ROW_NUMBER() OVER (
+            PARTITION BY feed_id order by #{FeedItem.since_field} DESC)
+          AS r, t.* from feed_items t)
+        x where x.r <= #{max})
+    EOS
+    )
+  }
+
+  # destroys all but the newest 100 feed items per feed
+  def self.cull!(max_per_feed = 100)
+    where.not(id: FeedItem.most_recent.limit_per_feed(max_per_feed)).destroy_all
+  end
 
   # fetches, parses, and updates the feed item and images
   def fetch_and_process

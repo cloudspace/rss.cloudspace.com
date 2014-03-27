@@ -46,6 +46,9 @@ class Feed < ActiveRecord::Base
       update_attributes(parser.attributes)
       new_item_found = process_feed_items(parser)
     end
+  rescue => exception
+    WorkerError.log(self, exception)
+  ensure
     queue_next_parse(new_item_found)
   end
 
@@ -56,6 +59,7 @@ class Feed < ActiveRecord::Base
       item = FeedItem.find_or_initialize_by(feed_id: id, url: entry_url)
       new_item_found = !!(item.new_record? && item.update_attributes(attrs))
     end
+    FeedItem.cull!
     new_item_found
   end
 
