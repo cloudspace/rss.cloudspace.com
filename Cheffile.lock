@@ -17,12 +17,7 @@ SITE
       runit (~> 1.0)
       yum (~> 3.0)
       yum-epel (>= 0.0.0)
-    openssl (1.1.0)
     postfix (3.1.4)
-    postgresql (3.3.4)
-      apt (>= 0.0.0)
-      build-essential (>= 0.0.0)
-      openssl (>= 0.0.0)
     runit (1.5.8)
       build-essential (>= 0.0.0)
       yum (~> 3.0)
@@ -34,6 +29,14 @@ SITE
     yum (3.1.2)
     yum-epel (0.3.4)
       yum (~> 3.0)
+
+GIT
+  remote: https://github.com/phlipper/chef-postgresql.git
+  ref: master
+  sha: 89670ad805393f6b4bb495c32a03115a66f6fe61
+  specs:
+    postgresql (0.13.1)
+      apt (>= 1.9.0)
 
 DEPENDENCIES
   apt (>= 0)

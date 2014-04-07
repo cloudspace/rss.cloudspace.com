@@ -15,8 +15,10 @@ gem 'feedjira'
 gem 'httparty'
 gem 'nokogiri'
 gem 'paperclip'
+gem 'posix-spawn' # needed to prevent out of memory errors in paperclip processing
 gem 'whenever', :require => false
 gem 'fastimage' # needed to rapidly find the largest image on a page
+gem 'hashie'
 
 group :production, :staging do
   gem 'unicorn'

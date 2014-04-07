@@ -1,25 +1,14 @@
-require_relative 'base.rb'
+# wraps feedzirra feed entries and provides some handy utility methods
+class Service::Parser::FeedItem < Service::Parser::Base
+  attr_reader :feedjira_parser, :metadata_parser, :url
+  attributes :title, :url, :author, :summary, :content, published_at: :published
+  cache_delegate :title, :author, :summary, :content, :published, :categories, to: :@feedjira_parser
 
-module Service
-  module Parser
-    # wraps feedzirra feed entries and provides some handy utility methods
-    class FeedItem < Base
-      attr_accessor :title, :author, :summary, :content, :published, :categories, :image, :url
-      attributes :image, :title, :url, :author, :summary, :content, published_at: :published
-      delegate_methods :title, :author, :summary, :content, :published, :categories, to: :@parser
-      delegate_method :image, to: :@image_parser
-
-      # accepts a feedjira parser object. normally only constructed by Service::Parser::Feed
-      def initialize(arg)
-        case arg
-        when String
-          @url = arg
-          @image_parser = Service::Parser::Metadata.parse(@url)
-        else
-          @parser = arg
-          @url = @parser[:url] && URI(@parser[:url]).normalize.to_s
-        end
-      end
+  # accepts a feedjira parser object. constructed by Service::Parser::Feed or by the Parseable concern
+  def initialize
+    if options.feedjira_parser?
+      @url = options.feedjira_parser[:url]
+      @feedjira_parser = options.feedjira_parser
     end
   end
 end

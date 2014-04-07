@@ -1,4 +1,5 @@
 feeds = [
+  {url: 'http://feeds.boston.com/boston/bigpicture/index', default: true},
   {url: 'http://cloudspace.com/feed.xml', default:true},
   {url: 'http://www.engadget.com/rss.xml', default:true},
   {url: 'http://www.theverge.com/rss/index.xml', default:true},
@@ -375,7 +376,16 @@ feeds = [
   {url: 'http://www.npr.org/rss/rss.php?id=1014'},
   {url: 'http://www.npr.org/rss/rss.php?id=1010'},
   {url: 'http://www.rollingstone.com/rssxml/politics.xml'},  
-  {url: 'http://xkcd.com/rss.xml'},  
+  { url: 'http://xkcd.com/rss.xml',
+    parser_options: {
+      feed_item: {
+        image_url: {
+          strategies: [{name: :xpath, args: ["//div[@id='comic']//img", 'src']}],
+          min_size: 0
+        }
+      }
+    }
+  }
 ]
 
 feeds.each do |feed_attrs|

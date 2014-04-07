@@ -3,8 +3,8 @@ class Feed < ActiveRecord::Base
   include Queueable
   include Parseable
 
-  has_many :feed_items
-  has_many :worker_errors, as: :element
+  has_many :feed_items, dependent: :destroy
+  has_many :worker_errors, as: :element, dependent: :destroy
 
   validates :url, presence: true
 
@@ -44,7 +44,7 @@ class Feed < ActiveRecord::Base
     new_item_found = false
     if parser && parser.success?
       update_attributes(parser.attributes)
-      new_item_found = process_feed_items(parser)
+      new_item_found = process_feed_items
     end
   rescue => exception
     WorkerError.log(self, exception)
@@ -52,7 +52,7 @@ class Feed < ActiveRecord::Base
     queue_next_parse(new_item_found)
   end
 
-  def process_feed_items(parser)
+  def process_feed_items
     new_item_found = false
     parser.entries_attributes.each do |attrs|
       entry_url = Feed.normalize_uri(attrs[:url])
@@ -61,6 +61,21 @@ class Feed < ActiveRecord::Base
     end
     FeedItem.cull!
     new_item_found
+  end
+
+  # allows setting image options without affecting existing settings
+  # deletes nil/empty keys recursively
+  def image_options=(options)
+    opts = Service::Options.new(parser_options)
+    opts.feed_item!.image_url!.set(options)
+    opts.delete_blank!
+    update_attributes(parser_options: opts.empty? ? nil : opts)
+  end
+
+  # retrieves the image options from the parser_options json
+  def image_options
+    opts = Service::Options.new(parser_options)
+    opts.feed_item || {}
   end
 
   private

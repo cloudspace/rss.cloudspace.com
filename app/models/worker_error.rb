@@ -6,6 +6,7 @@ class WorkerError < ActiveRecord::Base
     create(element: element,
            element_state: element.inspect,
            message: exception.message,
+           exception_class: exception.class.to_s,
            backtrace: exception.backtrace.join("\n"))
   end
 
@@ -18,6 +19,6 @@ class WorkerError < ActiveRecord::Base
   end
 
   def show
-    Rails.logger.info [message, element_state, backtrace].join("\n#{'-' * 80}\n")
+    Rails.logger.info [exception_class, message, element_state, backtrace].join("\n#{'-' * 80}\n")
   end
 end

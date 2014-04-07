@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140326193645) do
+ActiveRecord::Schema.define(version: 20140407165243) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20140326193645) do
     t.datetime "image_updated_at"
     t.boolean  "processed",          default: false
     t.boolean  "processing",         default: false
+    t.text     "image_url"
   end
 
   add_index "feed_items", ["feed_id"], name: "index_feed_items_on_feed_id", using: :btree
@@ -53,6 +54,7 @@ ActiveRecord::Schema.define(version: 20140326193645) do
     t.datetime "last_parsed_at"
     t.datetime "next_parse_at"
     t.integer  "parse_backoff_level", default: 0
+    t.json     "parser_options"
   end
 
   add_index "feeds", ["approved"], name: "index_feeds_on_approved", using: :btree
@@ -70,9 +72,11 @@ ActiveRecord::Schema.define(version: 20140326193645) do
     t.text     "backtrace"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "exception_class"
   end
 
   add_index "worker_errors", ["element_id"], name: "index_worker_errors_on_element_id", using: :btree
   add_index "worker_errors", ["element_type"], name: "index_worker_errors_on_element_type", using: :btree
+  add_index "worker_errors", ["exception_class"], name: "index_worker_errors_on_exception_class", using: :btree
 
 end

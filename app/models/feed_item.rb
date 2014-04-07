@@ -2,9 +2,11 @@
 class FeedItem < ActiveRecord::Base
   include Queueable
   include Parseable
+  # instruct the parseable module to use the specified parser
+  @parser_type = :metadata
 
   belongs_to :feed
-  has_many :worker_errors, as: :element
+  has_many :worker_errors, as: :element, dependent: :destroy
 
   validates :title, presence: true
   validates :url, presence: true
@@ -50,6 +52,16 @@ class FeedItem < ActiveRecord::Base
   # fetches, parses, and updates the feed item and images
   def fetch_and_process
     update_attributes(parser.attributes) if parser
+  end
+
+  # when the image_url attribute is changed, update and process the image
+  def image_url=(url)
+    self.image = url && URI.parse(url)
+    super(url)
+  end
+
+  def parser_options
+    feed.image_options
   end
 
   private
