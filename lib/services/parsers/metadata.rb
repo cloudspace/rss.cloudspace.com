@@ -1,93 +1,69 @@
-require_relative 'base.rb'
+# parses documents for opengraph and twitter metadata, as well as the largest image
+class Service::Parser::Metadata < Service::Parser::Base
+  attr_reader :url
+  attributes :image_url
 
-module Service
-  module Parser
-    # parses documents for opengraph and twitter metadata, as well as the largest image
-    class Metadata < Base
-      def initialize(url)
-        @url = url
-      end
+  def initialize
+    @url = options[:url]
+    @strategies = {}
+  end
 
-      def image
-        URI.parse(image_url) if image_url
-      end
+  # specify options with an array or single instance of:
+  #   a symbol or string denoting the name of the strategy
+  #   a hash like {name: 'strategy_name', args: [arg1, arg2]}, where
+  #     - args are passed to the relevant method on the strategy, if present
+  #     - args may be omitted or nil (but in this case just use the string/symbol syntax instead)
+  # the defaults demonstrate a few different ways to specify options
+  def default_options
+    {
+      image_url: {
+        min_size: 300,
+        strategies: [
+          :open_graph,
+          { name: :twitter },
+          { name: :largest_image, args: [] }
+        ]
+      }
+    }
+  end
 
-      def raw_page
-        @raw_page ||= HTTParty.get(@url).body
-      end
+  def raw_page
+    @raw_page ||= HTTParty.get(@url).body
+  end
 
-      def document
-        @document ||= Nokogiri::HTML(raw_page)
-      end
+  def document
+    @document ||= Nokogiri::HTML(raw_page)
+  end
 
-      def meta_tags
-        @meta_tags ||= document.xpath('//meta').map do |meta|
-          {}.tap do |out|
-            meta.attribute_nodes.each do |node|
-              out[node.name] = node.value
-            end
-          end
+  def meta_tags
+    @meta_tags ||= document.xpath('//meta').map do |meta|
+      {}.tap do |out|
+        meta.attribute_nodes.each do |node|
+          out[node.name] = node.value
         end
-      end
-
-      def og
-        @og ||= {}.tap do |out|
-          meta_tags.select { |k, v| k['property'] =~ /^og:[a-z]+/i }.each do |tag|
-            out[tag['property'].sub(/^og:/i, '')] = tag['content']
-          end
-        end
-      end
-
-      def twitter
-        @twitter ||= {}.tap do |out|
-          meta_tags.select { |k, v| k['name'] =~ /^twitter:[a-z]+/i }.each do |tag|
-            out[tag['name'].sub(/^twitter:/i, '')] = tag['content']
-          end
-        end
-      end
-
-      # def microdata
-      #   scopes = document.xpath("//*[@itemscope]")
-      #   scopes.map do |scope|
-      #     scope.xpath("//*[@itemprop]").map do |prop|
-      #       prop.content
-      #     end
-      #   end
-      # end
-
-      def image_url
-        if defined? @image_url
-          @image_url
-        else
-          @image_url = twitter['image'] || og['image'] || largest_image_url
-        end
-      end
-
-      def image?
-        !!image_url
-      end
-
-      def largest_image_url(min: 300)
-        largest_area = 0
-        @largest_image_url = nil
-
-        all_images.each do |img_url|
-          dimensions = FastImage.size(img_url)
-          if dimensions && dimensions.min >= min
-            size = dimensions.reduce(:*)
-            if size > largest_area
-              largest_area = size
-              @largest_image_url = img_url
-            end
-          end
-        end
-
-        @largest_image_url
-      end
-
-      def all_images
-        @all_images ||= document.css('img').map { |image| image['src'] }
       end
     end
+  end
+
+  def strategy(strategy_name)
+    strategy_name = strategy_name.to_sym
+    return @strategies[strategy_name] if @strategies.key?(strategy_name)
+    klass = "Service::Parser::Strategy::#{strategy_name.to_s.camelize}".constantize
+    @strategies[strategy_name] = klass.new(self)
+  end
+
+  def image_url
+    strategies = [*options.image_url.strategies]
+    min_size = options.image_url.min_size || 0
+    strategies.each do |strat|
+      result = case strat
+               when Symbol, String
+                 strategy(strat).image_url
+               when Hash
+                 strategy(strat[:name]).image_url(*[*strat[:args]].compact)
+               end
+      return result if result && Service::Parser::Image.new(result, @url).large_enough?(min_size)
+    end
+    nil
   end
 end

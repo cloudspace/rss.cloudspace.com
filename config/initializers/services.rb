@@ -1,1 +1,1 @@
-Dir[Rails.root.join('lib/services/**/*.rb')].each { |f| require f }
+require "#{Rails.root.join('lib/services/services.rb')}"

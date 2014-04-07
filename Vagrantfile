@@ -19,9 +19,15 @@ Vagrant::Config.run do |config|
     
     chef.json = {
       postgresql: {
-        password: {
-          postgres: 'postgres'
-        }
+        users: [
+          {
+            username: "postgres",
+            password: "postgres",
+            superuser: true,
+            createdb: true,
+            login: true
+          }
+        ]
       }      
     }
   end

@@ -11,6 +11,7 @@ __Environment Variables__ - You will need to obtain a .env file and place it in 
 
 __After the box is up, `vagrant ssh`__
 
+    sudo apt-get install postgresql-server-dev-9.3
     sudo gem install bundler
     cd /srv/rss.cloudspace.com
     bundle
