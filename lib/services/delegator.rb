@@ -39,5 +39,15 @@ module Service::Delegator
         end
       end
     end
+
+    # delegate one or more methods on self as arguments to the specified method
+    # http://en.wikipedia.org/wiki/Currying
+    def spicy_delegate(*method_names, through: nil)
+      method_names.each do |method_name|
+        define_method(method_name) do |*args, &blk|
+          send(through, method_name)
+        end
+      end
+    end
   end
 end
