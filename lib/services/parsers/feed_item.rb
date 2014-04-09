@@ -2,7 +2,8 @@
 class Service::Parser::FeedItem < Service::Parser::Base
   attr_reader :feedjira_parser, :metadata_parser, :url
   attributes :title, :url, :author, :summary, :content, published_at: :published
-  cache_delegate :title, :author, :summary, :content, :published, :categories, to: :@feedjira_parser
+  spicy_delegate :title, :author, :summary, :content, through: :sanitize
+  cache_delegate :published, :categories
 
   # accepts a feedjira parser object. constructed by Service::Parser::Feed or by the Parseable concern
   def initialize
@@ -10,5 +11,12 @@ class Service::Parser::FeedItem < Service::Parser::Base
       @url = options.feedjira_parser[:url]
       @feedjira_parser = options.feedjira_parser
     end
+  end
+
+  private
+
+  def sanitize(m)
+    out = @feedjira_parser.send(m)
+    Nokogiri::HTML(out).text.gsub(/[\n\r]/, '')
   end
 end
