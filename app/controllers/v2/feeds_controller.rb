@@ -20,7 +20,7 @@ class V2::FeedsController < ApplicationController
   # GET /v2/feeds/search
   def search
     if params[:name].present?
-      feeds = Feed.search_name(params[:name])
+      feeds = Feed.search_name(params[:name]).limit(10)
       status = :ok
     else
       status = :bad_request
