@@ -13,3 +13,5 @@ script:
   - bundle exec rspec
   - bundle exec rails_best_practices .
   - bundle exec rake rubocop
+addons:
+  postgresql: 9.3
