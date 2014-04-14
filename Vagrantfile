@@ -6,6 +6,7 @@ Vagrant::Config.run do |config|
   config.vm.customize ["modifyvm", :id, "--memory", "2048", "--name", "rss.cloudspace.com-dev","--cpus", "2"]
   # config.vm.boot_mode = :gui
   config.vm.network :hostonly, '33.33.33.107'
+  config.vm.network(:bridged, :bridge => "en1: Wi-Fi (AirPort)")
   config.ssh.private_key_path = File.join(ENV['HOME'], '.ssh', 'cs_vagrant.pem')
 
   config.vm.provision :chef_solo do |chef|        
