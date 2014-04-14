@@ -1,6 +1,6 @@
 feeds = [
   {url: 'http://feeds.boston.com/boston/bigpicture/index', default: true},
-  {url: 'http://cloudspace.com/feed.xml', default:true},
+  {url: 'http://cloudspace.com/blog/feed.xml', default:true},
   {url: 'http://www.engadget.com/rss.xml', default:true},
   {url: 'http://www.theverge.com/rss/index.xml', default:true},
   {url: 'http://rss.cnn.com/rss/cnn_topstories.rss', default:true},
