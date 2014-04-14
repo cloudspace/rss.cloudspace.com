@@ -26,7 +26,7 @@ class V2::FeedsController < ApplicationController
       status = :bad_request
     end
 
-    render json: feeds, status: status, each_serializer: V2::Feeds::FeedSerializer
+    render json: feeds, status: status, each_serializer: V2::Feeds::FeedWithoutItemsSerializer
   end
 
   # POST /v2/feeds/create
