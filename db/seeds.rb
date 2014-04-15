@@ -268,7 +268,6 @@ feeds = [
   {url: 'http://www.mattcutts.com/blog/feed/'},
   {url: 'http://www.456bereastreet.com/feed.xml'},
   {url: 'http://alistapart.com/rss.xml'},
-  {url: 'http://feeds.feedburner.com/web20Show'},
   {url: 'http://www.nytimes.com/services/xml/rss/nyt/Business.xml'},
   {url: 'http://www.nytimes.com/services/xml/rss/nyt/MediaandAdvertising.xml'},
   {url: 'http://www.nytimes.com/services/xml/rss/nyt/WorldBusiness.xml'},
