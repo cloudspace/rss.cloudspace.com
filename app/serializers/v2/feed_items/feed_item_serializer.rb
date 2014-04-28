@@ -9,7 +9,7 @@ class V2::FeedItems::FeedItemSerializer < ActiveModel::Serializer
     if url.present?
       url
     else
-      URI::join(Rails.application.config.action_controller.asset_host, Rails.application.assets.find_asset("defaultIphoneImage@2x.png").digest_path)
+      URI::join(Rails.application.config.action_controller.asset_host, Rails.application.assets.find_asset("defaultIphoneImage@2x.png").digest_path).to_s
     end
   end
 
@@ -19,7 +19,7 @@ class V2::FeedItems::FeedItemSerializer < ActiveModel::Serializer
     if url.present?
       url
     else
-      URI::join(Rails.application.config.action_controller.asset_host, Rails.application.assets.find_asset("defaultIpadImage.png").digest_path)
+      URI::join(Rails.application.config.action_controller.asset_host, Rails.application.assets.find_asset("defaultIpadImage.png").digest_path).to_s
     end
   end
 
@@ -29,7 +29,7 @@ class V2::FeedItems::FeedItemSerializer < ActiveModel::Serializer
     if url.present?
       url
     else
-      URI::join(Rails.application.config.action_controller.asset_host, Rails.application.assets.find_asset("defaultIpadImage@2x.png").digest_path)
+      URI::join(Rails.application.config.action_controller.asset_host, Rails.application.assets.find_asset("defaultIpadImage@2x.png").digest_path).to_s
     end
   end
 end
