@@ -18,7 +18,7 @@ class V2::FeedItemsController < ApplicationController
   def validate_feed_ids(feed_ids)
     feed_ids = Array(params[:feed_ids])
     valid_feed_ids = Feed.where(id: feed_ids).pluck(:id).map(&:to_s)
-    invalid_feed_ids = feed_ids - good_feed_ids
+    invalid_feed_ids = feed_ids - valid_feed_ids
 
     {
       valid: valid_feed_ids,
