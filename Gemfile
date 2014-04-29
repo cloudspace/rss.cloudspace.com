@@ -37,7 +37,8 @@ group :development, :test do
   gem 'rails_best_practices'
   gem 'rubocop'
   gem 'metric_fu'
-
+  gem 'reek'
+  
   # rspec
   gem 'rspec'
   gem 'rspec-rails'

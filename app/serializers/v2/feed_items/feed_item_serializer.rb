@@ -5,31 +5,16 @@ class V2::FeedItems::FeedItemSerializer < ActiveModel::Serializer
 
   def image_iphone_retina
     url = @object.image.url(:iphone_retina)
-
-    if url.present?
-      url
-    else
-      URI::join(Rails.application.config.action_controller.asset_host, "assets/", Rails.application.assets.find_asset("defaultIphoneImage@2x.png").digest_path).to_s
-    end
+    url.present? ? url : FeedItem.default_image(:iphone_retina)
   end
 
   def image_ipad
     url = @object.image.url(:ipad)
-
-    if url.present?
-      url
-    else
-      URI::join(Rails.application.config.action_controller.asset_host, "assets/", Rails.application.assets.find_asset("defaultIpadImage.png").digest_path).to_s
-    end
+    url.present? ? url : FeedItem.default_image(:ipad)
   end
 
   def image_ipad_retina
     url = @object.image.url(:ipad_retina)
-
-    if url.present?
-      url
-    else
-      URI::join(Rails.application.config.action_controller.asset_host, "assets/", Rails.application.assets.find_asset("defaultIpadImage@2x.png").digest_path).to_s
-    end
+    url.present? ? url : FeedItem.default_image(:ipad_retina)
   end
 end

@@ -42,12 +42,17 @@ class Service::Parser::Image
     if parsed_uri.relative?
       fail ::RelativeURIError, "context required to parse #{uri.inspect}" unless context
       context = URI.parse(context)
-      host = "#{context.scheme}://#{context.host}"
-      query = parsed_uri.query ? "?#{parsed_uri.query}" : ''
-      "#{host}#{parsed_uri.path}#{query}"
+
+      build_from_parsed_context(parsed_uri, context)
     else
       uri
     end
+  end
+
+  def build_from_parsed_context(parsed_uri, context)
+    host = "#{context.scheme}://#{context.host}"
+    query = parsed_uri.query ? "?#{parsed_uri.query}" : ''
+    "#{host}#{parsed_uri.path}#{query}"
   end
 end
 

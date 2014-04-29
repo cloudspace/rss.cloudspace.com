@@ -183,7 +183,7 @@ describe V2::FeedItemsController do
 
         it 'should return nil values for image sizes' do
           %i{image_iphone_retina image_ipad image_ipad_retina}.each do |key|
-            expect(@json['feed_items'][0][key.to_s]).to be_nil
+            expect(@json['feed_items'][0][key.to_s]).to be FeedItem.default_image(key.to_sym)
           end
         end
       end

@@ -13,7 +13,6 @@ AssetSync.configure do |config|
   elsif Rails.env.production?
     config.fog_directory = ENV['PRODUCTION_S3_BUCKET']
   end
-  
 
   # Invalidate a file on a cdn after uploading files
   # config.cdn_distribution_id = "12345"

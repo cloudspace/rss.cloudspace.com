@@ -8,8 +8,7 @@ class Service::Parser::Base
   # override the default constructor to insert steps before #initialize is called
   def self.new(opts)
     obj = allocate
-    obj.options = Service::Options.new(obj.default_options)
-    obj.options.deep_merge!(opts)
+    obj.options = Service::Options.new(obj.default_options).deep_merge!(opts)
     obj.send(:initialize)
     obj.parse
     obj

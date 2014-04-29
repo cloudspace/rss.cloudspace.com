@@ -43,9 +43,9 @@ module Queueable
     #
     # @return [ApiQueue::Element, nil] the element dequeued or nil if queue empty
     def dequeue
-      unless respond_to? :ready_for_processing
-        fail "#{self}.dequeue requires that a :ready_for_processing scope be defined on the model"
-      end
+      respond_to?(:ready_for_processing) ||
+        fail("#{self}.dequeue requires that a :ready_for_processing scope be defined on the model")
+
       @dequeue_mutex.synchronize do
         element = ready_for_processing.first
         if element

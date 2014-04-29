@@ -75,6 +75,30 @@ class FeedItem < ActiveRecord::Base
   end
   alias_attribute :since, since_field
 
+  # Gets the default image asset URL for the specified type
+  #
+  # @param type [String, Symbol] The type of image to get (ipad, ipad_retina, iphone_retina)
+  def self.default_image(type = :iphone)
+    case type.to_sym
+    when :ipad_retina
+      file_name = 'defaultIpadImage@2x.png'
+    when :ipad
+      file_name = 'defaultIpadImage.png'
+    else
+      file_name = 'defaultIphoneImage@2x.png'
+    end
+
+    if Rails.application.config.action_controller.asset_host
+      URI.join(
+        Rails.application.config.action_controller.asset_host,
+        'assets/',
+        Rails.application.assets.find_asset(file_name).digest_path
+      ).to_s
+    else
+      "/assets/#{file_name}"
+    end
+  end
+
   def self.paperclip_path
     ':class/:id/:style.:content_type_extension'
   end
