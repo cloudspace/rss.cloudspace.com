@@ -8,10 +8,9 @@ rvm:
 before_script:
   - bundle exec rake db:create --trace
 script:
+  - bundle exec ./lint
   - bundle exec rake db:migrate --trace
   - bundle exec rake db:test:prepare
   - bundle exec rspec
-  - bundle exec rails_best_practices .
-  - bundle exec rake rubocop
 addons:
   postgresql: 9.3

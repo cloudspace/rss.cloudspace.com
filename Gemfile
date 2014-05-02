@@ -19,6 +19,7 @@ gem 'posix-spawn' # needed to prevent out of memory errors in paperclip processi
 gem 'whenever', :require => false
 gem 'fastimage' # needed to rapidly find the largest image on a page
 gem 'hashie'
+gem 'asset_sync'
 
 group :production, :staging do
   gem 'unicorn'
@@ -36,7 +37,8 @@ group :development, :test do
   gem 'rails_best_practices'
   gem 'rubocop'
   gem 'metric_fu'
-
+  gem 'reek'
+  
   # rspec
   gem 'rspec'
   gem 'rspec-rails'

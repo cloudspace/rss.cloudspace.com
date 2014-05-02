@@ -4,8 +4,13 @@ EmptyLinesAroundBody:
 LineLength:
   Max: 120
 
+ClassLength:
+  Enabled: true
+  CountComments: false
+  Max: 150
+
 MethodLength:
-  Max: 15
+  Enabled: false
 
 WhileUntilModifier:
   Enabled: false

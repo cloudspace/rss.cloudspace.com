@@ -5,16 +5,16 @@ class V2::FeedItems::FeedItemSerializer < ActiveModel::Serializer
 
   def image_iphone_retina
     url = @object.image.url(:iphone_retina)
-    url.present? ? url : nil
+    url.present? ? url : FeedItem.default_image(:iphone_retina)
   end
 
   def image_ipad
     url = @object.image.url(:ipad)
-    url.present? ? url : nil
+    url.present? ? url : FeedItem.default_image(:ipad)
   end
 
   def image_ipad_retina
     url = @object.image.url(:ipad_retina)
-    url.present? ? url : nil
+    url.present? ? url : FeedItem.default_image(:ipad_retina)
   end
 end

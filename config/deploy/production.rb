@@ -16,6 +16,11 @@ role :db,  %w{deploy@example.com}
 # extended properties on the server.
 server 'example.com', user: 'deploy', roles: %w{web app}, my_property: :my_value
 
+config.assets.enabled = true
+config.assets.digest = true
+config.action_controller.asset_host = "http://#{ENV['PRODUCTION_S3_BUCKET']}.a3.amazonaws.com"
+config.assets.initialize_on_precompile = true
+
 # you can set custom ssh options
 # it's possible to pass any option but you need to keep in mind that net/ssh understand limited list of options
 # you can see them in [net/ssh documentation](http://net-ssh.github.io/net-ssh/classes/Net/SSH.html#method-c-start)
