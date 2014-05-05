@@ -80,7 +80,7 @@ namespace :populate do
 
 desc 'Scrapes Technorati for feeds'
   task :technorati => :environment do
-    (1..1000).each do |i|
+    (1..100).each do |i|
       puts "Gathering sites from Alexa page #{i}"
 
       begin
