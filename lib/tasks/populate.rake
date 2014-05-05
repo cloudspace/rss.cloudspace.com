@@ -1,6 +1,5 @@
 require 'httparty'
 require 'nokogiri'
-require 'pry'
 
 class HTTParty::Basement; default_timeout 10; end
 
