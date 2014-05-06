@@ -80,7 +80,7 @@ namespace :populate do
 desc 'Scrapes Technorati for feeds'
   task :technorati => :environment do
     (1..100).each do |i|
-      puts "Gathering sites from Alexa page #{i}"
+      puts "Gathering sites from Technorati page #{i}"
 
       begin
         site_links = technorati_links(i)
@@ -99,7 +99,7 @@ desc 'Scrapes Technorati for feeds'
           end
         end
       rescue
-        puts "  Error scraping alexa"
+        puts "  Error scraping technorati"
       end
     end
   end
