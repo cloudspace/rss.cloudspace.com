@@ -1,5 +1,3 @@
-require 'pry'
-
 # mixin allowing delegation of one or more methods to the method or ivar specified, and caches result
 module Service::Delegator
   def self.included(base)
