@@ -3,7 +3,7 @@ class Service::Parser::FeedItem < Service::Parser::Base
   attr_reader :feedjira_parser, :metadata_parser, :url
   attributes :title, :url, :author, :summary, :content, published_at: :published
   spicy_delegate :title, :author, :summary, :content, through: :sanitize
-  cache_delegate :published, :categories
+  cache_delegate :published, :categories, to: :feedjira_parser
 
   # accepts a feedjira parser object. constructed by Service::Parser::Feed or by the Parseable concern
   def initialize
