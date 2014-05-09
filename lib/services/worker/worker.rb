@@ -36,7 +36,9 @@ class Service::Worker
   def dequeue_and_process_element
     begin
       @error = nil
-      @element = Feed.dequeue || FeedItem.dequeue
+      klasses = [Feed, FeedItem].shuffle
+      @element = klasses.first.dequeue || klasses.last.dequeue
+
       log "ELEMENT BEFORE PROCESSING: #{@element.inspect}"
       return false unless @element
 
