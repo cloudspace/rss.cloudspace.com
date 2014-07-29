@@ -26,13 +26,13 @@ class Service::Supervisor
   def start_workers(num_workers = 5)
     logger.info "Starting #{num_workers} workers"
     @resurrection_thread = Thread.new do
-      begin
-        loop do
-          logger.info "WORKER STATUSES: #{worker_threads.values.map(&:alive?)}"
-          sleep 5
+      loop do
+        begin
+            logger.info "WORKER STATUSES: #{worker_threads.values.map(&:alive?)}"
+            sleep 5
+        rescue Exception => e
+          logger.info e
         end
-      rescue Exception => e
-        logger.info e
       end
     end
 

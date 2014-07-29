@@ -40,9 +40,18 @@ class Service::Worker
       @element.fetch_and_process
     rescue StandardError => e
       record_error(e)
-    ensure
-      @element.mark_as_processed! if @element
     end
+
+    # if it can't be saved, it should just be deleted
+    if @element
+      begin
+        @element.mark_as_processed!
+      rescue Exception => e
+        record_error(e)
+        @element.destroy
+      end
+    end
+
     logger.info "ELEMENT AFTER PROCESSING: #{@element.inspect}"
     true
   end

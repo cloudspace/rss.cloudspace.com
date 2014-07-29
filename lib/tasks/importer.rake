@@ -10,7 +10,7 @@ namespace :importer do
     Signal.trap('TERM') do 
       killthread = Thread.new do
         Service::Supervisor.instance.stop_workers
-        Service::Supervisor.logger.info "SIGINT detected, bailing out!"
+        Service::Supervisor.logger.info "SIGTERM detected, bailing out!"
       end
 
       killthread.join
