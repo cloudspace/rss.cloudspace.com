@@ -17,7 +17,7 @@ cookbooks
 /db/*.sqlite3
 
 # Ignore all logfiles and tempfiles.
-/log/*.log
+/log/*
 /tmp
 
 .DS_Store

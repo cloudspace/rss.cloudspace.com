@@ -46,7 +46,7 @@ class Service::Worker
     if @element
       begin
         @element.mark_as_processed!
-      rescue Exception => e
+      rescue => e
         record_error(e)
         @element.destroy
       end

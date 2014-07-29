@@ -28,9 +28,9 @@ class Service::Supervisor
     @resurrection_thread = Thread.new do
       loop do
         begin
-            logger.info "WORKER THREADS: #{worker_threads.values.map(&:inspect)}"
-            sleep 60
-        rescue Exception => e
+          logger.info "WORKER THREADS: #{worker_threads.values.map(&:inspect)}"
+          sleep 60
+        rescue => e
           logger.info e
         end
       end
