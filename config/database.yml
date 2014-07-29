@@ -2,7 +2,7 @@ development:
   adapter: postgresql
   encoding: utf8
   database: cloudspace_rss_development
-  pool: 50
+  pool: 100
   username: postgres
   password: postgres
   host: localhost
@@ -11,7 +11,7 @@ test:
   adapter: postgresql
   encoding: utf8
   database: cloudspace_rss_testing
-  pool: 50
+  pool: 100
   username: postgres
   password: postgres
   host: localhost
@@ -20,7 +20,7 @@ staging:
   adapter: postgresql
   encoding: utf8
   database: <%= ENV['STAGING_POSTGRES_DATABASE'] %>
-  pool: 50
+  pool: 100
   username: <%= ENV['STAGING_POSTGRES_USERNAME'] %>
   password: <%= ENV['STAGING_POSTGRES_PASSWORD'] %>
   host: <%= ENV['STAGING_POSTGRES_HOST'] %>
@@ -30,7 +30,7 @@ production:
   adapter: postgresql
   encoding: utf8
   database: <%= ENV['PRODUCTION_POSTGRES_DATABASE'] %>
-  pool: 50
+  pool: 100
   username: <%= ENV['PRODUCTION_POSTGRES_USERNAME'] %>
   password: <%= ENV['PRODUCTION_POSTGRES_PASSWORD'] %>
   host: <%= ENV['PRODUCTION_POSTGRES_HOST'] %>

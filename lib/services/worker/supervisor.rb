@@ -1,10 +1,16 @@
 # Supervises ApiQueue::Worker objects. Creates, controls, starts, and stops workers as needed
 class Service::Supervisor
+  attr_accessor :worker_threads, :running
+
+  # a global supervisor singleton
+  def self.instance
+    @supervisor ||= self.new
+  end
 
   def initialize(error_threshold: 50)
     # a place to store references to all the workers
-    @workers = ThreadSafe::Array.new
-    @worker_threads = ThreadSafe::Array.new
+    @workers = ThreadSafe::Hash.new
+    @worker_threads = ThreadSafe::Hash.new
     cleanup
   end
 
@@ -17,18 +23,32 @@ class Service::Supervisor
   # than the number of workers for best results
   #
   # @return [Array<Thread>] an array of threads, returned upon completion
-  def start_workers(num_workers = 5)\
-    while @workers.count < num_workers.to_i
-      @worker_threads << Thread.new(@workers.count) do |thread_index|
-        worker = create_worker(thread_index + 1)
-        worker.start
+  def start_workers(num_workers = 5)
+    logger.info "Starting #{num_workers} workers"
+    @resurrection_thread = Thread.new do
+      begin
+        loop do
+          logger.info "WORKER STATUSES: #{worker_threads.values.map(&:alive?)}"
+          sleep 5
+        end
+      rescue Exception => e
+        logger.info e
       end
-      sleep 0.1
     end
 
-    @workers.each(&:start)
-    @worker_threads.each(&:join)
-    log 'all workers are now stopped'
+    while @workers.count < num_workers.to_i
+      thread_index = @workers.keys.count + 1
+      @worker_threads[thread_index] = Thread.new do
+        worker = create_worker(thread_index)
+        worker.start
+      end
+      sleep 0.2
+    end
+
+    @workers.values.each(&:start)
+    @worker_threads.values.each(&:join)
+    @resurrection_thread.join
+    logger.info 'all workers are now stopped'
   end
 
   # creates a single Service::Worker
@@ -37,13 +57,14 @@ class Service::Supervisor
   # @return [ApiQueue::Worker] the worker that was created
   def create_worker(id)
     worker = Service::Worker.new(id: id, supervisor: self)
-    @workers << worker
+    @workers[id] = worker
     worker
   end
 
   # stops all the workers
   def stop_workers
-    @workers.each(&:stop)
+    @resurrection_thread.kill if @resurrection_thread
+    @workers.values.each(&:stop)
     true
   end
 
@@ -53,13 +74,16 @@ class Service::Supervisor
     FeedItem.processing.update_all(processing: false)
   end
 
-  # logs text into the logfile
-  #
-  # @param [String] text the text to be logged
-  def log(text, id = nil)
-    Rails.logger.info text
-    File.open("#{Rails.root}/log/supervisor.log", 'a') do |f|
-      f.puts(Time.now.strftime('%m/%d/%Y %T') + ' ' + (id ? "(worker #{id})" : '(supervisor)') + ' ' + text)
-    end
+  def logger
+    self.class.logger
+  end
+
+  def self.logger
+    return @logger if @logger
+    logfile_path = File.join(Rails.root, 'log/supervisor.log')
+    # keep up to 5 logfiles, up to 1Mb each
+    @logger = Logger.new(logfile_path, 5, 1.megabyte)
+    @logger.level = Logger::INFO
+    @logger
   end
 end

@@ -12,13 +12,7 @@ class Service::Worker
   # this sets a worker in motion. the worker will stop running
   # if the stop method is called on it, or the queue is empty
   def start
-    # this allows interrupts to be caught and stop the workers
-    # there has to be a better way than this, but i couldn't
-    # figure out how
-    # TODO: find a better way to handle interrupts gracefully
-    Kernel.trap('INT') { @supervisor.stop_workers }
-
-    log "Initializing worker #{@id}..."
+    logger.info "Initializing worker #{@id}..."
     @running = true
 
     # this is the main loop. workers continue to loop until
@@ -27,7 +21,7 @@ class Service::Worker
       wait unless dequeue_and_process_element
     end
 
-    log "worker #{@id} finished and exiting"
+    logger.info "worker #{@id} finished and exiting"
   end
 
   # fetches an element from the queue and processes it
@@ -39,40 +33,42 @@ class Service::Worker
       klasses = [Feed, FeedItem].shuffle
       @element = klasses.first.dequeue || klasses.last.dequeue
 
-      log "ELEMENT BEFORE PROCESSING: #{@element.inspect}"
+      logger.info "ELEMENT BEFORE PROCESSING: #{@element.inspect}"
       return false unless @element
 
-      log "processing #{@element.class} #{@element.id}..."
+      logger.info "processing #{@element.class} #{@element.id}..."
       @element.fetch_and_process
     rescue StandardError => e
       record_error(e)
     ensure
       @element.mark_as_processed! if @element
     end
-    log "ELEMENT AFTER PROCESSING: #{@element.inspect}"
+    logger.info "ELEMENT AFTER PROCESSING: #{@element.inspect}"
     true
   end
 
   # stops the worker after the current iteration
   def stop
     Rails.logger.info "STOPPING WORKER #{@id}!"
-    log "STOPPING WORKER #{@id}!"
+    logger.info "STOPPING WORKER #{@id}!"
     @running = false
   end
 
   def wait
-    log 'nothing to do, sleeping...'
+    logger.info 'nothing to do, sleeping...'
     sleep(30)
-    log 'waking up!'
+    logger.info 'waking up!'
   end
 
   private
 
-  # logs text into the logfile corresponding to the worker's @id
-  #
-  # @param [String] text the text to be logged
-  def log(text)
-    File.open("log/worker#{(@id ? '_' + @id.to_s : '')}.log", 'a') { |f| f.puts(text) }
+  def logger
+    return @logger if @logger
+    logfile_path = File.join(Rails.root, "log/worker_#{@id}.log")
+    # keep up to 5 logfiles, up to 1Mb each
+    @logger = Logger.new(logfile_path, 5, 1.megabyte)
+    @logger.level = Logger::INFO
+    @logger
   end
 
   # record an exception, and if the count reaches the threshold,
@@ -82,6 +78,6 @@ class Service::Worker
     WorkerError.log(@element, exception)
     @error = exception.message + "\n" + exception.backtrace.join("\n") +
       "\n#{('-' * 90)}\nQUEUE ELEMENT:\n#{@element.inspect}"
-    log(('=' * 90) + "\nERROR processing data!" + @error)
+    logger.error ('=' * 90) + "\nERROR processing data!" + @error
   end
 end
