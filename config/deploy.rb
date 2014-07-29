@@ -63,10 +63,10 @@ end
 
 namespace :importer do
   desc '(re)start importer'
-  task :start { background_rake("importer:start#{ENV['WORKERS'] || '10'}") }
+  task(:start) { background_rake("importer:start#{ENV['WORKERS'] || '10'}") }
 
   desc 'stop importer'
-  task :stop { background_rake('importer:stop') }
+  task(:stop) { background_rake('importer:stop') }
 end
 
 after 'deploy', 'bundler:install'
