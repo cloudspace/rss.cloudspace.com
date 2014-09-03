@@ -51,7 +51,7 @@ class FeedItem < ActiveRecord::Base
 
   # fetches, parses, and updates the feed item and images
   def fetch_and_process
-    logger.info "\n in fetch_and_process before update_attributes"
+    Rails.logger.info "\n in fetch_and_process before update_attributes"
     update_attributes(parser.attributes) if parser
   end
 
