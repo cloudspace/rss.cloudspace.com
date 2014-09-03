@@ -48,6 +48,7 @@ class Service::Worker
         @element.mark_as_processed!
       rescue => e
         record_error(e)
+        @element.update(processing: false)
         @element.destroy if @element.is_a?(FeedItem)
       end
     end
