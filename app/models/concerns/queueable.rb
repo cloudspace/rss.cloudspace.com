@@ -25,7 +25,9 @@ module Queueable
   # flags an element to indicate it is no longer processing and that it has been processed
   # also accepts additional hash-style arguments with which to update the object
   def mark_as_processed!(**attrs)
+    logger.info "\n in mark_as_processed! before merge"
     attrs.merge!(processed: true) if self.class.columns.map(&:name).include?('processed')
+    logger.info "\n in mark_as_processed! before unlock element"
     unlock_element!(attrs)
   end
 

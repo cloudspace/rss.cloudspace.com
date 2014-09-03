@@ -38,14 +38,17 @@ class Service::Worker
 
       logger.info "processing #{@element.class} #{@element.id}..."
       @element.fetch_and_process
+      logger.info "\n after fetch_and_process"
     rescue StandardError => e
       record_error(e)
+      @element.update(processing: false)
     end
 
     # if it can't be saved, it should just be deleted
     if @element
       begin
         @element.mark_as_processed!
+        logger.info "\n after mark_as_processed!"
       rescue => e
         record_error(e)
         @element.update(processing: false)
