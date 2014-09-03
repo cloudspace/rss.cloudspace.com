@@ -26,7 +26,7 @@ group :production, :staging do
 end
 
 group :development, :test do
-  gem 'pry-debugger'
+  gem 'pry-byebug'
 
   # Deploy with Capistrano
   gem 'capistrano'
