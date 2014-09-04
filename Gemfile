@@ -71,7 +71,7 @@ end
 # gem 'fastimage'
 # gem 'haml'
 # gem 'link_thumbnailer'
-# gem 'mini_magick'
+gem 'mini_magick'
 # gem 'node'
 # gem 'ruby-readability'
 # gem 'socksify'
