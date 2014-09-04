@@ -36,7 +36,7 @@ class Service::Parser::Strategy::LargestImage < Service::Parser::Strategy::Base
     image = MiniMagick::Image.open(current_image.url)
     if(image["format"].casecmp('GIF') == 0)
       # Still images return 2. Animation will be greater.
-      if(image["%m:%f %wx%h"].split(" ").size) > 2)
+      if image["n %m"].split(" ").size > 2
         image.destroy!
         return true
       end
