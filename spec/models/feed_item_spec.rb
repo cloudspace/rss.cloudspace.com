@@ -43,8 +43,8 @@ describe FeedItem do
 
       it 'validates the content type of the attached paperclip image' do
         expect(@feed_item).to validate_attachment_content_type(:image)
-          .allowing('image/gif', 'image/jpeg', 'image/png')
-          .rejecting('text/plain', 'text/xml')
+          .allowing('image/jpeg', 'image/png')
+          .rejecting('text/plain', 'text/xml', 'image/gif')
       end
     end
 
