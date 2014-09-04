@@ -22,7 +22,7 @@ class Service::Parser::Strategy::LargestImage < Service::Parser::Strategy::Base
         largest_image_url = image.url
       end
     end
-    logger.info "For URL: #{@parser.url}\nThe Largest Image URL = #{largest_image_url}"
+    Rails.logger.info "For URL: #{@parser.url}\nThe Largest Image URL = #{largest_image_url}"
     largest_image_url
   end
 
