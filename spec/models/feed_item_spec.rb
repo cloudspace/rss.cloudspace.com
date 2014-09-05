@@ -45,7 +45,7 @@ describe FeedItem do
         expect(@feed_item).to validate_attachment_content_type(:image)
           .allowing('image/jpeg', 'image/png', 'image/gif')
           .rejecting('text/plain', 'text/xml')
-          
+
       end
     end
 

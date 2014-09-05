@@ -51,8 +51,7 @@ class Service::Worker
         logger.info "\n after mark_as_processed!"
       rescue => e
         record_error(e)
-        @element.update(processing: false)
-        @element.destroy if @element.is_a?(FeedItem)
+        update_and_destroy
       end
     end
 
@@ -84,6 +83,11 @@ class Service::Worker
     @logger
   end
 
+  def update_and_destroy
+    @element.update(processing: false)
+    @element.destroy if @element.is_a?(FeedItem)
+  end
+
   # record an exception, and if the count reaches the threshold,
   # it triggers the error_threshold_reached method also
   # logs the error text to the logfile and on the element itself
@@ -91,6 +95,7 @@ class Service::Worker
     WorkerError.log(@element, exception)
     @error = exception.message + "\n" + exception.backtrace.join("\n") +
       "\n#{('-' * 90)}\nQUEUE ELEMENT:\n#{@element.inspect}"
-    logger.error ('=' * 90) + "\nERROR processing data!" + @error
+    log_error = ('=' * 90) + "\nERROR processing data!" + @error
+    logger.error log_error
   end
 end

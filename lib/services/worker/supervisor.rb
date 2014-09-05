@@ -4,7 +4,7 @@ class Service::Supervisor
 
   # a global supervisor singleton
   def self.instance
-    @supervisor ||= self.new
+    @supervisor ||= new
   end
 
   def initialize(error_threshold: 50)

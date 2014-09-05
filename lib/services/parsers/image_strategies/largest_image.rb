@@ -19,7 +19,7 @@ class Service::Parser::Strategy::LargestImage < Service::Parser::Strategy::Base
     largest_image_url = nil
 
     all_images.each do |image|
-      if image.large_enough?(@parser.options.image_url.min_size) && (image.area > largest_area) && !image.is_animated?
+      if image.large_enough?(@parser.options.image_url.min_size) && (image.area > largest_area) && !image.animated?
         largest_area = image.area
         largest_image_url = image.url
       end

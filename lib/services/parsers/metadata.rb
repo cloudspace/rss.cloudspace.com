@@ -54,7 +54,6 @@ class Service::Parser::Metadata < Service::Parser::Base
 
   def image_url
     strategies = [*options.image_url.strategies]
-    min_size = options.image_url.min_size || 0
     strategies.each do |strat|
       result = case strat
                when Symbol, String
@@ -62,9 +61,15 @@ class Service::Parser::Metadata < Service::Parser::Base
                when Hash
                  strategy(strat[:name]).image_url(*[*strat[:args]].compact)
                end
-      image = Service::Parser::Image.new(result, @url)
-      return result if result && image.large_enough?(min_size) && !image.is_animated?
+      return result if result && image_valid?(result)
     end
     nil
   end
+
+  def image_valid?(result)
+    min_size = options.image_url.min_size || 0
+    image = Service::Parser::Image.new(result, @url)
+    image.large_enough?(min_size) && !image.animated?
+  end
+
 end
