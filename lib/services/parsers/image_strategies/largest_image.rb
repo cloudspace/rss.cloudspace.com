@@ -34,8 +34,10 @@ class Service::Parser::Strategy::LargestImage < Service::Parser::Strategy::Base
 
   def is_animated?(current_image)
     image = MiniMagick::Image.open(current_image.url)
+    Rails.logger.info "LOOK 1: image['format'].casecmp('GIF') == #{image["format"].casecmp('GIF')}"
     if(image["format"].casecmp('GIF') == 0)
       # Still images return 2. Animation will be greater.
+      Rails.logger.info "LOOK 2: image['n %m'].split(" ").size == #{image["n %m"].split(" ").size}"
       if image["n %m"].split(" ").size > 2
         image.destroy!
         return true
