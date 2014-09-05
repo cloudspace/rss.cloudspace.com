@@ -31,6 +31,20 @@ class Service::Parser::Image
     @url
   end
 
+  def is_animated?
+    image = MiniMagick::Image.open(@url)
+    if(image["format"].casecmp('GIF') == 0)
+      # Still images return 2. Animation will be greater.
+      if image["n %m"].split(" ").size > 2
+        image.destroy!
+        return true
+      end
+    else
+      image.destroy!
+      return false
+    end
+  end
+
   alias_method :to_s, :to_str
 
   private

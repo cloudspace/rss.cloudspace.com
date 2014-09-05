@@ -62,7 +62,8 @@ class Service::Parser::Metadata < Service::Parser::Base
                when Hash
                  strategy(strat[:name]).image_url(*[*strat[:args]].compact)
                end
-      return result if result && Service::Parser::Image.new(result, @url).large_enough?(min_size)
+      image = Service::Parser::Image.new(result, @url)
+      return result if result && image.large_enough?(min_size) && !image.is_animated?
     end
     nil
   end
