@@ -7,7 +7,8 @@ module Queueable
 
   included do
     # A mutex to lock dequeueing actions at the class level
-    @dequeue_mutex ||= Mutex.new
+    # ||= not thread safe
+    @dequeue_mutex = Mutex.new if !@dequeue_mutex
 
     # returns all feeds that are currently being processed
     scope :processing, -> { where(processing: true) }
