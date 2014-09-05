@@ -33,6 +33,10 @@ class Service::Parser::Strategy::LargestImage < Service::Parser::Strategy::Base
     largest_area = 0
     largest_image_url = nil
 
+    Pry.config.input = STDIN
+    Pry.config.output = STDOUT
+    binding.pry
+
     all_images.each do |image|
       if image.large_enough?(@parser.options.image_url.min_size) && (image.area > largest_area) && !is_animated?(image)
         largest_area = image.area
@@ -44,7 +48,7 @@ class Service::Parser::Strategy::LargestImage < Service::Parser::Strategy::Base
   end
 
   def all_images
-    @all_images ||= document.css('img').map { |img| Service::Parser::Image.new(img['src'], @parser.url) }
+    @all_images = document.css('img').map { |img| Service::Parser::Image.new(img['src'], @parser.url) } if !@all_images
   end
 
   def is_animated?(current_image)
