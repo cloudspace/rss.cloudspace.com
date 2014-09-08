@@ -28,17 +28,20 @@ class Service::Supervisor
     @resurrection_thread = Thread.new do
       loop do
         begin
-          cleanup_stuck
-          report_workers
+          process_workers
           sleep 60
         rescue => e
           logger.info e
         end
       end
     end
+    create_workers(num_workers)
   end
 
-  def create_workers
+  # Loops and creates new workers based on the supplied total of workers
+  #
+  # @param [Integer] num_workers The total number of workers
+  def create_workers(num_workers)
     while @workers.count < num_workers.to_i
       thread_index = @workers.keys.count + 1
       @worker_threads[thread_index] = Thread.new do
@@ -47,6 +50,7 @@ class Service::Supervisor
       end
       sleep 0.2
     end
+    run_workers
   end
 
   # creates a single Service::Worker
@@ -59,14 +63,16 @@ class Service::Supervisor
     worker
   end
 
-  def start_workers
+  # Tell the workers to start running
+  def run_workers
     @workers.values.each(&:start)
     @worker_threads.values.each(&:join)
     @resurrection_thread.join
   end
 
-  # Log the current status of workers
-  def report_workers
+  # Log the status of and process the current workers
+  def process_workers
+    cleanup_stuck
     logger.info "WORKER THREADS: #{worker_threads.values.map(&:inspect)}"
     logger.info 'WORKER THREADS: Checking for dead threads'
     check_for_dead_workers
@@ -86,10 +92,13 @@ class Service::Supervisor
           sleep 0.2
         end
       end
+      run_workers
     end
   end
 
   # Restart dead workers
+  #
+  # @param [Integer] worker_id The id of the worker to restart
   def restart_worker(worker_id)
     @worker_threads[worker_id].kill
     @worker_threads[worker_id] = Thread.new do
@@ -118,6 +127,8 @@ class Service::Supervisor
   end
 
   # Retrive the ids of all workers that have ran in the last 5 minutes
+  #
+  # @retusn [Array] The ids of the currently running workers
   def list_running_workers
     worker_logs = `find /srv/www/rss.cloudspace.com/current/log/worker*.log -type f -mmin -5`
     worker_logs = worker_logs.split("\n")

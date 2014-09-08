@@ -101,6 +101,8 @@ class Service::Worker
   end
 
   # Log exeptions thrown when trying to save an element
+  #
+  # @param [Exception] exception The expection thrown
   def process_error(exception)
     record_error(exception)
     @element.update(processing: false)
