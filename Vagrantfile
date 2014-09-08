@@ -1,35 +1,21 @@
-Vagrant::Config.run do |config|
-  config.vm.box = "precise64_ruby2"
-  config.vm.box_url = "http://vagrant.cloudspace.com.s3.amazonaws.com/cloudspace_ubuntu_12.042_ruby_2.box"
+$domain_name = "rss.cloudspace.dev"
+$vagrant_ip = "33.33.164.176"
+$box_name = "ruby-postgresql.box"
+$box_path = "http://devops.cloudspace.com/images/ruby-postgresql/"
+$cpus = 2
+$memory = 2048
 
-  config.vm.share_folder "rss.cloudspace.com", "/srv/rss.cloudspace.com", "./", :nfs => true
-  config.vm.customize ["modifyvm", :id, "--memory", "2048", "--name", "rss.cloudspace.com-dev","--cpus", "2"]
-  # config.vm.boot_mode = :gui
-  config.vm.network :hostonly, '33.33.33.107'
-  config.vm.network(:bridged, :bridge => "en1: Wi-Fi (AirPort)")
-  config.ssh.private_key_path = File.join(ENV['HOME'], '.ssh', 'cs_vagrant.pem')
+Vagrant.configure(2) do |config|
+  org = $domain_name
+  config.vm.box = $box_name
+  config.vm.box_url = File.join($box_path, $box_name)
+  config.ssh.private_key_path = ['devops/vagrant.pem', File.join(ENV['HOME'], '.ssh', 'id_rsa')]
+  config.ssh.forward_agent = true
+  config.vm.network "private_network", ip: $vagrant_ip
+  config.vm.synced_folder "./", "/srv/#{org}", :nfs => { :mount_options => ["dmode=777","fmode=777"] }
 
-  config.vm.provision :chef_solo do |chef|        
-    chef.cookbooks_path = "./cookbooks"
-    
-    chef.add_recipe "ubuntu"
-    chef.add_recipe "git"
-    chef.add_recipe "postgresql::client"
-    chef.add_recipe "postgresql::server"
-    chef.add_recipe "imagemagick"
-    
-    chef.json = {
-      postgresql: {
-        users: [
-          {
-            username: "postgres",
-            password: "postgres",
-            superuser: true,
-            createdb: true,
-            login: true
-          }
-        ]
-      }      
-    }
+  config.vm.provider "virtualbox" do |v|
+    v.customize ["modifyvm", :id, "--memory", $memory, "--name", $domain_name,"--cpus", $cpus]
+    # v.gui = true
   end
 end
