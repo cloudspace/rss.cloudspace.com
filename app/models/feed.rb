@@ -38,11 +38,14 @@ class Feed < ActiveRecord::Base
     !feed.new_record? && feed
   end
 
+  # Checks for feeds that have been stuck processing for an hour
+  # If a feed has been stuck then we forcefully finish it
   def self.cleanup_stuck
     feeds = Feed.where(processing: true).where('updated_at < ?', Time.now - 1.hours)
     feeds.each do |feed|
       feed.processed = true
       feed.processing = false
+      feed.updated_at = Time.now
       feed.save!
     end
   end

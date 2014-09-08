@@ -39,24 +39,26 @@ class Service::Worker
       process_error(e)
     end
 
-    # if it can't be saved, it should just be deleted
-    destroy_bad_elements
+    finish_processing
 
     true
   end
 
+  # Grabs a new Feed or FeedItem from the queue to process
   def dequeue_element
     klasses = [Feed, FeedItem].shuffle
     klasses.first.dequeue || klasses.last.dequeue
   end
 
+  # Logs and processes and element
   def process_element
     logger.info "ELEMENT BEFORE PROCESSING: #{@element.inspect}"
     @element.fetch_and_process
     logger.info "ELEMENT AFTER PROCESSING: #{@element.inspect}"
   end
 
-  def destroy_bad_elements
+  # Save an element has been processed
+  def finish_processing
     if @element
       begin
         @element.mark_as_processed!
@@ -92,11 +94,13 @@ class Service::Worker
     @logger
   end
 
+  # If we can not save an element it must be destroyed
   def update_and_destroy
     @element.update(processing: false)
     @element.destroy if @element.is_a?(FeedItem)
   end
 
+  # Log exeptions thrown when trying to save an element
   def process_error(exception)
     record_error(exception)
     @element.update(processing: false)

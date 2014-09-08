@@ -13,6 +13,6 @@ script:
   - bundle exec rake db:test:prepare
   - bundle exec rspec
 addons:
-  postgresql: 9.3
+  postgresql: "9.3"
 notifications:
   slack: cloudspace:euw2TezwiQfK9ebqBtGa1Rjz

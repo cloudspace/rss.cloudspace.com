@@ -65,6 +65,7 @@ class Service::Supervisor
     @resurrection_thread.join
   end
 
+  # Log the current status of workers
   def report_workers
     logger.info "WORKER THREADS: #{worker_threads.values.map(&:inspect)}"
     logger.info 'WORKER THREADS: Checking for dead threads'
@@ -73,6 +74,7 @@ class Service::Supervisor
     logger.info "WORKER THREADS: #{worker_threads.values.map(&:inspect)}"
   end
 
+  # Find dead workers
   def check_for_dead_workers
     running_workers = list_running_workers
     if running_workers.length < @workers.count
@@ -87,6 +89,7 @@ class Service::Supervisor
     end
   end
 
+  # Restart dead workers
   def restart_worker(worker_id)
     @worker_threads[worker_id].kill
     @worker_threads[worker_id] = Thread.new do
@@ -108,11 +111,13 @@ class Service::Supervisor
     FeedItem.processing.update_all(processing: false)
   end
 
+  # Occasionaly workers get stuckk on a Feed or FeedItem and need to be cleared out
   def cleanup_stuck
     FeedItem.cleanup_stuck
     Feed.cleanup_stuck
   end
 
+  # Retrive the ids of all workers that have ran in the last 5 minutes
   def list_running_workers
     worker_logs = `find /srv/www/rss.cloudspace.com/current/log/worker*.log -type f -mmin -5`
     worker_logs = worker_logs.split("\n")
