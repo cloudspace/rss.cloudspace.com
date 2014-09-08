@@ -16,7 +16,7 @@ module Service::Delegator
           recipient = instance_eval(to.to_s)
 
           if recipient
-            @cached_delegates = {} if !@cached_delegates
+            @cached_delegates = {} unless @cached_delegates
 
             @cached_delegates[method_name] = self.class.fetch_cache_or_execute @cached_delegates,
                                                                                method_name,

@@ -6,7 +6,7 @@ module Service::Attributable
 
   # produces a hash of attributes which can be used to create an object in rails
   def attributes
-    if !@attributes 
+    unless @attributes
       @attributes = {}.tap do |attrs|
         self.class.instance_variable_get(:@attribute_translations).each_pair do |after, before|
           attrs[after] = send(before)
@@ -23,8 +23,8 @@ module Service::Attributable
   module ClassMethods
     # define either transcriptions or translations.
     def attributes(*transcriptions, **translations)
-      @attribute_transcriptions = [] if !@attribute_transcriptions
-      @attribute_translations = {} if !@attribute_translations
+      @attribute_transcriptions = [] unless @attribute_transcriptions
+      @attribute_translations = {} unless @attribute_translations
       @attribute_transcriptions += [*transcriptions.map(&:to_sym)]
       @attribute_translations.merge!(translations.symbolize_keys)
     end

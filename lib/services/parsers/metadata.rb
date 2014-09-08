@@ -28,15 +28,15 @@ class Service::Parser::Metadata < Service::Parser::Base
   end
 
   def raw_page
-    @raw_page = HTTParty.get(@url).body if !@raw_page
+    @raw_page = HTTParty.get(@url).body unless @raw_page
   end
 
   def document
-    @document = Nokogiri::HTML(raw_page) if !@document
+    @document = Nokogiri::HTML(raw_page) unless @document
   end
 
   def meta_tags
-    if !@meta_tags
+    unless @meta_tags
       @meta_tags = document.xpath('//meta').map do |meta|
         {}.tap do |out|
           meta.attribute_nodes.each do |node|

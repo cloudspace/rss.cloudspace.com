@@ -49,6 +49,16 @@ class FeedItem < ActiveRecord::Base
     where.not(id: FeedItem.most_recent.limit_per_feed(max_per_feed)).destroy_all
   end
 
+  def self.cleanup_stuck
+    feed_items = FeedItem.where(processing: true).where('updated_at < ?', Time.now - 5.minutes)
+    feed_items.each do |item|
+      item.updated_at = Time.new(1970)
+      item.processed = true
+      item.processing = false
+      item.save!
+    end
+  end
+
   # fetches, parses, and updates the feed item and images
   def fetch_and_process
     Rails.logger.info "\n in fetch_and_process before update_attributes"

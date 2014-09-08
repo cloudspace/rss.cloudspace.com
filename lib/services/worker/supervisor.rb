@@ -4,7 +4,7 @@ class Service::Supervisor
 
   # a global supervisor singleton
   def self.instance
-    @supervisor = new if !@supervisor
+    @supervisor = new unless @supervisor
   end
 
   def initialize(error_threshold: 50)
@@ -28,14 +28,17 @@ class Service::Supervisor
     @resurrection_thread = Thread.new do
       loop do
         begin
-          logger.info "WORKER THREADS: #{worker_threads.values.map(&:inspect)}"
+          cleanup_stuck
+          report_workers
           sleep 60
         rescue => e
           logger.info e
         end
       end
     end
+  end
 
+  def create_workers
     while @workers.count < num_workers.to_i
       thread_index = @workers.keys.count + 1
       @worker_threads[thread_index] = Thread.new do
@@ -44,11 +47,6 @@ class Service::Supervisor
       end
       sleep 0.2
     end
-
-    @workers.values.each(&:start)
-    @worker_threads.values.each(&:join)
-    @resurrection_thread.join
-    logger.info 'all workers are now stopped'
   end
 
   # creates a single Service::Worker
@@ -59,6 +57,42 @@ class Service::Supervisor
     worker = Service::Worker.new(id: id, supervisor: self)
     @workers[id] = worker
     worker
+  end
+
+  def start_workers
+    @workers.values.each(&:start)
+    @worker_threads.values.each(&:join)
+    @resurrection_thread.join
+  end
+
+  def report_workers
+    logger.info "WORKER THREADS: #{worker_threads.values.map(&:inspect)}"
+    logger.info 'WORKER THREADS: Checking for dead threads'
+    check_for_dead_workers
+    logger.info 'WORKER THREADS: Finished checking for dead threads'
+    logger.info "WORKER THREADS: #{worker_threads.values.map(&:inspect)}"
+  end
+
+  def check_for_dead_workers
+    running_workers = list_running_workers
+    if running_workers.length < @workers.count
+      (1..@workers.count).each do |worker_id|
+        unless running_workers.include?(worker_id)
+          logger.info "WORKER THREADS: Killing worker #{worker_id}"
+          restart_worker(worker_id)
+          logger.info "WORKER THREADS: Restarted worker #{worker_id}"
+          sleep 0.2
+        end
+      end
+    end
+  end
+
+  def restart_worker(worker_id)
+    @worker_threads[worker_id].kill
+    @worker_threads[worker_id] = Thread.new do
+      worker = create_worker(worker_id)
+      worker.start
+    end
   end
 
   # stops all the workers
@@ -72,6 +106,22 @@ class Service::Supervisor
   def cleanup
     Feed.processing.update_all(processing: false)
     FeedItem.processing.update_all(processing: false)
+  end
+
+  def cleanup_stuck
+    FeedItem.cleanup_stuck
+    Feed.cleanup_stuck
+  end
+
+  def list_running_workers
+    worker_logs = `find /srv/www/rss.cloudspace.com/current/log/worker*.log -type f -mmin -5`
+    worker_logs = worker_logs.split("\n")
+    [].tap do |running_workers|
+      worker_logs.each do |worker|
+        worker = worker.split('/')[-1]
+        running_workers << worker.split('_')[-1].split('.')[0].to_i
+      end
+    end
   end
 
   def logger

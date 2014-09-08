@@ -30,21 +30,33 @@ class Service::Worker
   def dequeue_and_process_element
     begin
       @error = nil
-      klasses = [Feed, FeedItem].shuffle
-      @element = klasses.first.dequeue || klasses.last.dequeue
+      @element = dequeue_element
 
-      logger.info "ELEMENT BEFORE PROCESSING: #{@element.inspect}"
       return false unless @element
 
-      logger.info "processing #{@element.class} #{@element.id}..."
-      @element.fetch_and_process
-      logger.info "\n after fetch_and_process"
+      process_element
     rescue StandardError => e
-      record_error(e)
-      @element.update(processing: false)
+      process_error(e)
     end
 
     # if it can't be saved, it should just be deleted
+    destroy_bad_elements
+
+    true
+  end
+
+  def dequeue_element
+    klasses = [Feed, FeedItem].shuffle
+    klasses.first.dequeue || klasses.last.dequeue
+  end
+
+  def process_element
+    logger.info "ELEMENT BEFORE PROCESSING: #{@element.inspect}"
+    @element.fetch_and_process
+    logger.info "ELEMENT AFTER PROCESSING: #{@element.inspect}"
+  end
+
+  def destroy_bad_elements
     if @element
       begin
         @element.mark_as_processed!
@@ -54,9 +66,6 @@ class Service::Worker
         update_and_destroy
       end
     end
-
-    logger.info "ELEMENT AFTER PROCESSING: #{@element.inspect}"
-    true
   end
 
   # stops the worker after the current iteration
@@ -86,6 +95,11 @@ class Service::Worker
   def update_and_destroy
     @element.update(processing: false)
     @element.destroy if @element.is_a?(FeedItem)
+  end
+
+  def process_error(exception)
+    record_error(exception)
+    @element.update(processing: false)
   end
 
   # record an exception, and if the count reaches the threshold,

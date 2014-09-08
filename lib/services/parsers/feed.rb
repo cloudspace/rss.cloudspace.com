@@ -28,7 +28,7 @@ class Service::Parser::Feed < Service::Parser::Base
 
   # memoizes and returns the raw xml for the feed
   def fetch
-    @raw_feed = HTTParty.get(@url).response.body if !@raw_feed
+    @raw_feed = HTTParty.get(@url).response.body unless @raw_feed
   end
 
   # a simple alias method. was the parsing successful?

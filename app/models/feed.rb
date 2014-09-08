@@ -38,6 +38,15 @@ class Feed < ActiveRecord::Base
     !feed.new_record? && feed
   end
 
+  def self.cleanup_stuck
+    feeds = Feed.where(processing: true).where('updated_at < ?', Time.now - 1.hours)
+    feeds.each do |feed|
+      feed.processed = true
+      feed.processing = false
+      feed.save!
+    end
+  end
+
   # fetches, parses, and updates the feed, and generates feed items for the feed
   # also increments/resets backoff interval and sets next parse time
   def fetch_and_process
