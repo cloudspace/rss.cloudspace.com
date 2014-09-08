@@ -20,6 +20,7 @@ gem 'whenever', :require => false
 gem 'fastimage' # needed to rapidly find the largest image on a page
 gem 'hashie'
 gem 'asset_sync'
+gem 'debugger'
 
 group :production, :staging do
   gem 'unicorn'
