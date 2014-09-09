@@ -49,17 +49,21 @@ class FeedItem < ActiveRecord::Base
     where.not(id: FeedItem.most_recent.limit_per_feed(max_per_feed)).destroy_all
   end
 
-  # Checks for feed items that have been stuck processing for the last 5 minutes
   # If a feed item has been stuck then we forcefully finish it and set the updated_at
   # The updated_at is set to 1970 so that this item will be culled the next time the feed is processed
   def self.cleanup_stuck
-    feed_items = FeedItem.where(processing: true).where('updated_at < ?', Time.now - 5.minutes)
+    feed_items = stuck_feed_items
     feed_items.each do |item|
       item.updated_at = Time.new(1970)
       item.processed = true
       item.processing = false
       item.save!
     end
+  end
+
+  # Retrieve the array of FeedItems that have been stuck processing for the last 5 minutes
+  def stuck_feed_items
+    FeedItem.where(processing: true).where('updated_at < ?', Time.now - 5.minutes)
   end
 
   # fetches, parses, and updates the feed item and images

@@ -25,6 +25,7 @@ class Service::Supervisor
   # @return [Array<Thread>] an array of threads, returned upon completion
   def start_workers(num_workers = 5)
     logger.info "Starting #{num_workers} workers"
+    create_workers(num_workers)
     @resurrection_thread = Thread.new do
       loop do
         begin
@@ -35,7 +36,7 @@ class Service::Supervisor
         end
       end
     end
-    create_workers(num_workers)
+    run_workers
   end
 
   # Loops and creates new workers based on the supplied total of workers
