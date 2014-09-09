@@ -22,6 +22,8 @@ class FeedItem < ActiveRecord::Base
     where(FeedItem.arel_table[since_field].gteq(since))
   }
 
+  scope :stuck_feed_items, -> { where(processing: true).where('updated_at < ?', Time.now - 5.minutes) }
+
   # orders results with the most recent first. if a parameter is provided,
   # results are limited to the specified number
   scope :most_recent, ->(max = nil) { order(since_field => :desc).limit(max) }
@@ -59,11 +61,6 @@ class FeedItem < ActiveRecord::Base
       item.processing = false
       item.save!
     end
-  end
-
-  # Retrieve the array of FeedItems that have been stuck processing for the last 5 minutes
-  def stuck_feed_items
-    FeedItem.where(processing: true).where('updated_at < ?', Time.now - 5.minutes)
   end
 
   # fetches, parses, and updates the feed item and images
