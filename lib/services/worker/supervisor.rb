@@ -11,6 +11,7 @@ class Service::Supervisor
     # a place to store references to all the workers
     @workers = ThreadSafe::Hash.new
     @worker_threads = ThreadSafe::Hash.new
+    @workers_started = false
     cleanup
   end
 
@@ -25,7 +26,6 @@ class Service::Supervisor
   # @return [Array<Thread>] an array of threads, returned upon completion
   def start_workers(num_workers = 5)
     logger.info "Starting #{num_workers} workers"
-    create_workers(num_workers)
     @resurrection_thread = Thread.new do
       loop do
         begin
@@ -36,7 +36,9 @@ class Service::Supervisor
         end
       end
     end
+    create_workers(num_workers)
     run_workers
+    @workers_started = true
   end
 
   # Loops and creates new workers based on the supplied total of workers
@@ -51,7 +53,6 @@ class Service::Supervisor
       end
       sleep 0.2
     end
-    run_workers
   end
 
   # creates a single Service::Worker
@@ -84,7 +85,7 @@ class Service::Supervisor
   # Find dead workers
   def check_for_dead_workers
     running_workers = list_running_workers
-    if running_workers.length < @workers.count
+    if running_workers.length < @workers.count && @workers_started
       (1..@workers.count).each do |worker_id|
         unless running_workers.include?(worker_id)
           logger.info "WORKER THREADS: Killing worker #{worker_id}"
@@ -131,7 +132,7 @@ class Service::Supervisor
   #
   # @retusn [Array] The ids of the currently running workers
   def list_running_workers
-    worker_logs = `find /srv/www/rss.cloudspace.com/current/log/worker*.log -type f -mmin -5`
+    worker_logs = `find #{Rails.root}/log/worker*.log -type f -mmin -5`
     worker_logs = worker_logs.split("\n")
     [].tap do |running_workers|
       worker_logs.each do |worker|
