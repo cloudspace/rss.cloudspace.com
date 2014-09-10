@@ -17,7 +17,8 @@ class Feed < ActiveRecord::Base
   # search for a feed by name. returns partial or complete matches
   scope :search_name, ->(str) { approved.where(feeds[:name].matches("%#{str}%")) }
 
-  scope :stuck_feeds, -> { where(processing: true).where('updated_at < ?', Time.now - 1.hours) }
+  # search for feeds that have been processing for at least 10 minutes
+  scope :stuck_feeds, -> { where(processing: true).where('updated_at < ?', Time.now - 10.minutes) }
 
   # returns all feeds that are scheduled and ready for processing,
   # with those most past their scheduled processig time first
@@ -46,12 +47,17 @@ class Feed < ActiveRecord::Base
     feeds.each do |feed|
       feed.processing = false
       feed.updated_at = Time.now
-      feed.parse_backoff_level = [feed.parse_backoff_level + 1, 9].min
-      interval = [2**(feed.parse_backoff_level + 2), 1440].min
-      feed.last_parsed_at = Time.now
-      feed.next_parse_at = Time.now + interval.minutes
+      feed = update_next_process(feed)
       feed.save!
     end
+  end
+
+  def self.update_next_process(feed)
+    feed.parse_backoff_level = [feed.parse_backoff_level + 1, 9].min
+    interval = [2**(feed.parse_backoff_level + 2), 1440].min
+    feed.last_parsed_at = Time.now
+    feed.next_parse_at = Time.now + interval.minutes
+    feed
   end
 
   # fetches, parses, and updates the feed, and generates feed items for the feed

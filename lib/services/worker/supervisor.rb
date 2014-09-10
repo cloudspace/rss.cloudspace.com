@@ -25,7 +25,6 @@ class Service::Supervisor
   #
   # @return [Array<Thread>] an array of threads, returned upon completion
   def start_workers(num_workers = 5)
-    logger.info "Starting #{num_workers} workers"
     @resurrection_thread = Thread.new do
       loop do
         begin
@@ -38,7 +37,6 @@ class Service::Supervisor
     end
     create_workers(num_workers)
     run_workers
-    @workers_started = true
   end
 
   # Loops and creates new workers based on the supplied total of workers
@@ -67,6 +65,7 @@ class Service::Supervisor
 
   # Tell the workers to start running
   def run_workers
+    @workers_started = true
     @workers.values.each(&:start)
     @worker_threads.values.each(&:join)
     @resurrection_thread.join
@@ -132,7 +131,7 @@ class Service::Supervisor
   #
   # @retusn [Array] The ids of the currently running workers
   def list_running_workers
-    worker_logs = `find #{Rails.root}/log/worker*.log -type f -mmin -5`
+    worker_logs = `find #{Rails.root}/log/worker*.log -type f -mmin -10`
     worker_logs = worker_logs.split("\n")
     [].tap do |running_workers|
       worker_logs.each do |worker|
