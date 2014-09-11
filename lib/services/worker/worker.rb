@@ -1,3 +1,4 @@
+require 'timeout'
 # threadsafe worker class
 class Service::Worker
   attr_accessor :succeeded, :model
@@ -53,7 +54,14 @@ class Service::Worker
   # Logs and processes and element
   def process_element
     logger.info "ELEMENT BEFORE PROCESSING: #{@element.inspect}"
-    @element.fetch_and_process
+    begin
+      Timeout.timeout(300) do
+        @element.fetch_and_process
+      end
+    rescue Timeout::Error => e
+      record_error(e)
+      @element.cleanup_stuck if @element.is_a?(FeedItem)
+    end
     logger.info "ELEMENT AFTER PROCESSING: #{@element.inspect}"
   end
 

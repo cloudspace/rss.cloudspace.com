@@ -28,7 +28,6 @@ class Service::Supervisor
     @resurrection_thread = Thread.new do
       loop do
         begin
-          process_workers
           sleep 60
         rescue => e
           logger.info e
@@ -71,43 +70,6 @@ class Service::Supervisor
     @resurrection_thread.join
   end
 
-  # Log the status of and process the current workers
-  def process_workers
-    cleanup_stuck
-    logger.info "WORKER THREADS: #{worker_threads.values.map(&:inspect)}"
-    logger.info 'WORKER THREADS: Checking for dead threads'
-    check_for_dead_workers
-    logger.info 'WORKER THREADS: Finished checking for dead threads'
-    logger.info "WORKER THREADS: #{worker_threads.values.map(&:inspect)}"
-  end
-
-  # Find dead workers
-  def check_for_dead_workers
-    running_workers = list_running_workers
-    if running_workers.length < @workers.count && @workers_started
-      (1..@workers.count).each do |worker_id|
-        unless running_workers.include?(worker_id)
-          logger.info "WORKER THREADS: Killing worker #{worker_id}"
-          restart_worker(worker_id)
-          logger.info "WORKER THREADS: Restarted worker #{worker_id}"
-          sleep 0.2
-        end
-      end
-      run_workers
-    end
-  end
-
-  # Restart dead workers
-  #
-  # @param [Integer] worker_id The id of the worker to restart
-  def restart_worker(worker_id)
-    @worker_threads[worker_id].kill
-    @worker_threads[worker_id] = Thread.new do
-      worker = create_worker(worker_id)
-      worker.start
-    end
-  end
-
   # stops all the workers
   def stop_workers
     @resurrection_thread.kill if @resurrection_thread
@@ -119,12 +81,6 @@ class Service::Supervisor
   def cleanup
     Feed.processing.update_all(processing: false)
     FeedItem.processing.update_all(processing: false)
-  end
-
-  # Occasionaly workers get stuckk on a Feed or FeedItem and need to be cleared out
-  def cleanup_stuck
-    FeedItem.cleanup_stuck
-    Feed.cleanup_stuck
   end
 
   # Retrive the ids of all workers that have ran in the last 5 minutes
