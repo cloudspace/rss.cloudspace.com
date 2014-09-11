@@ -28,24 +28,21 @@ class Service::Parser::Metadata < Service::Parser::Base
   end
 
   def raw_page
-    @raw_page = HTTParty.get(@url).body unless @raw_page
+    @raw_page ||= HTTParty.get(@url).body
   end
 
   def document
-    @document = Nokogiri::HTML(raw_page) unless @document
+    @document ||= Nokogiri::HTML(raw_page)
   end
 
   def meta_tags
-    unless @meta_tags
-      @meta_tags = document.xpath('//meta').map do |meta|
-        {}.tap do |out|
-          meta.attribute_nodes.each do |node|
-            out[node.name] = node.value
-          end
+    @meta_tags ||= document.xpath('//meta').map do |meta|
+      {}.tap do |out|
+        meta.attribute_nodes.each do |node|
+          out[node.name] = node.value
         end
       end
     end
-    @meta_tags
   end
 
   def strategy(strategy_name)
