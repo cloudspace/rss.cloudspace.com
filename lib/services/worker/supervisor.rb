@@ -28,6 +28,7 @@ class Service::Supervisor
     @resurrection_thread = Thread.new do
       loop do
         begin
+          logger.info "WORKER THREADS: #{worker_threads.values.map(&:inspect)}"
           sleep 60
         rescue => e
           logger.info e
@@ -81,20 +82,6 @@ class Service::Supervisor
   def cleanup
     Feed.processing.update_all(processing: false)
     FeedItem.processing.update_all(processing: false)
-  end
-
-  # Retrive the ids of all workers that have ran in the last 5 minutes
-  #
-  # @retusn [Array] The ids of the currently running workers
-  def list_running_workers
-    worker_logs = `find #{Rails.root}/log/worker*.log -type f -mmin -10`
-    worker_logs = worker_logs.split("\n")
-    [].tap do |running_workers|
-      worker_logs.each do |worker|
-        worker = worker.split('/')[-1]
-        running_workers << worker.split('_')[-1].split('.')[0].to_i
-      end
-    end
   end
 
   def logger

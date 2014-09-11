@@ -43,8 +43,11 @@ class Feed < ActiveRecord::Base
   def fetch_and_process
     new_item_found = false
     if parser && parser.success?
+      Rails.logger.info "\n in fetch_and_process before update_attributes"
       update_attributes(parser.attributes)
+      Rails.logger.info "\n in fetch_and_process after update_attributes"
       new_item_found = process_feed_items
+      Rails.logger.info "\n in fetch_and_process after process_feed_items"
     end
   rescue => exception
     WorkerError.log(self, exception)
