@@ -18,6 +18,8 @@ class FeedItem < ActiveRecord::Base
 
   scope :with_feed_ids, ->(feed_ids = []) { where(feed_id: feed_ids) }
 
+  scope :stuck_feed_items, -> { where(processing: true).where('updated_at < ?', Time.now - 5.minutes) }
+
   scope :since, lambda { |since = nil|
     where(FeedItem.arel_table[since_field].gteq(since))
   }
@@ -49,13 +51,23 @@ class FeedItem < ActiveRecord::Base
     where.not(id: FeedItem.most_recent.limit_per_feed(max_per_feed)).destroy_all
   end
 
-  # If a feed item has been stuck then we forcefully finish it and set the updated_at
-  # The updated_at is set to 1970 so that this item will be culled the next time the feed is processed
+  # If a feed item has been stuck then we forcefully finish it and set the created_at
+  # The created_at is set to 1970 so that this item will be culled the next time the feed is processed
   def cleanup_stuck
-    self.updated_at = Time.new(1970)
+    self.created_at = Time.new(1970)
     self.processed = true
     self.processing = false
     self.save!
+  end
+
+  def self.cleanup_stuck_feed_items
+    feed_items = stuck_feed_items
+    feed_items.each do |item|
+      item.created_at = Time.new(1970)
+      item.processed = true
+      item.processing = false
+      item.save!
+    end
   end
 
   # fetches, parses, and updates the feed item and images
