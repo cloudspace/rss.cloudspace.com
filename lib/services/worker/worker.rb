@@ -47,10 +47,8 @@ class Service::Worker
 
   # Grabs a new Feed or FeedItem from the queue to process
   def dequeue_element
-    klass = FeedItem.ready_for_processing.empty? ? Feed : FeedItem
-    #klasses = [Feed, FeedItem].shuffle
-    #klasses.first.dequeue || klasses.last.dequeue
-    klass.dequeue
+    klasses = [Feed, FeedItem].shuffle
+    klasses.first.dequeue || klasses.last.dequeue
   end
 
   # Logs and processes and element
