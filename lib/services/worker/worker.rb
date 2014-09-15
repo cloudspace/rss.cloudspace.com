@@ -58,9 +58,10 @@ class Service::Worker
       Timeout.timeout(300) do
         @element.fetch_and_process
       end
-    rescue Timeout::Error => e
-      record_error(e)
-      @element.cleanup_stuck if @element.is_a?(FeedItem)
+    rescue Timeout::Error,
+           StandardError => e
+      @element.cleanup_stuck
+      process_error(e)
     end
     logger.info "ELEMENT AFTER PROCESSING: #{@element.inspect}"
   end

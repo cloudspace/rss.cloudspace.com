@@ -40,23 +40,11 @@ class Feed < ActiveRecord::Base
     !feed.new_record? && feed
   end
 
-  # def self.cleanup_stuck_feeds
-  #   feeds = stuck_feeds
-  #   feeds.each do |feed|
-  #     feed.processing = false
-  #     feed.updated_at = Time.now
-  #     feed = update_next_process(feed)
-  #     feed.save!
-  #   end
-  # end
-
-  # def self.update_next_process(feed)
-  #   feed.parse_backoff_level = [feed.parse_backoff_level + 1, 9].min
-  #   interval = [2**(feed.parse_backoff_level + 2), 1440].min
-  #   feed.last_parsed_at = Time.now
-  #   feed.next_parse_at = Time.now + interval.minutes
-  #   feed
-  # end
+  def cleanup_stuck
+    self.processing = false
+    self.updated_at = Time.now
+    queue_next_parse(nil)
+  end
 
   # fetches, parses, and updates the feed, and generates feed items for the feed
   # also increments/resets backoff interval and sets next parse time
