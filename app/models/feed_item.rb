@@ -18,7 +18,7 @@ class FeedItem < ActiveRecord::Base
 
   scope :with_feed_ids, ->(feed_ids = []) { where(feed_id: feed_ids) }
 
-  # scope :stuck_feed_items, -> { where(processing: true).where('updated_at < ?', Time.now - 5.minutes) }
+  scope :stuck_feed_items, -> { where(processing: true).where('updated_at < ?', Time.now - 5.minutes) }
 
   scope :since, lambda { |since = nil|
     where(FeedItem.arel_table[since_field].gteq(since))
@@ -61,15 +61,12 @@ class FeedItem < ActiveRecord::Base
     self.save!
   end
 
-  # def self.cleanup_stuck_feed_items
-  #   feed_items = stuck_feed_items
-  #   feed_items.each do |item|
-  #     item.created_at = Time.new(1970)
-  #     item.processed = true
-  #     item.processing = false
-  #     item.save!
-  #   end
-  # end
+  def self.cleanup_multiple_stuck_feed_items
+    feed_items = stuck_feed_items
+    feed_items.each do |item|
+      item.cleanup_stuck
+    end
+  end
 
   # fetches, parses, and updates the feed item and images
   def fetch_and_process

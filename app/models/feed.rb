@@ -14,7 +14,7 @@ class Feed < ActiveRecord::Base
   # feeds that are approved to be searchable
   scope :approved, -> { where(approved: true) }
 
-  # scope :stuck_feeds, -> { where(processing: true).where('updated_at < ?', Time.now - 10.minutes) }
+  scope :stuck_feeds, -> { where(processing: true).where('updated_at < ?', Time.now - 10.minutes) }
 
   # search for a feed by name. returns partial or complete matches
   scope :search_name, ->(str) { approved.where(feeds[:name].matches("%#{str}%")) }
@@ -44,6 +44,13 @@ class Feed < ActiveRecord::Base
     self.processing = false
     self.updated_at = Time.now
     queue_next_parse(nil)
+  end
+
+  def self.cleanup_multiple_stuck_feeds
+    feeds = stuck_feeds
+    feeds.each do |feed|
+      feed.cleanup_stuck
+    end
   end
 
   # fetches, parses, and updates the feed, and generates feed items for the feed

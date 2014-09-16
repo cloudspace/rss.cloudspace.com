@@ -28,7 +28,7 @@ class Service::Supervisor
     @resurrection_thread = Thread.new do
       loop do
         begin
-          # cleanup_stuck
+          cleanup_stuck
           sleep 60
         rescue => e
           logger.info e
@@ -39,10 +39,10 @@ class Service::Supervisor
     run_workers
   end
 
-  # def cleanup_stuck
-  #   Feed.cleanup_stuck_feeds
-  #   FeedItem.cleanup_stuck_feed_items
-  # end
+  def cleanup_stuck
+    Feed.cleanup_multiple_stuck_feeds
+    FeedItem.cleanup_multiple_stuck_feed_items
+  end
 
   # Loops and creates new workers based on the supplied total of workers
   #
