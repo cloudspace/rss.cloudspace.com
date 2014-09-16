@@ -29,7 +29,7 @@ class Service::Supervisor
       loop do
         begin
           cleanup_stuck
-          sleep 60
+          sleep 300
         rescue => e
           logger.info e
         end
