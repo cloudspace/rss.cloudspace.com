@@ -3,11 +3,12 @@ require 'timeout'
 class Service::Worker
   attr_accessor :succeeded, :model
 
-  def initialize(id: nil, supervisor: nil)
+  def initialize(id: nil, supervisor: nil, klasses: [Feed, FeedItem])
     @running = false                                  # a flag used to stop workers
     @succeeded = false                                # set to true if the worker exits normally
     @id = id                                          # used for logging purposes
-    @supervisor = supervisor                          # set a reference to this worker's supervisor
+    @supervisor = supervisor
+    @klasses = klasses                         # set a reference to this worker's supervisor
   end
 
   # this sets a worker in motion. the worker will stop running
@@ -47,8 +48,8 @@ class Service::Worker
 
   # Grabs a new Feed or FeedItem from the queue to process
   def dequeue_element
-    klasses = [Feed, FeedItem].shuffle
-    klasses.first.dequeue || klasses.last.dequeue
+    klass = @klasses.shuffle
+    klass.first.dequeue || klass.last.dequeue
   end
 
   # Logs and processes and element

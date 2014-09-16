@@ -51,7 +51,11 @@ class Service::Supervisor
     while @workers.count < num_workers.to_i
       thread_index = @workers.keys.count + 1
       @worker_threads[thread_index] = Thread.new do
-        worker = create_worker(thread_index)
+        if @workers.keys.count < (num_workers.to_i / 2)
+          worker = create_worker(thread_index, [Feed, FeedItem])
+        else
+          worker = create_worker(thread_index, [FeedItem])
+        end
         worker.start
       end
       sleep 0.2
@@ -62,8 +66,8 @@ class Service::Supervisor
   #
   # @param [String] id the name of this worker for purposes of logging
   # @return [ApiQueue::Worker] the worker that was created
-  def create_worker(id)
-    worker = Service::Worker.new(id: id, supervisor: self)
+  def create_worker(id, worker_klasses)
+    worker = Service::Worker.new(id: id, supervisor: self, klasses: worker_klasses)
     @workers[id] = worker
     worker
   end
