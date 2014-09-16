@@ -28,8 +28,8 @@ class Service::Supervisor
     @resurrection_thread = Thread.new do
       loop do
         begin
-          cleanup_stuck
-          sleep 300
+          # cleanup_stuck
+          sleep 60
         rescue => e
           logger.info e
         end
