@@ -106,7 +106,7 @@ class Service::Worker
 
   # If we can not save an element it must be destroyed
   def update_and_destroy
-    @element.update(processing: false)
+    stop_processing
     @element.destroy if @element.is_a?(FeedItem)
   end
 
@@ -115,7 +115,17 @@ class Service::Worker
   # @param [Exception] exception The expection thrown
   def process_error(exception)
     record_error(exception)
-    @element.update(processing: false)
+    raise 'An error has occured' 
+    stop_processing
+  end
+
+  def stop_processing
+    begin
+      @element.update(processing: false)
+    rescue => e
+      record_error(e)
+      @element.destroy
+    end
   end
 
   # record an exception, and if the count reaches the threshold,
