@@ -115,12 +115,10 @@ class Service::Worker
   # @param [Exception] exception The expection thrown
   def process_error(exception)
     record_error(exception)
-    raise 'An error has occured' 
     stop_processing
   end
 
   def stop_processing
-    begin
       @element.update(processing: false)
     rescue => e
       record_error(e)
