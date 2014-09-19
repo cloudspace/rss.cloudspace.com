@@ -20,21 +20,21 @@ module Queueable
   # flags an element to indicate it is being processed
   # also accepts additional hash-style arguments with which to update the object
   def lock_element!(**attrs)
-    update_attributes(attrs.merge(processing: true))
+    update_column(:processing, true)
   end
 
   # flags an element to indicate it is no longer processing and that it has been processed
   # also accepts additional hash-style arguments with which to update the object
   def mark_as_processed!(**attrs)
     logger.info "\n in mark_as_processed! before merge"
-    attrs.merge!(processed: true) if self.class.columns.map(&:name).include?('processed')
+    update_column(:processed, true) if self.class.columns.map(&:name).include?('processed')
     logger.info "\n in mark_as_processed! before unlock element"
     unlock_element!(attrs)
   end
 
   # flags an element to indicate it is no longer processing
   def unlock_element!(**attrs)
-    update_attributes(attrs.merge(processing: false))
+    update_column(:processing, false)
   end
 
   # class methods to be mixed in. yay linter.

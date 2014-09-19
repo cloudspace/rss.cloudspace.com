@@ -119,10 +119,7 @@ class Service::Worker
   end
 
   def stop_processing
-    @element.update(processing: false)
-    rescue => e
-      record_error(e)
-      @element.destroy
+    @element.update_column(:processing, false)
   end
 
   # record an exception, and if the count reaches the threshold,
