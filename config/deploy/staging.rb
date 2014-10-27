@@ -14,7 +14,7 @@ namespace :deploy do
   task :start do
     on roles(:app) do
       execute 'cd /srv/www/staging.rss.cloudspace.com/current && '\
-      'bundle exec unicorn -E staging -c /etc/unicorn/staging.rss.cloudspace.com.rb -D'
+      'bundle exec unicorn -E staging -c /srv/www/staging.rss.cloudspace.com/config/unicorn/staging.rb -D'
     end
   end
 
