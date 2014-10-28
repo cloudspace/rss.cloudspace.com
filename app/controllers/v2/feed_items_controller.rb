@@ -27,8 +27,8 @@ class V2::FeedItemsController < ApplicationController
   end
 
   def fetch_feed_items(feed_ids, since = nil)
-    feed_items = FeedItem.processed.with_feed_ids(feed_ids)
+    feed_items = FeedItem.processed.image_done.with_feed_ids(feed_ids)
     feed_items = feed_items.since(since) unless since.blank?
-    feed_items.processed.most_recent.limit_per_feed(10)
+    feed_items.processed.image_done.most_recent.limit_per_feed(10)
   end
 end

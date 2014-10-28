@@ -14,6 +14,8 @@ class FeedItem < ActiveRecord::Base
 
   scope :processed, -> { where(processed: true) }
 
+  scope :image_done, -> { where(:image_processing => false) }
+
   scope :not_processed, -> { where(processed: false) }
 
   scope :with_feed_ids, ->(feed_ids = []) { where(feed_id: feed_ids) }
@@ -58,6 +60,7 @@ class FeedItem < ActiveRecord::Base
     self.created_at = Time.new(1970)
     self.processed = true
     self.processing = false
+    self.image_processing = false
     self.save!
   end
 
@@ -161,7 +164,9 @@ class FeedItem < ActiveRecord::Base
       }
     end
   end
+
   has_attached_file(:image, paperclip_options(ENV['PAPERCLIP_STORAGE']))
+  process_in_background :image, :processing_image_url => default_image, :url_with_processing => false
   validates_attachment_content_type :image, content_type: ['image/jpeg', 'image/png', 'image/gif']
   do_not_validate_attachment_file_type :image
 end

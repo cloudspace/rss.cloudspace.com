@@ -83,9 +83,17 @@ GEM
     colored (1.2)
     columnize (0.8.9)
     curb (0.8.5)
+    daemons (1.1.9)
     dalli (2.7.0)
     database_cleaner (1.2.0)
     debugger-linecache (1.2.0)
+    delayed_job (4.0.4)
+      activesupport (>= 3.0, < 4.2)
+    delayed_job_active_record (4.0.2)
+      activerecord (>= 3.0, < 4.2)
+      delayed_job (>= 3.0, < 4.1)
+    delayed_paperclip (2.8.0)
+      paperclip (>= 3.3)
     diff-lcs (1.2.5)
     dotenv (0.10.0)
     dotenv-rails (0.10.0)
@@ -345,8 +353,11 @@ DEPENDENCIES
   capistrano-bundler
   capistrano-rails
   coffee-rails
+  daemons
   dalli
   database_cleaner
+  delayed_job_active_record
+  delayed_paperclip
   dotenv-rails
   factory_girl_rails
   faker
