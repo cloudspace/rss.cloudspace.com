@@ -72,6 +72,16 @@ end
 after 'deploy', 'bundler:install'
 after 'deploy', 'importer:start'
 
+#Delayed job that runs resizing via image_magick.
+set :delayed_job_args, "-n 1"
+after 'deploy:publishing', 'deploy:restart'
+namespace :deploy do
+  task :restart do
+    invoke 'delayed_job:restart'
+  end
+end
+
+
 # runs the specified rake task on the server in the background, without blocking the ssh session
 def background_rake(task)
   on roles(:app) do

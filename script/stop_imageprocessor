@@ -1,1 +1,0 @@
-RAILS_ENV=production bin/delayed_job stop
