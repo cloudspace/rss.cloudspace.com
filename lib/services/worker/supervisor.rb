@@ -51,11 +51,7 @@ class Service::Supervisor
     while @workers.count < num_workers.to_i
       thread_index = @workers.keys.count + 1
       @worker_threads[thread_index] = Thread.new do
-        if @workers.keys.count < (num_workers.to_i / 2)
-          worker = create_worker(thread_index, [Feed, FeedItem])
-        else
-          worker = create_worker(thread_index, [FeedItem])
-        end
+        worker = create_worker(thread_index, [Feed, FeedItem])
         worker.start
       end
       sleep 0.2
