@@ -20,13 +20,13 @@ namespace :deploy do
 
   task :stop do
     on roles(:app) do
-      execute 'kill -QUIT $(cat /var/www/staging.rss.cloudspace.com/unicorn.pid)'
+      execute 'kill -QUIT $(cat /srv/www/staging.rss.cloudspace.com/unicorn.pid)'
     end
   end
 
   task :restart do
     on roles(:app) do
-      execute 'kill -USR2 $(cat /var/www/staging.rss.cloudspace.com/unicorn.pid)'
+      execute 'kill -USR2 $(cat /srv/www/staging.rss.cloudspace.com/unicorn.pid)'
     end
   end
 end
