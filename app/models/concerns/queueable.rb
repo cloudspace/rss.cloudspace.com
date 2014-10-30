@@ -15,12 +15,16 @@ module Queueable
 
     # returns all feeds not currently being processed
     scope :not_processing, -> { where.not(processing: true) }
+
+    scope :timed, -> { where.not(process_end:nil, process_start: nil).order('process_end-process_start desc') }
+
   end
 
   # flags an element to indicate it is being processed
   # also accepts additional hash-style arguments with which to update the object
   def lock_element!(**_attrs)
     update_column(:processing, true)
+    update_column(:process_start, Time.now)
   end
 
   # flags an element to indicate it is no longer processing and that it has been processed
@@ -28,7 +32,6 @@ module Queueable
   def mark_as_processed!(**attrs)
     logger.info "\n in mark_as_processed! before merge"
     update_column(:processed, true) if self.class.columns.map(&:name).include?('processed')
-    update_column(:process_end, Time.now)
     logger.info "\n in mark_as_processed! before unlock element"
     unlock_element!(attrs)
   end
@@ -36,6 +39,12 @@ module Queueable
   # flags an element to indicate it is no longer processing
   def unlock_element!(**_attrs)
     update_column(:processing, false)
+    update_column(:process_end, Time.now)
+  end
+
+  def process_length
+    return nil if process_end.nil? || process_start.nil?
+    return (process_end - process_start)/60.0
   end
 
   # class methods to be mixed in. yay linter.
@@ -54,7 +63,6 @@ module Queueable
         element = ready_for_processing.first
         if element
           Rails.logger.info "Dequeueing #{self} element: #{element.inspect}"
-          element.process_start = Time.now
           element.lock_element!
         else
           Rails.logger.info "There's nothing to dequeue!"
