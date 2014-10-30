@@ -17,7 +17,7 @@ class Service::Options < Hashie::Mash
   end
 
   def delete_blank!
-    deep_reject! { |k, v| v.nil? || v.respond_to?(:empty?) && v.empty? }
+    deep_reject! { |_k, v| v.nil? || v.respond_to?(:empty?) && v.empty? }
   end
 
   def deep_reject(&blk)

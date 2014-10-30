@@ -19,7 +19,7 @@ module Queueable
 
   # flags an element to indicate it is being processed
   # also accepts additional hash-style arguments with which to update the object
-  def lock_element!(**attrs)
+  def lock_element!(**_attrs)
     update_column(:processing, true)
   end
 
@@ -33,7 +33,7 @@ module Queueable
   end
 
   # flags an element to indicate it is no longer processing
-  def unlock_element!(**attrs)
+  def unlock_element!(**_attrs)
     update_column(:processing, false)
   end
 

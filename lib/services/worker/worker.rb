@@ -69,14 +69,13 @@ class Service::Worker
 
   # Save an element has been processed
   def finish_processing
-    if @element
-      begin
-        @element.mark_as_processed!
-        logger.info "\n after mark_as_processed!"
-      rescue => e
-        record_error(e)
-        update_and_destroy
-      end
+    return unless @element
+    begin
+      @element.mark_as_processed!
+      logger.info "\n after mark_as_processed!"
+    rescue => e
+      record_error(e)
+      update_and_destroy
     end
   end
 

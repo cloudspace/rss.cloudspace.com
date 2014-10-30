@@ -161,7 +161,7 @@ describe V2::FeedItemsController do
           @json = JSON.parse(response.body)
         end
 
-        %i{iphone_retina ipad ipad_retina}.each do |size|
+        %i(iphone_retina ipad ipad_retina).each do |size|
           it "should return an image for #{size}" do
             image = @json['feed_items'][0]["image_#{size}"]
             expect(image).to_not be_nil
@@ -182,7 +182,7 @@ describe V2::FeedItemsController do
         end
 
         it 'should return default images values for image sizes' do
-          %i{iphone_retina ipad ipad_retina}.each do |key|
+          %i(iphone_retina ipad ipad_retina).each do |key|
             expect(@json['feed_items'][0]['image_' + key.to_s]).to eq FeedItem.default_image(key.to_sym)
           end
         end

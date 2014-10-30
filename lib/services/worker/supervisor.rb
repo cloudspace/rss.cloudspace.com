@@ -7,7 +7,7 @@ class Service::Supervisor
     @supervisor = new unless @supervisor
   end
 
-  def initialize(error_threshold: 50)
+  def initialize
     # a place to store references to all the workers
     @workers = ThreadSafe::Hash.new
     @worker_threads = ThreadSafe::Hash.new

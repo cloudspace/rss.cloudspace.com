@@ -27,7 +27,7 @@ CloudspaceRss::Application.configure do
   # number of complex assets.
   config.assets.debug = true
 
- # Disable Rails's static asset server (Apache or nginx will already do this).
+  # Disable Rails's static asset server (Apache or nginx will already do this).
   config.serve_static_assets = true
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
@@ -37,7 +37,7 @@ CloudspaceRss::Application.configure do
   config.assets.digest = true
 
   config.assets.enabled = true
-#  config.action_controller.asset_host = "/"
+  #  config.action_controller.asset_host = "/"
   config.assets.initialize_on_precompile = true
   config.assets.prefix = 'assets'
 

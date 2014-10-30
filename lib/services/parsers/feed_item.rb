@@ -7,10 +7,9 @@ class Service::Parser::FeedItem < Service::Parser::Base
 
   # accepts a feedjira parser object. constructed by Service::Parser::Feed or by the Parseable concern
   def initialize
-    if options.feedjira_parser?
-      @url = options.feedjira_parser[:url]
-      @feedjira_parser = options.feedjira_parser
-    end
+    return unless options.feedjira_parser?
+    @url = options.feedjira_parser[:url]
+    @feedjira_parser = options.feedjira_parser
   end
 
   private

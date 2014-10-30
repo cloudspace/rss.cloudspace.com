@@ -60,7 +60,7 @@ module Service::Delegator
     # http://en.wikipedia.org/wiki/Currying
     def spicy_delegate(*method_names, through: nil)
       method_names.each do |method_name|
-        define_method(method_name) do |*args, &blk|
+        define_method(method_name) do |*_args, &_blk|
           send(through, method_name)
         end
       end

@@ -1,6 +1,6 @@
-role :app, %W{#{ENV['PRODUCTION_APP_HOST']}}
-role :web, %W{#{ENV['PRODUCTION_APP_HOST']}}
-role :db, %W{#{ENV['PRODUCTION_APP_HOST']}}
+role :app, %W(#{ENV['PRODUCTION_APP_HOST']})
+role :web, %W(#{ENV['PRODUCTION_APP_HOST']})
+role :db, %W(#{ENV['PRODUCTION_APP_HOST']})
 set :branch, 'master'
 set :rails_env, 'production'
 

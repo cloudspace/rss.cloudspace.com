@@ -16,7 +16,7 @@ module Service::Attributable
         end
       end
     end
-    @attributes.reject { |k, v| v.nil? }
+    @attributes.reject { |_k, v| v.nil? }
   end
 
   # class methods mixed in upon inclusion

@@ -33,7 +33,7 @@ class Service::Parser::Feed < Service::Parser::Base
 
   # a simple alias method. was the parsing successful?
   def success?
-    !!@success
+    @success.present?
   end
 
   # lazily parses and memoizes the feed_items for this feed

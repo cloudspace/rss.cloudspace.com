@@ -23,11 +23,11 @@ set :log_level, :debug
 # set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, %w{.env}
+set :linked_files, %w(.env)
 
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
-set :linked_dirs, %w{log}
+set :linked_dirs, %w(log)
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -72,15 +72,14 @@ end
 after 'deploy', 'bundler:install'
 after 'deploy', 'importer:start'
 
-#Delayed job that runs resizing via image_magick.
-set :delayed_job_args, "-n 1"
+# Delayed job that runs resizing via image_magick.
+set :delayed_job_args, '-n 1'
 after 'deploy:publishing', 'deploy:restart'
 namespace :deploy do
   task :restart do
     invoke 'delayed_job:restart'
   end
 end
-
 
 # runs the specified rake task on the server in the background, without blocking the ssh session
 def background_rake(task)

@@ -75,7 +75,7 @@ class Feed < ActiveRecord::Base
     parser.entries_attributes.each do |attrs|
       entry_url = Feed.normalize_uri(attrs[:url])
       item = FeedItem.find_or_initialize_by(feed_id: id, url: entry_url)
-      new_item_found = !!(item.new_record? && item.update_attributes(attrs))
+      new_item_found = (item.new_record? && item.update_attributes(attrs)).present?
     end
     FeedItem.cull!
     new_item_found
