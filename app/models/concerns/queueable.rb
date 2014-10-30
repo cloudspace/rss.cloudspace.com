@@ -28,6 +28,7 @@ module Queueable
   def mark_as_processed!(**attrs)
     logger.info "\n in mark_as_processed! before merge"
     update_column(:processed, true) if self.class.columns.map(&:name).include?('processed')
+    update_column(:process_end, Time.now)
     logger.info "\n in mark_as_processed! before unlock element"
     unlock_element!(attrs)
   end
@@ -53,6 +54,7 @@ module Queueable
         element = ready_for_processing.first
         if element
           Rails.logger.info "Dequeueing #{self} element: #{element.inspect}"
+          element.process_start = Time.now
           element.lock_element!
         else
           Rails.logger.info "There's nothing to dequeue!"

@@ -22,6 +22,8 @@ describe Feed do
     it { expect(@feed).to respond_to :last_modified_at }
     it { expect(@feed).to respond_to :default }
     it { expect(@feed).to respond_to :approved }
+    it { expect(@feed).to respond_to :process_start }
+    it { expect(@feed).to respond_to :process_end }
   end
 
   describe 'scopes' do
