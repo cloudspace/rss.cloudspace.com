@@ -16,7 +16,7 @@ module Queueable
     # returns all feeds not currently being processed
     scope :not_processing, -> { where.not(processing: true) }
 
-    scope :timed, -> { where.not(process_end:nil, process_start: nil).order('process_end-process_start desc') }
+    scope :timed, -> { where.not(process_end: nil, process_start: nil).order('process_end-process_start desc') }
 
   end
 
@@ -44,7 +44,7 @@ module Queueable
 
   def process_length
     return nil if process_end.nil? || process_start.nil?
-    return (process_end - process_start)/60.0
+    (process_end - process_start) / 60.0
   end
 
   # class methods to be mixed in. yay linter.
