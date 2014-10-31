@@ -119,6 +119,7 @@ class Service::Worker
 
   def stop_processing
     @element.unlock_element!
+    @element.update_column(:process_killed,Time.now)
   end
 
   # record an exception, and if the count reaches the threshold,

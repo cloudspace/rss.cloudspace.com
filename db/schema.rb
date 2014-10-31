@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141030144836) do
+ActiveRecord::Schema.define(version: 20141031190631) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(version: 20141030144836) do
     t.boolean  "image_processing",   default: false
     t.datetime "process_start"
     t.datetime "process_end"
+    t.datetime "process_killed"
   end
 
   add_index "feed_items", ["feed_id"], name: "index_feed_items_on_feed_id", using: :btree
@@ -76,6 +77,7 @@ ActiveRecord::Schema.define(version: 20141030144836) do
     t.json     "parser_options"
     t.datetime "process_start"
     t.datetime "process_end"
+    t.datetime "process_killed"
   end
 
   add_index "feeds", ["approved"], name: "index_feeds_on_approved", using: :btree
