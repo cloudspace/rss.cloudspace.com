@@ -49,7 +49,7 @@ class FeedItem < ActiveRecord::Base
   }
 
   # destroys all but the newest 10 processed and un_processed feed items per feed
-  def self.cull!(max_per_feed = 10)
+  def self.cull!(max_per_feed = 300)
     processed.where.not(id: FeedItem.processed.most_recent.limit_per_feed(max_per_feed)).destroy_all
     not_processed.where.not(id: FeedItem.not_processed.most_recent.limit_per_feed(max_per_feed)).destroy_all
   end
