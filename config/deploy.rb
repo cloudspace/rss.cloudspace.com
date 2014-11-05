@@ -1,5 +1,5 @@
 # config valid only for Capistrano 3.1
-lock '3.1.0'
+lock '3.2.1'
 
 # the repository url is set in config/environment_variables.rb
 set :repo_url, ENV['REPOSITORY_URL']
@@ -35,7 +35,7 @@ set :linked_dirs, %w(log)
 # Default value for keep_releases is 5
 set :keep_releases, 5
 
-set :ssh_options, keys: ['~/.ssh/id_rsa'], forward_agent: true, user: 'root'
+set :ssh_options, keys: ['~/.ssh/id_rsa'], forward_agent: true, user: 'ubuntu'
 
 namespace :deploy do
   desc 'Restart application'
