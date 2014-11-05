@@ -28,6 +28,7 @@ gem 'mini_magick', '~> 3.8.1'
 gem 'resque', '~> 1.25.2'
 gem 'resque-scheduler', '~> 3.0.0'
 gem 'resque-retry', '~> 1.3.2'
+gem 'capistrano-resque', '~> 0.2.1'
 
 gem 'dot_configure', '~> 0.0.1'
 
