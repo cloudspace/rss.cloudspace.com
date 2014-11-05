@@ -1,3 +1,5 @@
+# rubocop:disable all
+
 rails_env = ENV['RAILS_ENV'] || 'production'
 worker_processes 1
 preload_app true
@@ -28,3 +30,5 @@ end
 after_fork do |_server, _worker|
   ActiveRecord::Base.establish_connection
 end
+
+# rubocop:enable all

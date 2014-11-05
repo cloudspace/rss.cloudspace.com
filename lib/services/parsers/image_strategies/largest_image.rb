@@ -17,7 +17,9 @@ class Service::Parser::Strategy::LargestImage < Service::Parser::Strategy::Base
   end
 
   def parse
-    largest_image_url
+    url = largest_image_url
+    logger.info "For URL: #{@parser.url}\nThe Largest Image URL = #{url}"
+    url
   end
 
   def image_url
@@ -38,7 +40,7 @@ class Service::Parser::Strategy::LargestImage < Service::Parser::Strategy::Base
       largest_area = image.area
       largest_image_url = image.url
     end
-    logger.info "For URL: #{@parser.url}\nThe Largest Image URL = #{largest_image_url}"
+
     largest_image_url
   end
 

@@ -6,4 +6,4 @@ environment_variables = File.join(Rails.root, 'config', 'environment_variables.r
 load(environment_variables) if File.exist?(environment_variables)
 
 # Initialize the Rails application.
-CloudspaceRss::Application.initialize!
+EasyReaderRSS::Application.initialize!
