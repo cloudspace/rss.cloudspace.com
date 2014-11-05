@@ -1,5 +1,6 @@
 # Controls the feed items.
 class V2::FeedItemsController < ApplicationController
+
   def index
     feed_ids = validate_feed_ids(Array(params[:feed_ids]))
 
@@ -8,6 +9,7 @@ class V2::FeedItemsController < ApplicationController
     feed_items = fetch_feed_items(feed_ids[:valid], params[:since])
 
     status = feed_ids[:invalid].blank? ? :ok : :partial_content
+
     render json: { feed_items: feed_items, bad_feed_ids: feed_ids[:invalid] },
            status: status,
            serializer: V2::FeedItems::FeedItemsSerializer
