@@ -24,6 +24,10 @@ gem 'hashie', '~> 3.3.1'
 gem 'asset_sync', '~> 1.1.0'
 gem 'libv8', '~> 3.16.14.5'
 
+gem 'resque'
+gem 'resque-scheduler'
+gem 'resque-retry'
+
 group :production, :staging do
   gem 'unicorn'
 end
