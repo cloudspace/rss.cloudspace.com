@@ -4,11 +4,11 @@ env:
   RAILS_ENV=test
   SECRET_KEY_BASE="ddff85ee828bac4d9948c33988ec284c7ba234c73f12103cffa3247b89e06e97e4d4dc44c96dda7ee3180f378bd4c1bfa298c3ef4029dfeb565b8baf936721d2"
 rvm:
-  - "2.0.0"
+  - "2.1.4"
 before_script:
   - bundle exec rake db:create --trace
 script:
-  - bundle exec ./lint
+  - bundle exec clint
   - bundle exec rake db:migrate --trace
   - bundle exec rake db:test:prepare
   - bundle exec rspec
