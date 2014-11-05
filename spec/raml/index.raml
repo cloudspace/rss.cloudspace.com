@@ -1,0 +1,141 @@
+#%RAML 0.8
+title: Cloudspace RSS API
+version: "v3"
+baseUri: http://rss.cloudspace.com/{version}/
+mediaType: application/json
+
+/feeds:
+  displayName: Feeds
+  description: List of available feeds
+
+  post:
+    displayName: Add Feed
+    description: Submits a feed to the API, which then attempts to parse it and return an array containing a single feed object.
+
+    queryParameters:
+      url:
+        displayName: Feed URL
+        description: The address of the RSS feed
+        type: string
+        required: true
+    responses:
+      200:
+        description: If a feed with the specified `url` previously existed and is parsed. Returns up to 10 `feed_item` entities.
+        body:
+          application/json:
+            schema: !include feed.response.schema.json
+            example: !include feed.response.example.json
+
+      201:
+        description: If a feed with the specified `url` did not previously exist in the database and the feed is successfully parsed and created.  Return the feed entity with an empty `feed_items` array.
+        body:
+          application/json:
+            schema: !include feed.response.schema.json
+            example: !include feed.response.example.json
+
+      400:
+        description: if no `url` parameter is provided or the request is bad for any other reason.
+
+      422:
+        description: (Unprocessable Entity) If `url` cannot be parsed as a feed.
+
+      200:
+        description: If a feed with the specified `url` previously existed.
+        body:
+          application/json:
+            schema: !include feed.response.schema.json
+            example: !include feed.response.example.json
+      200:
+        description: If a feed with the specified `url` previously existed.
+        body:
+          application/json:
+            schema: !include feed.response.schema.json
+            example: !include feed.response.example.json
+
+
+  /defaults:
+    displayName: Default Feeds
+    description: A list of curated feed and associated feed item entities. This will only be used on the first run of the app immediately after installation.
+
+    get:
+      responses:
+        200:
+          description: Returns an array of the default feeds and initial feed items
+          body:
+            application/json:
+              schema: !include feed.response.schema.json
+              example: !include feed.response.example.json
+
+  /{feed_id}:
+    displayName: Feed
+    description: Represents a `Feed` object, where `feed_items` is an array of up to 10 of the most recent feed_item entities associated with this feed.
+
+    get:
+      queryParameters:
+        id:
+          displayName: Feed ID
+          description: The id of the feed to be returned
+          type: integer
+          required: true
+      responses:
+        200:
+          description: An array containing a single feed entity if the feed exists.
+          body:
+            application/json:
+              schema: !include feed.response.schema.json
+              example: !include feed.response.example.json
+
+        400:
+          decription: The specified feed does not exist.
+
+  /search:
+    displayName: Search
+    description: Searches through available feeds based on supplied parameters.
+
+    get:
+      queryParameters:
+        name:
+          displayName: Feed Name
+          description: Used to find a partial or complete match to a feed's name attribute.
+          type: string
+          required: true
+      responses:
+        200:
+          description: An array of feed entities (empty if no matches are found).
+          body:
+            application/json:
+              schema: !include feed.response.schema.json
+              example: !include feed.response.example.json
+
+        400:
+          description: Returned if no `name` parameter is provided.
+
+/feed_items:
+  displayName: Feed Items
+  description: Returns (up to) the most recent 10 `feed_item` entities (created since the date specified) for each feed specified.
+
+  get:
+    queryParameters:
+      feed_ids:
+        displayName: Feed IDs
+        description: An array of integers representing the feeds requested.
+        type: string
+        required: true
+        patern: '^[0-9](,[0-9])*$'
+    responses:
+      200:
+        description: An array of `feed_items` if all feeds are found.
+        body:
+          application/json:
+            schema: !include feed.response.schema.json
+            example: !include feed.response.example.json
+
+      404:
+        description: None of the feed_ids provided were found.
+
+      406:
+        description: Arrays of both `feed_items` and `bad_feed_ids` if some but not all feeds were found
+        body:
+          application/json:
+            schema: !include feed_items.response.schema.json
+            example: !include feed_items.response.example.json
