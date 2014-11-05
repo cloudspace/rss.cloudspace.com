@@ -1,29 +1,27 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.0.3'
-gem 'pg'
+gem 'rails', '~> 4.1.7'
+gem 'pg', '~> 0.17.1'
+
+gem 'active_model_serializers', '~> 0.9.0'
+gem 'rails-api', '~> 0.3.1'
 
 # loads environment variables
 gem 'dotenv-rails'
 
-gem 'active_model_serializers'
-gem 'rails-api'
+gem 'aws-sdk', '~> 1.57.0'
+gem 'dalli', '~> 2.7.2'
+gem 'feedjira', '~> 1.5.0'
+gem 'httparty', '~> 0.13.2'
+gem 'nokogiri', '~> 1.6.4'
+gem 'paperclip', '~> 4.2.0'
 
-gem 'aws-sdk'
-gem 'dalli'
-gem 'feedjira'
-gem 'httparty'
-gem 'nokogiri'
-gem 'paperclip'
-gem 'delayed_paperclip'
-gem 'delayed_job_active_record'
 gem 'daemons'
-
 gem 'posix-spawn' # needed to prevent out of memory errors in paperclip processing
-gem 'whenever', :require => false
-gem 'fastimage' # needed to rapidly find the largest image on a page
-gem 'hashie'
-gem 'asset_sync'
+
+gem 'fastimage', '~> 1.6.4' # needed to rapidly find the largest image on a page
+gem 'hashie', '~> 3.3.1'
+gem 'asset_sync', '~> 1.1.0'
 gem 'libv8', '~> 3.16.14.5'
 
 group :production, :staging do
@@ -39,10 +37,7 @@ group :development, :test do
   gem 'capistrano-rails'
 
   # Code Metric Gems
-  gem 'rails_best_practices'
-  gem 'rubocop'
-  gem 'metric_fu'
-  gem 'reek'
+  gem 'clint_eastwood', '~> 0.0.1'
   
   # rspec
   gem 'rspec'
