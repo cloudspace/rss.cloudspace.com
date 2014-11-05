@@ -25,6 +25,10 @@ gem 'libv8', '~> 3.16.14.5'
 
 gem 'mini_magick', '~> 3.8.1'
 
+gem 'resque', '~> 1.25.2'
+gem 'resque-scheduler', '~> 3.0.0'
+gem 'resque-retry', '~> 1.3.2'
+
 group :production, :staging do
   gem 'unicorn', '~> 4.8.3'
 end
