@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe V2::FeedsController do
+describe V2::FeedsController, type: :controller do
   describe '#show' do
     let(:feed) { FactoryGirl.create(:feed) }
 

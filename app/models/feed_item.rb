@@ -165,7 +165,7 @@ class FeedItem < ActiveRecord::Base
   end
 
   has_attached_file(:image, paperclip_options(ENV['PAPERCLIP_STORAGE']))
-  process_in_background :image, url_with_processing: false
+
   validates_attachment_content_type :image, content_type: ['image/jpeg', 'image/png', 'image/gif']
   do_not_validate_attachment_file_type :image
 end

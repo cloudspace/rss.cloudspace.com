@@ -7,10 +7,10 @@ describe V2::Feeds::FeedSerializer do
   describe 'json output' do
     subject(:json) { serializer.as_json }
 
-    it { should have_key :feed }
+    it { expect(subject).to have_key('feed') }
 
     describe 'has property' do
-      subject(:hash) { json[:feed] }
+      subject(:hash) { json['feed'] }
 
       it 'id' do
         expect(hash[:id]).to eq(feed.id)

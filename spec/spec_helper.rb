@@ -3,7 +3,6 @@ ENV['PAPERCLIP_STORAGE'] = nil # don't depend on s3
 
 require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
-require 'rspec/autorun'
 require 'paperclip/matchers'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
