@@ -1,5 +1,5 @@
 # config valid only for Capistrano 3.1
-lock '3.1.0'
+lock '3.2.1'
 
 # the repository url is set in config/environment_variables.rb
 set :repo_url, ENV['REPOSITORY_URL']
