@@ -48,7 +48,7 @@ describe V2::FeedItemsController, type: :controller do
         end
 
         it 'does not return an array of bad feed ids' do
-          expect(@json['bad_feed_ids'].count).to eq 0
+          expect(@json).not_to include(:bad_feed_ids)
         end
       end
 
@@ -82,7 +82,7 @@ describe V2::FeedItemsController, type: :controller do
         end
 
         it 'does not return an array of bad feed ids' do
-          expect(@json['bad_feed_ids'].count).to eq 0
+          expect(@json).not_to include(:bad_feed_ids)
         end
       end
 

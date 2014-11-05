@@ -11,7 +11,7 @@ describe V2::FeedsController, type: :controller do
 
     it 'should return only the feed specified' do
       get :show, id: feed.id
-      feed_ids = JSON.parse(response.body).map { |f| f['id'].to_i }
+      feed_ids = JSON.parse(response.body)['feeds'].map { |f| f['id'] }
       expect(feed_ids).to eq([feed.id])
     end
 
@@ -34,7 +34,7 @@ describe V2::FeedsController, type: :controller do
     end
 
     it 'returns only default feeds and not normal feeds' do
-      feeds = JSON.parse(response.body)
+      feeds = JSON.parse(response.body)['feeds']
       expect(feeds.map { |f| f['id'] }).to eq([@default_feed.id])
     end
   end
@@ -59,7 +59,7 @@ describe V2::FeedsController, type: :controller do
     it 'should return only feeds with name attributes containing "name" parameter' do
       get :search, name: 'foo'
 
-      feed_ids = JSON.parse(response.body).map { |f| f['id'] }
+      feed_ids = JSON.parse(response.body)['feeds'].map { |f| f['id'] }
       expect(feed_ids).to include(@foo.id)
       expect(feed_ids).to include(@foobar.id)
       expect(feed_ids).not_to include(@bar.id)
@@ -84,7 +84,7 @@ describe V2::FeedsController, type: :controller do
       Feed.stub(:find_by).with(url: 'foo').and_return(feed)
       post :create, url: 'foo'
       expect(response.status).to eq(200)
-      expect(JSON.parse(response.body).map { |f| f['id'] }).to eq([feed.id])
+      expect(JSON.parse(response.body)['feeds'].map { |f| f['id'] }).to eq([feed.id])
     end
 
     it 'should return a 201 with a feed if the feed did not exist and was created sucessfully' do
@@ -92,7 +92,7 @@ describe V2::FeedsController, type: :controller do
       Feed.stub(:find_or_generate_by_url).and_return(feed)
       post :create, url: 'foo'
       expect(response.status).to eq(201)
-      expect(JSON.parse(response.body).map { |f| f['id'] }).to eq([feed.id])
+      expect(JSON.parse(response.body)['feeds'].map { |f| f['id'] }).to eq([feed.id])
     end
   end
 end
