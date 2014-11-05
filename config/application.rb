@@ -23,4 +23,3 @@ class EasyReaderRSS::Application < Rails::Application
   # fixes a deprecation warning
   config.i18n.enforce_available_locales = true
 end
-
