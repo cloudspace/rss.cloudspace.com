@@ -43,7 +43,7 @@ set :resque_environment_task, true
 # Set the resque workers (hash of queue: numworkers)
 set :workers, 'image' => 1,
               'supervisor' => 1,
-              'feeds, feed_items' => 10
+              'feed, feed_item' => 10
 
 namespace :deploy do
   desc 'Restart application'
