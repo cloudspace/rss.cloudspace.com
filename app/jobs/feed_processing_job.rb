@@ -5,20 +5,20 @@ class FeedProcessingJob < BaseResqueJob
   @queue = :feed
 
   def perform
-    begin
-      Timeout.timeout(300) do
-        puts "Processing #{feed.url}"
-        feed.fetch_and_process
-        feed.feed_items.each do |feed_item|
-          puts "Scheduling feed item #{feed_item.title}"
-          FeedItemProcessingJob.schedule(feed_item)
-        end
-      end
-      feed.mark_as_processed!
-    rescue Timeout::Error, StandardError => e
-      feed.cleanup_stuck
-      # record_error(e)
-      feed.unlock_element!
+    Timeout.timeout(300) do
+      process
+    end
+    feed.mark_as_processed!
+  rescue Timeout::Error, StandardError => e
+    Rails.logger.error e
+    feed.cleanup_stuck
+    feed.unlock_element!
+  end
+
+  def process
+    feed.fetch_and_process
+    feed.feed_items.each do |feed_item|
+      FeedItemProcessingJob.schedule(feed_item)
     end
   end
 end

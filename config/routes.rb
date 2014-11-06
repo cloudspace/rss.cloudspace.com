@@ -11,7 +11,7 @@ EasyReaderRSS::Application.routes.draw do
   end
 
   if Rails.env.development?
-    require "resque_web"
-    mount ResqueWeb::Engine => "/resque_web"
+    require 'resque_web'
+    mount ResqueWeb::Engine => '/resque_web'
   end
 end
