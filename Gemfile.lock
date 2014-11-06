@@ -73,6 +73,13 @@ GEM
     code_analyzer (0.4.5)
       sexp_processor
     coderay (1.1.0)
+    coffee-rails (4.1.0)
+      coffee-script (>= 2.2.0)
+      railties (>= 4.0.0, < 5.0)
+    coffee-script (2.3.0)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.8.0)
     colored (1.2)
     colorize (0.7.3)
     columnize (0.8.9)
@@ -250,6 +257,12 @@ GEM
       redis (~> 3.0)
       resque (~> 1.25)
       rufus-scheduler (~> 2.0)
+    resque-web (0.0.6)
+      coffee-rails
+      jquery-rails
+      resque
+      sass-rails
+      twitter-bootstrap-rails
     rspec (3.1.0)
       rspec-core (~> 3.1.0)
       rspec-expectations (~> 3.1.0)
@@ -323,6 +336,11 @@ GEM
     thor (0.19.1)
     thread_safe (0.3.4)
     tilt (1.4.1)
+    twitter-bootstrap-rails (3.2.0)
+      actionpack (~> 4.1)
+      execjs (~> 2.2)
+      rails (~> 4.1)
+      railties (~> 4.1)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     uglifier (2.5.3)
@@ -378,6 +396,7 @@ DEPENDENCIES
   resque (~> 1.25.2)
   resque-retry (~> 1.3.2)
   resque-scheduler (~> 3.0.0)
+  resque-web
   rspec (~> 3.1.0)
   rspec-rails (~> 3.1.0)
   sass-rails

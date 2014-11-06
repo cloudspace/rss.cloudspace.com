@@ -75,15 +75,15 @@ class FeedItem < ActiveRecord::Base
   def fetch_and_process
     Rails.logger.info "\n in fetch_and_process before update_attributes"
     Rails.logger.info "\n in fetch_and_process before update_attributes"
-    update_attributes(parser.attributes) if parser
+    update_attributes(parser.attributes.merge(image_processing: true)) if parser
     Rails.logger.info "\n in fetch_and_process after update_attributes"
   end
 
   # when the image_url attribute is changed, update and process the image
-  def image_url=(url)
-    self.image = url && URI.parse(url)
-    super(url)
-  end
+  # def image_url=(url)
+  #   self.image = url && URI.parse(url)
+  #   super(url)
+  # end
 
   def parser_options
     feed.image_options

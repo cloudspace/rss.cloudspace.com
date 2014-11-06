@@ -33,11 +33,13 @@ gem 'capistrano-resque', '~> 0.2.1', require: false
 
 gem 'dot_configure', '~> 0.0.1'
 
+
 group :production, :staging do
   gem 'unicorn', '~> 4.8.3'
 end
 
 group :development, :test do
+  gem 'resque-web', require: 'resque_web'
   gem 'pry-byebug', '~> 2.0.0'
 
   # Deploy with Capistrano

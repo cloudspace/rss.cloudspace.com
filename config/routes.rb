@@ -9,4 +9,9 @@ EasyReaderRSS::Application.routes.draw do
 
     resources :feed_items, only: [:index]
   end
+
+  if Rails.env.development?
+    require "resque_web"
+    mount ResqueWeb::Engine => "/resque_web"
+  end
 end
