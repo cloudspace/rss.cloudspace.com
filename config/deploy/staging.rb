@@ -1,7 +1,7 @@
 role :app, %W(#{ENV['STAGING_APP_HOST']})
 role :web, %W(#{ENV['STAGING_APP_HOST']})
 role :db, %W(#{ENV['STAGING_APP_HOST']})
-set :branch, 'resque'
+set :branch, 'capistrano_resque'
 set :rails_env, 'staging'
 
 set :default_environment, 'RAILS_ENV' => 'staging'
@@ -9,6 +9,9 @@ set :default_environment, 'RAILS_ENV' => 'staging'
 set :application, 'easyreader.cloudspace.com'
 
 set :deploy_to, '/srv/www/easyreader.cloudspace.com'
+
+role :resque_worker, 'easyreader.cloudspace.com'
+role :resque_scheduler, 'easyreader.cloudspace.com'
 
 namespace :deploy do
   task :start do

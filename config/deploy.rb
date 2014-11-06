@@ -60,8 +60,7 @@ namespace :deploy do
   task(:seed) { foreground_rake('db:seed') }
 end
 
-ater 'deploy', 'bundler:install'
-after 'deploy', 'importer:start'
+after 'deploy', 'bundler:install'
 
 # runs the specified rake task on the server in the background, without blocking the ssh session
 def background_rake(task)
