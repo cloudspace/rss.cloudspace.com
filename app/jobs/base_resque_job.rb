@@ -13,7 +13,6 @@ class BaseResqueJob
 
     # Defaults the queue used for this job to low
     def queue
-
       @queue ||= :low
     end
 
