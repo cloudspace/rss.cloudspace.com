@@ -37,6 +37,14 @@ set :keep_releases, 5
 
 set :ssh_options, keys: ['~/.ssh/id_rsa'], forward_agent: true, user: 'ubuntu'
 
+# We're using rails in our tasks so this is necessary
+set :resque_environment_task, true
+
+# Set the resque workers (hash of queue: numworkers)
+set :workers, 'image' => 1,
+              'supervisor' => 1,
+              'feeds, feed_items' => 10
+
 namespace :deploy do
   desc 'Restart application'
   task :restart do
@@ -48,28 +56,11 @@ namespace :deploy do
 
   after :publishing, :restart
 
-  # after :restart, :clear_cache do
-  #   on roles(:web), in: :groups, limit: 3, wait: 10 do
-  #     # Here we can do anything such as:
-  #     # within release_path do
-  #     #   execute :rake, 'cache:clear'
-  #     # end
-  #   end
-  # end
-
   desc 'Run the seeds file'
   task(:seed) { foreground_rake('db:seed') }
 end
 
-namespace :importer do
-  desc '(re)start importer'
-  task(:start) { background_rake("importer:start[#{ENV['WORKERS'] || '7'}]") }
-
-  desc 'stop importer'
-  task(:stop) { background_rake('importer:stop') }
-end
-
-after 'deploy', 'bundler:install'
+ater 'deploy', 'bundler:install'
 after 'deploy', 'importer:start'
 
 # runs the specified rake task on the server in the background, without blocking the ssh session
