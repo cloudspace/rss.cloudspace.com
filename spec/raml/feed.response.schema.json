@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "name": "Feed schema",
+  "type": "object",
+  "properties": {
+    "feed": [
+      "name": "Feed"
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "required": true
+        },
+        "name": {
+          "type": "string",
+          "required": true
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "required": true
+        },
+        "icon": {
+          "type": "string"
+        },
+        "feed_items": {
+          "name": "Feed Items",
+          "type": "object",
+          "properties": {
+            "id": "integer",
+            "feed_id": {
+              "type": "integer",
+              "required": true
+            },
+            "title": {
+              "type": "string",
+              "required": true
+            },
+            "summary": "string",
+            "author": "string",
+            "image_iphone_retina": {
+              "type": "string",
+              "format": "uri"
+            },
+            "image_ipad": {
+              "type": "string",
+              "format": "uri"
+            },
+            "image_ipad_retina": {
+              "type": "string",
+              "format": "uri"
+            },
+            "url": {
+              "type": "string",
+              "format": "uri"
+            },
+            "created_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updated_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "published_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      }
+    }
+    ]
+  }
+}

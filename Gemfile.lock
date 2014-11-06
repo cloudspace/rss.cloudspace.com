@@ -285,7 +285,7 @@ GEM
       sass (~> 3.2.2)
       sprockets (~> 2.8, < 2.12)
       sprockets-rails (~> 2.0)
-    sax-machine (1.0.2)
+    sax-machine (1.0.3)
     sexp_processor (4.4.4)
     shoulda (3.5.0)
       shoulda-context (~> 1.0, >= 1.0.1)

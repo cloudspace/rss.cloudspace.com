@@ -15,9 +15,6 @@ module Queueable
 
     # returns all feeds not currently being processed
     scope :not_processing, -> { where.not(processing: true) }
-
-    scope :timed, -> { where.not(process_end: nil, process_start: nil).order('process_end-process_start desc') }
-
   end
 
   # flags an element to indicate it is being processed
