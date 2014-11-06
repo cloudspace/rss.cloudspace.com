@@ -6,27 +6,27 @@ set :rails_env, 'staging'
 
 set :default_environment, 'RAILS_ENV' => 'staging'
 
-set :application, 'staging.rss.cloudspace.com'
+set :application, 'easyreader.cloudspace.com'
 
-set :deploy_to, '/srv/www/staging.rss.cloudspace.com'
+set :deploy_to, '/srv/www/easyreader.cloudspace.com'
 
 namespace :deploy do
   task :start do
     on roles(:app) do
-      execute 'cd /srv/www/staging.rss.cloudspace.com/current && '\
-      'bundle exec unicorn -E staging -c /srv/www/staging.rss.cloudspace.com/config/unicorn/staging.rb -D'
+      execute 'cd /srv/www/easyreader.cloudspace.com/current && '\
+      'bundle exec unicorn -E staging -c /srv/www/easyreader.cloudspace.com/config/unicorn/staging.rb -D'
     end
   end
 
   task :stop do
     on roles(:app) do
-      execute 'kill -QUIT $(cat /srv/www/staging.rss.cloudspace.com/unicorn.pid)'
+      execute 'kill -QUIT $(cat /srv/www/easyreader.cloudspace.com/unicorn.pid)'
     end
   end
 
   task :restart do
     on roles(:app) do
-      execute 'kill -USR2 $(cat /srv/www/staging.rss.cloudspace.com/unicorn.pid)'
+      execute 'kill -USR2 $(cat /srv/www/easyreader.cloudspace.com/unicorn.pid)'
     end
   end
 end
