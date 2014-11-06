@@ -29,6 +29,8 @@ gem 'resque', '~> 1.25.2'
 gem 'resque-scheduler', '~> 3.0.0'
 gem 'resque-retry', '~> 1.3.2'
 
+gem 'dot_configure', '~> 0.0.1'
+
 group :production, :staging do
   gem 'unicorn', '~> 4.8.3'
 end
