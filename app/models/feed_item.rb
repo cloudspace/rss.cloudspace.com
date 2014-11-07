@@ -18,7 +18,7 @@ class FeedItem < ActiveRecord::Base
 
   scope :not_processed, -> { where(processed: false) }
 
-  scope :not_scheduled, -> { where(scheduled: false) }
+  scope :not_scheduled, -> { where(scheduled: [false, nil]) }
 
   scope :with_feed_ids, ->(feed_ids = []) { where(feed_id: feed_ids) }
 
