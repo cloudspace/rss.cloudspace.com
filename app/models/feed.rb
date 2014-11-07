@@ -19,10 +19,13 @@ class Feed < ActiveRecord::Base
   # search for a feed by name. returns partial or complete matches
   scope :search_name, ->(str) { approved.where(feeds[:name].matches("%#{str}%")) }
 
+  scope :not_scheduled, -> { where(scheduled: [false, nil]) }
+
   # returns all feeds that are scheduled and ready for processing,
   # with those most past their scheduled processig time first
   scope :ready_for_processing, lambda {
     not_processing
+    .not_scheduled
     .where(feeds[:next_parse_at].lteq(Time.now)
     .or(feeds[:last_parsed_at].eq(nil)))
     .order(:next_parse_at)

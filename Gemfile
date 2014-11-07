@@ -29,7 +29,7 @@ gem 'resque', '~> 1.25.2'
 gem 'resque-scheduler', '~> 3.0.0'
 gem 'resque-retry', '~> 1.3.2'
 
-gem 'capistrano-resque', '~> 0.2.1', require: false
+
 
 gem 'dot_configure', '~> 0.0.1'
 
@@ -39,6 +39,7 @@ group :production, :staging do
 end
 
 group :development, :test do
+  gem 'capistrano-resque', '~> 0.2.1', require: false
   gem 'resque-web', require: 'resque_web'
   gem 'pry-byebug', '~> 2.0.0'
 
@@ -46,6 +47,7 @@ group :development, :test do
   gem 'capistrano', '~> 3.2.1'
   gem 'capistrano-bundler', '~> 1.1.3'
   gem 'capistrano-rails', '~> 1.1.2'
+  gem 'capistrano-slackify', '~> 1.2.1', require: false
 
   # Code Metric Gems
   gem 'clint_eastwood', '~> 0.0.1'

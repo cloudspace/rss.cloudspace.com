@@ -18,6 +18,8 @@ class FeedItem < ActiveRecord::Base
 
   scope :not_processed, -> { where(processed: false) }
 
+  scope :not_scheduled, -> { where(scheduled: false) }
+
   scope :with_feed_ids, ->(feed_ids = []) { where(feed_id: feed_ids) }
 
   scope :stuck_feed_items, -> { where(processing: true).where('updated_at < ?', Time.now - 5.minutes) }
@@ -32,7 +34,7 @@ class FeedItem < ActiveRecord::Base
 
   # returns all items that are unprocessed and not currenty processing
   scope :ready_for_processing, lambda {
-    not_processing.not_processed.order(:created_at)
+    not_processing.not_scheduled.not_processed.order(:created_at)
   }
 
   # limits the results to (default 10) feed items per distinct feed

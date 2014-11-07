@@ -37,6 +37,8 @@ set :keep_releases, 5
 
 set :ssh_options, keys: ['~/.ssh/id_rsa'], forward_agent: true, user: 'ubuntu'
 
+# --- RESQUE SETTINGS ----
+
 # We're using rails in our tasks so this is necessary
 set :resque_environment_task, true
 
@@ -44,6 +46,30 @@ set :resque_environment_task, true
 set :workers, 'image' => 1,
               'supervisor' => 1,
               'feed, feed_item' => 10
+
+# ---- END RESQUE SETTINGS ----
+
+# --- SLACK SETTINGS ----
+
+set :slack_subdomain, 'cloudspace'
+set :slack_token, '4NokbEVx2VUlXgnEOTGEstAs'
+
+git_user = `git config user.name`.strip
+
+set :slack_channel, 'cs-easy-reader'
+set :slack_username, 'Capistrano'
+set :slack_emoji, ':capistrano:'
+set :slack_user, 'Capistrano'
+set :slack_text, lambda do
+  "#{fetch(:stage).capitalize} - Branch #{fetch(:current_revision, fetch(:branch))} of " \
+  "#{fetch(:application)} deployed by #{git_user} "
+end
+
+set :slack_deploy_starting_text, lambda do
+  "#{fetch(:stage).capitalize} - #{git_user} started deploy with branch #{fetch(:branch)} for #{fetch(:application)}"
+end
+
+# --- END SLACK SETTINGS ----
 
 namespace :deploy do
   desc 'Restart application'

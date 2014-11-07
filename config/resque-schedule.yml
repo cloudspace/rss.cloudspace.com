@@ -1,0 +1,4 @@
+SupervisorJob:
+  every:
+      - "30s"
+  queue: supervisor
