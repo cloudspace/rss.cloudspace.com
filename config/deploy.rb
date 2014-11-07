@@ -60,14 +60,14 @@ set :slack_channel, 'cs-easy-reader'
 set :slack_username, 'Capistrano'
 set :slack_emoji, ':capistrano:'
 set :slack_user, 'Capistrano'
-set :slack_text, lambda do
+set :slack_text, lambda {
   "#{fetch(:stage).capitalize} - Branch #{fetch(:current_revision, fetch(:branch))} of " \
   "#{fetch(:application)} deployed by #{git_user} "
-end
+}
 
-set :slack_deploy_starting_text, lambda do
+set :slack_deploy_starting_text, lambda {
   "#{fetch(:stage).capitalize} - #{git_user} started deploy with branch #{fetch(:branch)} for #{fetch(:application)}"
-end
+}
 
 # --- END SLACK SETTINGS ----
 
