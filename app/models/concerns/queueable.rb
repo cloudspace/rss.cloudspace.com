@@ -35,6 +35,7 @@ module Queueable
 
   # flags an element to indicate it is no longer processing
   def unlock_element!(**_attrs)
+    update_column(:scheduled, false)
     update_column(:processing, false)
     update_column(:process_end, Time.now)
   end

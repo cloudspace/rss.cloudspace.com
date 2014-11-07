@@ -16,7 +16,7 @@ class BaseResqueJob
       @queue ||= :low
     end
 
-    # Sets the type objects this job can reveice
+    # Sets the type objects this job can receive
     #
     # Example: receives dose: Dose, message: Message
     def receives(**args)
@@ -46,7 +46,7 @@ class BaseResqueJob
     end
   end
 
-  # Creats a new job instance, sets up instance variables of the names and classes set by `receives`
+  # Creates a new job instance, sets up instance variables of the names and classes set by `receives`
   # with the ids given
   def initialize(*args)
     args.each_with_index.map { |obj, i| instance_variable_set("@#{self.class.receives.keys[i]}".to_sym, obj) }
