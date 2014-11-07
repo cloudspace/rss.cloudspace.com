@@ -13,8 +13,8 @@ class FeedProcessingJob < BaseResqueJob
 
   def process
     feed.fetch_and_process
-    feed.feed_items.each do |feed_item|
-      feed_item.scheduled = true
+    feed.feed_items.ready_for_processing.each do |feed_item|
+      feed_item.update_attributes(scheduled: true)
       FeedItemProcessingJob.schedule(feed_item)
     end
   end
