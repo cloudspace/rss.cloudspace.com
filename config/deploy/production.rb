@@ -10,6 +10,9 @@ set :application, 'easyreader.cloudspace.com'
 
 set :deploy_to, '/srv/www/easyreader.cloudspace.com'
 
+role :resque_worker, 'easyreader.cloudspace.com'
+role :resque_scheduler, 'easyreader.cloudspace.com'
+
 namespace :deploy do
   task :start do
     on roles(:app) do
