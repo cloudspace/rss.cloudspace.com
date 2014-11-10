@@ -79,7 +79,7 @@ describe V2::FeedsController, type: :controller do
       post :create, url: 'foo'
       expect(response.status).to eq(422)
     end
- 
+
     it 'should record that a feed request has been made' do
       Feed.stub(:find_by).with(url: 'foo').and_return(feed)
       expect(FeedRequest).to receive(:find_or_create_by).and_call_original
