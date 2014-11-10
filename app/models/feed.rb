@@ -31,10 +31,10 @@ class Feed < ActiveRecord::Base
     .order(:next_parse_at)
   }
 
-  # returns a hash with feed ids as keys and number of feeds processed within date range as values
+  # returns a hash with feed ids as keys and number of feed items processed within date range as values
   # a number of days to go back to is passed on, or it defaults to 30 years ago
-  def self.items_processed_for_last_days(number_of = 30 * 365)
-    Feed.eager_load(:feed_items).where('feed_items.process_start > ?', Time.now.days_ago(number_of)).group('feeds.id').count
+  def self.items_processed_in_last_days(number_of = 30 * 365)
+    joins(:feed_items).where('feed_items.process_start > ?', Time.now.days_ago(number_of)).group('feeds.id').count
   end
 
   # generates, saves, and returns a Feed based on a URL, or returns false upon failure

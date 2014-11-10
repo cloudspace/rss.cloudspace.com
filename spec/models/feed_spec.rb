@@ -84,6 +84,28 @@ describe Feed do
 
   describe 'class methods' do
     describe 'find_or_generate_by_url' do
+      let!(:feed_item) { create(:feed_item, process_start: Time.now.days_ago(5)) }
+      let!(:feed_item2) { create(:feed_item, feed: feed_item.feed, process_start: Time.now) }
+
+      it 'should join feed items' do
+        expect(Feed).to receive(:joins).with(:feed_items).and_call_original
+        Feed.items_processed_in_last_days
+      end
+
+      it 'should return a hash' do
+        expect(Feed.items_processed_in_last_days.class).to be Hash
+      end
+
+      it 'should return the feed id and number of feed items processed within 30 years' do
+        expect(Feed.items_processed_in_last_days).to eq(feed_item.feed.id => 2)
+      end
+
+      it 'should not count feed items outside of passed in range' do
+        expect(Feed.items_processed_in_last_days(3)).to eq(feed_item.feed.id => 1)
+      end
+    end
+
+    describe 'find_or_generate_by_url' do
       before do
         @feed = FactoryGirl.create(:feed)
       end
