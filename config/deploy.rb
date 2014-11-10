@@ -45,7 +45,12 @@ set :resque_environment_task, true
 # Set the resque workers (hash of queue: numworkers)
 set :workers, 'image' => 1,
               'supervisor' => 1,
-              'feed, feed_item' => 10
+              'feed, feed_item' => 4
+
+namespace :resque do
+  # Enables at exit hooks after resque jobs, this lets tempfiles get cleaned up
+  set :default_env,  'RUN_AT_EXIT_HOOKS' => true
+end
 
 # ---- END RESQUE SETTINGS ----
 
