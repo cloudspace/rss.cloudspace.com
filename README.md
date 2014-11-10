@@ -2,8 +2,8 @@
 
 __Create and launch the vagrant box__
 
-	git git@github.com:cloudspace/rss.cloudspace.com.git
-    cd ./rss.cloudspace.com
+	git git@github.com:cloudspace/easyreader.cloudspace.com.git
+    cd ./easyreader.cloudspace.com
     librarian-chef install
     vagrant up
 
@@ -13,7 +13,7 @@ __After the box is up, `vagrant ssh`__
 
     sudo apt-get install postgresql-server-dev-9.3
     sudo gem install bundler
-    cd /srv/rss.cloudspace.com
+    cd /srv/easyreader.cloudspace.com
     bundle
     rake db:setup
     rails s
@@ -31,7 +31,7 @@ __After the box is up, `vagrant ssh`__
     	"id": 16,
     	"name": "Engadget",
     	"url": "http://www.engadget.com/rss.xml",
-    	"icon": "http://s3.amazonaws.com/rss.cloudspace.com/feed/16/icon.png",
+    	"icon": "http://s3.amazonaws.com/easyreader.cloudspace.com/feed/16/icon.png",
     	"feed_items": [...]
     }
 
@@ -44,9 +44,9 @@ __After the box is up, `vagrant ssh`__
         "title": "Lorem ipsum dolor sit amet",
         "summary": "Ut enim ad minim veniam, quis nostrud exercitation ullamco",
         "author": "Fred Flintstone",
-        "image_iphone_retina": "https://s3.amazonaws.com/rss.cloudspace.com/feed_items/255/iphone_retina.jpg",
-        "image_ipad": "https://s3.amazonaws.com/rss.cloudspace.com/feed_items/255/ipad.jpg",
-        "image_ipad_retina": "https://s3.amazonaws.com/rss.cloudspace.com/feed_items/255/ipad_retina.jpg",
+        "image_iphone_retina": "https://s3.amazonaws.com/easyreader.cloudspace.com/feed_items/255/iphone_retina.jpg",
+        "image_ipad": "https://s3.amazonaws.com/easyreader.cloudspace.com/feed_items/255/ipad.jpg",
+        "image_ipad_retina": "https://s3.amazonaws.com/easyreader.cloudspace.com/feed_items/255/ipad_retina.jpg",
     	"url": "http://engadget.com/articles/lorem.html",
     	"created_at": "2014-03-05T22:32:32+00:00",
     	"updated_at": "2014-03-05T22:32:32+00:00",
