@@ -79,6 +79,18 @@ describe V2::FeedsController, type: :controller do
       post :create, url: 'foo'
       expect(response.status).to eq(422)
     end
+ 
+    it 'should record that a feed request has been made' do
+      Feed.stub(:find_by).with(url: 'foo').and_return(feed)
+      expect(FeedRequest).to receive(:find_or_create_by).and_call_original
+      post :create, url: 'foo'
+    end
+
+    it 'should up the count on feed request model' do
+      Feed.stub(:find_by).with(url: 'foo').and_return(feed)
+      expect_any_instance_of(FeedRequest).to receive(:count_update)
+      post :create, url: 'foo'
+    end
 
     it 'should return a 200 with a feed if a feed with the same url already existed' do
       Feed.stub(:find_by).with(url: 'foo').and_return(feed)
