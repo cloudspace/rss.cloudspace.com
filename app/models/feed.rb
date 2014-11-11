@@ -67,7 +67,7 @@ class Feed < ActiveRecord::Base
       Rails.logger.info "\n in fetch_and_process after process_feed_items"
     end
 
-    fail 'Less than 10 feed items in feed' if feed_items.count < 10
+    WorkerError.log(self, Exception.new('Less than 10 feed items in feed')) if feed_items.count < 10
 
   rescue => exception
     WorkerError.log(self, exception)
