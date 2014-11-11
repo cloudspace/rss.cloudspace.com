@@ -102,11 +102,12 @@ describe Feed do
         expect(Feed.find_or_generate_by_url('foo').class.name).to eq('Feed')
       end
 
-      it 'should return false if the parser fails (returns false)' do
+      it 'should throw exception if the parser fails (returns false)' do
         parser = double(Service::Parser::Feed)
         parser.stub(:success?) { false }
         Service::Parser::Feed.any_instance.stub(:parse) { parser }
-        expect(Feed.find_or_generate_by_url('http://feeds.thingy.com/')).to eq(false)
+        Service::Parser::Feed.any_instance.stub(:code) { 0 }
+        expect { Feed.find_or_generate_by_url('http://feeds.thingy.com/') }.to raise_error
       end
     end
   end

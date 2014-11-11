@@ -46,7 +46,7 @@ class Feed < ActiveRecord::Base
   def cleanup_stuck
     self.processing = false
     self.updated_at = Time.now
-    queue_next_parse(nil)
+    queue_next_parse
   end
 
   def self.cleanup_multiple_stuck_feeds
@@ -59,29 +59,36 @@ class Feed < ActiveRecord::Base
   # fetches, parses, and updates the feed, and generates feed items for the feed
   # also increments/resets backoff interval and sets next parse time
   def fetch_and_process
-    new_item_found = false
     if parser && parser.success?
       Rails.logger.info "\n in fetch_and_process before update_attributes"
       update_attributes(parser.attributes)
       Rails.logger.info "\n in fetch_and_process after update_attributes"
-      new_item_found = process_feed_items
+      process_feed_items
       Rails.logger.info "\n in fetch_and_process after process_feed_items"
     end
+
+    WorkerError.log(self, Exception.new('Less than 10 feed items in feed')) if feed_items.count < 10
+
   rescue => exception
     WorkerError.log(self, exception)
   ensure
-    queue_next_parse(new_item_found)
+    queue_next_parse
   end
 
   def process_feed_items
-    new_item_found = false
     parser.entries_attributes.each do |attrs|
       entry_url = Feed.normalize_uri(attrs[:url])
       item = FeedItem.find_or_initialize_by(feed_id: id, url: entry_url)
-      new_item_found = (item.new_record? && item.update_attributes(attrs)).present?
+      next unless item.new_record?
+
+      item.update_attributes(attrs)
+      new_items_found << item
     end
     FeedItem.cull!
-    new_item_found
+  end
+
+  def new_items_found
+    @new_items_found ||= []
   end
 
   # allows setting image options without affecting existing settings
@@ -105,8 +112,8 @@ class Feed < ActiveRecord::Base
   # parse times.
   #
   # @param [Boolean, nil] new_item_found true to reset backoff, false/nil to increment it
-  def queue_next_parse(new_item_found)
-    self.parse_backoff_level = new_item_found ? 3 : [parse_backoff_level + 1, 9].min
+  def queue_next_parse
+    self.parse_backoff_level = new_items_found.present? ? 3 : [parse_backoff_level + 1, 9].min
     interval = [2**(parse_backoff_level + 2), 1440].min
     self.last_parsed_at = Time.now
     self.next_parse_at = Time.now + interval.minutes
