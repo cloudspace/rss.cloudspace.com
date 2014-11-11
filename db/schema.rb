@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141107164849) do
+ActiveRecord::Schema.define(version: 20141110170235) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,6 +58,15 @@ ActiveRecord::Schema.define(version: 20141107164849) do
   add_index "feed_items", ["feed_id"], name: "index_feed_items_on_feed_id", using: :btree
   add_index "feed_items", ["processed"], name: "index_feed_items_on_processed", using: :btree
   add_index "feed_items", ["processing"], name: "index_feed_items_on_processing", using: :btree
+
+  create_table "feed_requests", force: true do |t|
+    t.integer  "feed_id"
+    t.integer  "count",      default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "feed_requests", ["feed_id"], name: "index_feed_requests_on_feed_id", using: :btree
 
   create_table "feeds", force: true do |t|
     t.text     "name"

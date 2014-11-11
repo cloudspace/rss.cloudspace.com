@@ -32,18 +32,25 @@ class V2::FeedsController < ApplicationController
   # POST /v2/feeds/create
   def create
     if params[:url].present?
-      feed = Feed.find_by(url: params[:url] && URI(params[:url]).normalize.to_s)
-      if feed
-        status = :ok
-      else
-        feed = Feed.find_or_generate_by_url(params[:url])
-        return render nothing: true, status: :unprocessable_entity unless feed
-        status = :created
-      end
+      status = ensure_feed
+      return render(nothing: true, status: status) if status == :unprocessable_entity
+      FeedRequest.find_or_create_by(feed_id: current_feed.id).count_update
     else
       return render nothing: true, status: :bad_request
     end
 
-    render json: [feed], status: status, each_serializer: V2::Feeds::FeedSerializer
+    render json: [current_feed], status: status, each_serializer: V2::Feeds::FeedSerializer
+  end
+
+  def ensure_feed
+    if (@current_feed = Feed.find_by(url: params[:url] && URI(params[:url]).normalize.to_s))
+      :ok
+    else
+      current_feed ? :created : :unprocessable_entity
+    end
+  end
+
+  def current_feed
+    @current_feed ||= Feed.find_or_generate_by_url(params[:url])
   end
 end
