@@ -11,7 +11,7 @@ class Service::Parser::Base
     obj.options = Service::Options.new(obj.default_options).deep_merge!(opts)
     obj.send(:initialize)
     obj.parse
-    parse_exceptions(obj.code) if obj.code >= 400 || obj.code == 0
+    parse_exceptions(obj.code) if obj.code && (obj.code >= 400 || obj.code == 0)
     obj
   end
 
