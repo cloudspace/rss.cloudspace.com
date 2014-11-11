@@ -1,0 +1,26 @@
+{"feeds":
+  [
+    {
+      "id": 16,
+      "name": "Engadget",
+      "url": "http://www.engadget.com/rss.xml",
+      "icon": "http://s3.amazonaws.com/easyreader.cloudspace.com/feed/16/icon.png",
+      "feed_items": [
+        {
+          "id": 255,
+          "feed_id": 16,
+          "title": "Lorem ipsum dolor sit amet",
+          "summary": "Ut enim ad minim veniam, quis nostrud exercitation ullamco",
+          "author": "Fred Flintstone",
+          "image_iphone_retina": "https://s3.amazonaws.com/easyreader.cloudspace.com/feed_items/255/iphone_retina.jpg",
+          "image_ipad": "https://s3.amazonaws.com/easyreader.cloudspace.com/feed_items/255/ipad.jpg",
+          "image_ipad_retina": "https://s3.amazonaws.com/easyreader.cloudspace.com/feed_items/255/ipad_retina.jpg",
+          "url": "http://engadget.com/articles/lorem.html",
+          "created_at": "2014-03-05T22:32:32+00:00",
+          "updated_at": "2014-03-05T22:32:32+00:00",
+          "published_at": "2014-03-04T19:52:13+00:00"
+        }
+      ]
+    }
+  ]
+}

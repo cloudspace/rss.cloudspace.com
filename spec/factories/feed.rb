@@ -4,7 +4,7 @@ FactoryGirl.define do
     sequence(:url) { |n| "http://www.example.org/feed/#{n}" }
 
     factory :feed_with_feed_items do
-      ignore do
+      transient do
         feed_item_count 5
         since nil
       end

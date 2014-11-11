@@ -35,27 +35,27 @@ describe Service::Parser::Image do
 
     it 'should return true if the argument is smaller than the smallest dimension' do
       @image.stub(:dimensions) { [300, 400] }
-      expect(@image.large_enough?(250)).to be_true
+      expect(@image.large_enough?(250)).to be_truthy
     end
 
     it 'should return true if the argument is equal to the the smallest dimension' do
       @image.stub(:dimensions) { [300, 400] }
-      expect(@image.large_enough?(300)).to be_true
+      expect(@image.large_enough?(300)).to be_truthy
     end
 
     it 'should return false if the argument is larger than one dimension' do
       @image.stub(:dimensions) { [300, 400] }
-      expect(@image.large_enough?(350)).to be_false
+      expect(@image.large_enough?(350)).to be_falsey
     end
 
     it 'should return false if the argument is larger than both dimensions' do
       @image.stub(:dimensions) { [300, 400] }
-      expect(@image.large_enough?(450)).to be_false
+      expect(@image.large_enough?(450)).to be_falsey
     end
 
     it 'should return false if #dimensions returns nil for any reason' do
       @image.stub(:dimensions) { nil }
-      expect(@image.large_enough?(450)).to be_false
+      expect(@image.large_enough?(450)).to be_falsey
     end
   end
 

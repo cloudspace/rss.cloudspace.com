@@ -35,7 +35,46 @@ set :linked_dirs, %w(log)
 # Default value for keep_releases is 5
 set :keep_releases, 5
 
-set :ssh_options, keys: ['~/.ssh/id_rsa'], forward_agent: true, user: 'root'
+set :ssh_options, keys: ['~/.ssh/id_rsa'], forward_agent: true, user: 'ubuntu'
+
+# --- RESQUE SETTINGS ----
+
+# We're using rails in our tasks so this is necessary
+set :resque_environment_task, true
+
+# Set the resque workers (hash of queue: numworkers)
+set :workers, 'image' => 1,
+              'supervisor' => 1,
+              'feed, feed_item' => 4
+
+namespace :resque do
+  # Enables at exit hooks after resque jobs, this lets tempfiles get cleaned up
+  set :default_env,  'RUN_AT_EXIT_HOOKS' => true
+end
+
+# ---- END RESQUE SETTINGS ----
+
+# --- SLACK SETTINGS ----
+
+set :slack_subdomain, 'cloudspace'
+set :slack_token, '4NokbEVx2VUlXgnEOTGEstAs'
+
+git_user = `git config user.name`.strip
+
+set :slack_channel, 'cs-easy-reader'
+set :slack_username, 'Capistrano'
+set :slack_emoji, ':capistrano:'
+set :slack_user, 'Capistrano'
+set :slack_text, lambda {
+  "#{fetch(:stage).capitalize} - Branch #{fetch(:current_revision, fetch(:branch))} of " \
+  "#{fetch(:application)} deployed by #{git_user} "
+}
+
+set :slack_deploy_starting_text, lambda {
+  "#{fetch(:stage).capitalize} - #{git_user} started deploy with branch #{fetch(:branch)} for #{fetch(:application)}"
+}
+
+# --- END SLACK SETTINGS ----
 
 namespace :deploy do
   desc 'Restart application'
@@ -48,38 +87,11 @@ namespace :deploy do
 
   after :publishing, :restart
 
-  # after :restart, :clear_cache do
-  #   on roles(:web), in: :groups, limit: 3, wait: 10 do
-  #     # Here we can do anything such as:
-  #     # within release_path do
-  #     #   execute :rake, 'cache:clear'
-  #     # end
-  #   end
-  # end
-
   desc 'Run the seeds file'
   task(:seed) { foreground_rake('db:seed') }
 end
 
-namespace :importer do
-  desc '(re)start importer'
-  task(:start) { background_rake("importer:start[#{ENV['WORKERS'] || '7'}]") }
-
-  desc 'stop importer'
-  task(:stop) { background_rake('importer:stop') }
-end
-
 after 'deploy', 'bundler:install'
-after 'deploy', 'importer:start'
-
-# Delayed job that runs resizing via image_magick.
-set :delayed_job_args, '-n 1'
-after 'deploy:publishing', 'deploy:restart'
-namespace :deploy do
-  task :restart do
-    invoke 'delayed_job:restart'
-  end
-end
 
 # runs the specified rake task on the server in the background, without blocking the ssh session
 def background_rake(task)

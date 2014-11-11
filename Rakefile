@@ -3,4 +3,8 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-CloudspaceRss::Application.load_tasks
+
+require 'resque/tasks'
+require 'resque/scheduler/tasks'
+
+EasyReaderRSS::Application.load_tasks

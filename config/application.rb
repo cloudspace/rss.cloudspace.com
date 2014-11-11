@@ -6,8 +6,9 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env)
 
-module CloudspaceRss
-  # Begin main application.
+# Easy reader RSS
+module EasyReaderRSS
+  # The Easy Reader RSS Parser application
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers

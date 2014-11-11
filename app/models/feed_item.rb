@@ -18,6 +18,8 @@ class FeedItem < ActiveRecord::Base
 
   scope :not_processed, -> { where(processed: false) }
 
+  scope :not_scheduled, -> { where(scheduled: [false, nil]) }
+
   scope :with_feed_ids, ->(feed_ids = []) { where(feed_id: feed_ids) }
 
   scope :stuck_feed_items, -> { where(processing: true).where('updated_at < ?', Time.now - 5.minutes) }
@@ -32,7 +34,7 @@ class FeedItem < ActiveRecord::Base
 
   # returns all items that are unprocessed and not currenty processing
   scope :ready_for_processing, lambda {
-    not_processing.not_processed.order(:created_at)
+    not_processing.not_scheduled.not_processed.order(:created_at)
   }
 
   # limits the results to (default 10) feed items per distinct feed
@@ -75,15 +77,15 @@ class FeedItem < ActiveRecord::Base
   def fetch_and_process
     Rails.logger.info "\n in fetch_and_process before update_attributes"
     Rails.logger.info "\n in fetch_and_process before update_attributes"
-    update_attributes(parser.attributes) if parser
+    update_attributes(parser.attributes.merge(image_processing: true)) if parser
     Rails.logger.info "\n in fetch_and_process after update_attributes"
   end
 
   # when the image_url attribute is changed, update and process the image
-  def image_url=(url)
-    self.image = url && URI.parse(url)
-    super(url)
-  end
+  # def image_url=(url)
+  #   self.image = url && URI.parse(url)
+  #   super(url)
+  # end
 
   def parser_options
     feed.image_options
@@ -165,7 +167,7 @@ class FeedItem < ActiveRecord::Base
   end
 
   has_attached_file(:image, paperclip_options(ENV['PAPERCLIP_STORAGE']))
-  process_in_background :image, url_with_processing: false
+
   validates_attachment_content_type :image, content_type: ['image/jpeg', 'image/png', 'image/gif']
   do_not_validate_attachment_file_type :image
 end

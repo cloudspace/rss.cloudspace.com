@@ -15,9 +15,6 @@ module Queueable
 
     # returns all feeds not currently being processed
     scope :not_processing, -> { where.not(processing: true) }
-
-    scope :timed, -> { where.not(process_end: nil, process_start: nil).order('process_end-process_start desc') }
-
   end
 
   # flags an element to indicate it is being processed
@@ -38,6 +35,7 @@ module Queueable
 
   # flags an element to indicate it is no longer processing
   def unlock_element!(**_attrs)
+    update_column(:scheduled, false)
     update_column(:processing, false)
     update_column(:process_end, Time.now)
   end

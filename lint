@@ -1,8 +1,0 @@
-#!/usr/bin/env ruby
-
-require './lib/better_reek/better_reek.rb'
-
-system 'bundle exec rubocop --rails --config ./config/rubocop.yml ./app ./lib ./config ./spec'
-system 'bundle exec rails_best_practices .'
-
-Reek::Cli::Application.new(['./app', './lib', './config', './spec', '--config', './config/reek.yml']).execute()
