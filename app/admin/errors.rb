@@ -3,7 +3,7 @@ ActiveAdmin.register WorkerError, as: 'Errors' do
 
   index download_links: false do
     column :id
-    column :element_type 
+    column :element_type
     column :'Element Id'
     column :message
     column :created_at

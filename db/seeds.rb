@@ -245,3 +245,5 @@ feeds.each do |feed_attrs|
   feed = Feed.find_or_initialize_by(url: feed_attrs[:url] && URI(feed_attrs[:url]).normalize.to_s)
   feed.update_attributes(feed_attrs.reject { |k, _v| k == :url })
 end
+
+AdminUser.create!(email: 'admin@example.com', password: '12345!', password_confirmation: '12345!') if direction == :up

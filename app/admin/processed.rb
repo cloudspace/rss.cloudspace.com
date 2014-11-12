@@ -1,8 +1,8 @@
 ActiveAdmin.register_page 'Processed' do
 
-  menu priority: 2, label: proc{ 'Processed' }
+  menu priority: 2, label: proc { 'Processed' }
 
-  content title: proc{ 'Processed' } do
+  content title: proc { 'Processed' } do
     columns do
 
       column do
@@ -14,14 +14,15 @@ ActiveAdmin.register_page 'Processed' do
           item_ordering = 'item-desc_feed-none'
         end
         div 'Average Time:', class: 'right' do
-          span((feed_items.map(&:process_length).reduce(:+).round(2) / feed_items.count.to_f).to_s+' min')
+          span((feed_items.process_average).to_s + ' min')
         end
         panel 'Feed Items' do
-          paginated_collection(feed_items.page(params[:item_page]).per(15), param_name: 'item_page', download_links: false) do 
+          paginated_collection(feed_items.page(params[:item_page]).per(15),
+                               param_name: 'item_page', download_links: false) do
             table_for collection, sortable: true do
-              column :title
-              column(:process_length, sortable: item_ordering) do |feed_item| 
-                feed_item.process_length.round(2).to_s+' min'
+              column :title, sortable: false
+              column(:process_length, sortable: item_ordering) do |feed_item|
+                feed_item.process_length.round(2).to_s + ' min'
               end
             end
           end
@@ -37,14 +38,15 @@ ActiveAdmin.register_page 'Processed' do
           feed_ordering = 'item-none_feed-desc'
         end
         div 'Average Time:', class: 'right' do
-          span((feeds.map(&:process_length).reduce(:+).round(2) / feeds.count.to_f).to_s+' min')
+          span((feeds.process_average).to_s + ' min')
         end
         panel 'Feeds' do
-          paginated_collection(feeds.page(params[:feed_page]).per(15), param_name: 'feed_page', download_links: false) do 
+          paginated_collection(feeds.page(params[:feed_page]).per(15),
+                               param_name: 'feed_page', download_links: false) do
             table_for collection, sortable: true do
-              column :url
-              column(:process_length, sortable: feed_ordering) do |feed| 
-                feed.process_length.round(2).to_s+' min'
+              column :url, sortable: false
+              column(:process_length, sortable: feed_ordering) do |feed|
+                feed.process_length.round(2).to_s + ' min'
               end
             end
           end
