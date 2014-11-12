@@ -5,7 +5,7 @@ class FeedItem < ActiveRecord::Base
   # instruct the parseable module to use the specified parser
   @parser_type = :metadata
 
-  belongs_to :feed
+  belongs_to :feed, counter_cache: true
   has_many :worker_errors, as: :element, dependent: :destroy
 
   validates :title, presence: true

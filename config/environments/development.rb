@@ -25,22 +25,24 @@ EasyReaderRSS::Application.configure do
   # Debug mode disables concatenation and preprocessing of assets.
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
-  config.assets.debug = true
+  config.assets.debug = false
+
+  config.assets.raise_runtime_errors = true
 
   # Disable Rails's static asset server (Apache or nginx will already do this).
-  config.serve_static_assets = true
+  # config.serve_static_assets = true
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
-  config.assets.compile = true
+  # config.assets.compile = true
 
   # Generate digests for assets URLs.
-  config.assets.digest = true
+  # config.assets.digest = true
 
-  config.assets.enabled = true
+  # config.assets.enabled = true
   #  config.action_controller.asset_host = "/"
-  config.assets.initialize_on_precompile = true
-  config.assets.prefix = 'assets'
+  # config.assets.initialize_on_precompile = true
+  # config.assets.prefix = 'assets'
 
   # Version of your assets, change this if you want to expire all your assets.
-  config.assets.version = '1.1'
+  # config.assets.version = '1.1'
 end
