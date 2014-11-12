@@ -3,6 +3,7 @@ class Feed < ActiveRecord::Base
   include Queueable
   include Parseable
 
+  has_many :feed_requests
   has_many :feed_items, dependent: :destroy
   has_many :worker_errors, as: :element, dependent: :destroy
 

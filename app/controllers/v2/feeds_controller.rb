@@ -1,5 +1,5 @@
 # For the v2/feeds endpoints
-class V2::FeedsController < ApplicationController
+class V2::FeedsController < ApiController
   # GET /v2/feeds/:id
   def show
     feed = Feed.find_by(id: params[:id])

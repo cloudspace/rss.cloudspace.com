@@ -1,5 +1,5 @@
 # Controls the feed items.
-class V2::FeedItemsController < ApplicationController
+class V2::FeedItemsController < ApiController
 
   def index
     feed_ids = validate_feed_ids(Array(params[:feed_ids]))

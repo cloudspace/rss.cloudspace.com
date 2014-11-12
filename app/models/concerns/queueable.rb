@@ -68,5 +68,10 @@ module Queueable
         element
       end
     end
+
+    def process_average
+      return 0.0 if count == 0
+      all.map(&:process_length).reduce(0.0) { |a, e| a + e }.round(2) / count.to_f
+    end
   end
 end

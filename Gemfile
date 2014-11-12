@@ -6,6 +6,9 @@ gem 'pg', '~> 0.17.1'
 gem 'active_model_serializers', '~> 0.9.0'
 gem 'rails-api', '~> 0.3.1'
 
+gem 'devise', '~> 3.2.4'
+gem 'activeadmin', github: 'gregbell/active_admin'
+
 # loads environment variables
 gem 'dotenv-rails'
 
