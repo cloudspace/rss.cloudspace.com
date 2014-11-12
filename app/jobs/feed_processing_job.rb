@@ -12,6 +12,7 @@ class FeedProcessingJob < BaseResqueJob
   end
 
   def process
+    feed.lock_element!
     feed.fetch_and_process
     feed.feed_items.ready_for_processing.each do |feed_item|
       feed_item.update_attributes(scheduled: true)
