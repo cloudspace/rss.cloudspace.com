@@ -15,8 +15,6 @@ class Feed < ActiveRecord::Base
   # feeds that are approved to be searchable
   scope :approved, -> { where(approved: true) }
 
-  scope :stuck_feeds, -> { where(processing: true).where('updated_at < ?', Time.now - 10.minutes) }
-
   # search for a feed by name. returns partial or complete matches
   scope :search_name, ->(str) { approved.where(feeds[:name].matches("%#{str}%")) }
 
@@ -50,32 +48,15 @@ class Feed < ActiveRecord::Base
     !feed.new_record? && feed
   end
 
-  def cleanup_stuck
-    self.processing = false
-    self.updated_at = Time.now
-    queue_next_parse
-  end
-
-  def self.cleanup_multiple_stuck_feeds
-    feeds = stuck_feeds
-    feeds.each do |feed|
-      feed.cleanup_stuck
-    end
-  end
-
   # fetches, parses, and updates the feed, and generates feed items for the feed
   # also increments/resets backoff interval and sets next parse time
   def fetch_and_process
     if parser && parser.success?
-      Rails.logger.info "\n in fetch_and_process before update_attributes"
       update_attributes(parser.attributes)
-      Rails.logger.info "\n in fetch_and_process after update_attributes"
       process_feed_items
-      Rails.logger.info "\n in fetch_and_process after process_feed_items"
     end
 
     WorkerError.log(self, Exception.new('Less than 10 feed items in feed')) if feed_items.count < 10
-
   rescue => exception
     WorkerError.log(self, exception)
   ensure
@@ -91,7 +72,6 @@ class Feed < ActiveRecord::Base
       item.update_attributes(attrs)
       new_items_found << item
     end
-    FeedItem.cull!
   end
 
   def new_items_found

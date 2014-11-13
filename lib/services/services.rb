@@ -8,8 +8,6 @@ module Service::Parser::Strategy; end
 require_relative './options.rb'
 require_relative './delegator.rb'
 require_relative './attributable.rb'
-require_relative './worker/worker.rb'
-require_relative './worker/supervisor.rb'
 require_relative './parsers/base.rb'
 require_relative './parsers/feed.rb'
 require_relative './parsers/feed_item.rb'

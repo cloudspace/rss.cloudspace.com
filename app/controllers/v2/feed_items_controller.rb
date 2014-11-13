@@ -8,6 +8,8 @@ class V2::FeedItemsController < ApiController
 
     feed_items = fetch_feed_items(feed_ids[:valid], params[:since])
 
+    feed_ids[:valid].map { |feed_id| FeedRequest.find_or_create_by(feed_id: feed_id).count_update }
+
     status = feed_ids[:invalid].blank? ? :ok : :partial_content
 
     render json: { feed_items: feed_items, bad_feed_ids: feed_ids[:invalid] },

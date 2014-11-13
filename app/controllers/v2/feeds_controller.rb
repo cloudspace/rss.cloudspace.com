@@ -33,8 +33,10 @@ class V2::FeedsController < ApiController
   def create
     if params[:url].present?
       status = ensure_feed
-      FeedRequest.find_or_create_by(feed_id: current_feed.id).count_update
+
       return render(nothing: true, status: status) if status == :unprocessable_entity
+
+      FeedRequest.find_or_create_by(feed_id: current_feed.id).count_update
     else
       return render nothing: true, status: :bad_request
     end
