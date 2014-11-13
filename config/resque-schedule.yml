@@ -4,5 +4,5 @@ SupervisorJob:
   queue: supervisor
 ReaperJob:
   every:
-      - "2m"
+      - "30m"
   queue: reaper
