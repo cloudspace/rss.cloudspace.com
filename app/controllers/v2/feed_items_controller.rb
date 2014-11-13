@@ -1,9 +1,6 @@
 # Controls the feed items.
 class V2::FeedItemsController < ApiController
-
   def index
-    feed_ids = validate_feed_ids(Array(params[:feed_ids]))
-
     return head(:not_found) if feed_ids[:valid].blank?
 
     feed_items = fetch_feed_items(feed_ids[:valid], params[:since])
@@ -18,6 +15,10 @@ class V2::FeedItemsController < ApiController
   end
 
   private
+
+  def feed_ids
+    @feed_ids ||= validate_feed_ids(Array(params[:feed_ids]))
+  end
 
   def validate_feed_ids(feed_ids)
     feed_ids = Array(params[:feed_ids])
