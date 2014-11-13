@@ -2,3 +2,7 @@ SupervisorJob:
   every:
       - "30s"
   queue: supervisor
+ReaperJob:
+  every:
+      - "2m"
+  queue: reaper

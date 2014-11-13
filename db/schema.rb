@@ -85,8 +85,8 @@ ActiveRecord::Schema.define(version: 20141112153204) do
     t.boolean  "image_processing",   default: false
     t.datetime "process_start"
     t.datetime "process_end"
-    t.datetime "process_killed"
     t.boolean  "scheduled"
+    t.datetime "process_killed"
   end
 
   add_index "feed_items", ["feed_id"], name: "index_feed_items_on_feed_id", using: :btree
@@ -120,8 +120,8 @@ ActiveRecord::Schema.define(version: 20141112153204) do
     t.json     "parser_options"
     t.datetime "process_start"
     t.datetime "process_end"
-    t.datetime "process_killed"
     t.boolean  "scheduled"
+    t.datetime "process_killed"
     t.integer  "feed_items_count",    default: 0
   end
 

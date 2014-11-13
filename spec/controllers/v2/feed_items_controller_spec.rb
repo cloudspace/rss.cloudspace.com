@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe V2::FeedItemsController, type: :controller do
   describe '#feed_items' do
+    let(:feed_request) { double }
 
     # if you set up any feeds for testing, make sure the id does not match one
     # of @bad_feed_ids
@@ -11,6 +12,8 @@ describe V2::FeedItemsController, type: :controller do
       @feeds = @good_feed_ids.each do |id|
         FactoryGirl.create(:feed_with_feed_items, id: id)
       end
+      allow(feed_request).to receive(:count_update)
+      allow(FeedRequest).to receive(:find_or_create_by) { feed_request }
     end
 
     describe 'response status codes' do
@@ -40,6 +43,11 @@ describe V2::FeedItemsController, type: :controller do
         before do
           get :index, feed_ids: @good_feed_ids
           @json = JSON.parse(response.body)
+        end
+
+        it 'creates feed requests for each item' do
+          expect(FeedRequest).to receive(:find_or_create_by).exactly(@good_feed_ids.count).times
+          get :index, feed_ids: @good_feed_ids
         end
 
         it 'returns an array of feed items' do
