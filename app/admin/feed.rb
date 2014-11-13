@@ -21,6 +21,11 @@ ActiveAdmin.register Feed, namespace: :admin do
       row :last_parsed_at
       row :next_parse_at
       row :url
+      row :errors do |feed|
+        WorkerError.where(element: feed).group_by(&:message).map do |error, feeds|
+          label_tag(feeds.count.to_s + ' - ' + error)
+        end.join('<br />').html_safe
+      end
     end
   end
 end
