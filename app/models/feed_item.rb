@@ -152,6 +152,6 @@ class FeedItem < ActiveRecord::Base
   do_not_validate_attachment_file_type :image
 
   def update_feed_count
-    feed.update_attribute(:feed_items_count, feed.feed_items_count+1)
+    feed.update_attribute(:feed_items_count, feed.feed_items_count + 1)
   end
 end
