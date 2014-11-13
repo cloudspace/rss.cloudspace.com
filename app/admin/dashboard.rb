@@ -18,9 +18,9 @@ ActiveAdmin.register_page 'Dashboard' do
             column('Request #', sortable: 'feed_requests.count') { |feed| feed.feed_requests.count }
             column('Total Item #', sortable: 'feed_items_count') { |feed| feed.feed_items_count }
             column('Last Active', sortable: false) { |feed| feed.feed_items.last.try(:created_at) }
-            column('Total Error #', sortable: 'feed_errors_count') do |feed| 
+            column('Total Error #', sortable: 'feed_errors_count') do |feed|
               link_to feed.feed_errors_count, admin_errors_path(
-                'q[element_id_equals]' => feed.id, 
+                'q[element_id_equals]' => feed.id,
                 'q[element_type_eq]' => 'Feed'
               )
             end

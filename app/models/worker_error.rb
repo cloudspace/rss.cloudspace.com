@@ -1,7 +1,7 @@
 # yay linter
 class WorkerError < ActiveRecord::Base
   belongs_to :element, polymorphic: true
-  
+
   after_save :update_feed_count
 
   def self.log(element, exception)
@@ -27,6 +27,6 @@ class WorkerError < ActiveRecord::Base
   private
 
   def update_feed_count
-    element.update_attribute(:feed_errors_count, element.feed_errors_count+1) if element_type == 'Feed'
+    element.update_attribute(:feed_errors_count, element.feed_errors_count + 1) if element_type == 'Feed'
   end
 end
