@@ -120,7 +120,7 @@ class Feed < ActiveRecord::Base
   #
   # @param [Boolean, nil] new_item_found true to reset backoff, false/nil to increment it
   def queue_next_parse
-    self.parse_backoff_level = new_items_found.present? ? 1 : [parse_backoff_level + 1, 9].min
+    self.parse_backoff_level = new_items_found.present? ? 2 : [parse_backoff_level + 1, 9].min
     interval = [2**(parse_backoff_level + 2), 1440].min
     self.last_parsed_at = Time.now
     self.next_parse_at = Time.now + interval.minutes
