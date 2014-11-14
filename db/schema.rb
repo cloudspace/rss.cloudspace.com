@@ -87,7 +87,6 @@ ActiveRecord::Schema.define(version: 20141113163524) do
     t.datetime "process_end"
     t.datetime "process_killed"
     t.boolean  "scheduled"
-    t.datetime "process_killed"
   end
 
   add_index "feed_items", ["feed_id"], name: "index_feed_items_on_feed_id", using: :btree
@@ -123,7 +122,6 @@ ActiveRecord::Schema.define(version: 20141113163524) do
     t.datetime "process_end"
     t.datetime "process_killed"
     t.boolean  "scheduled"
-    t.datetime "process_killed"
     t.integer  "feed_items_count",    default: 0
     t.integer  "feed_errors_count",   default: 0
   end

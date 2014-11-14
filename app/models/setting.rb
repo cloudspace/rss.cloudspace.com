@@ -20,7 +20,7 @@ class Setting < ActiveRecord::Base
   private
 
   def fetch_value(setting)
-    cache.fetch(setting, :expires_in => 300) do
+    cache.fetch(setting, expires_in: 300) do
       Setting.find_by!(name: setting).read_attribute(:value)
     end
   end
