@@ -10,7 +10,7 @@ class Setting < ActiveRecord::Base
       @instance ||= new
     end
 
-    [:backoff_min, :backoff_max].map do |m|
+    [:backoff_min, :backoff_max, :max_per_feed].map do |m|
       define_method m do
         instance.send(:fetch_value, m.to_s)
       end
