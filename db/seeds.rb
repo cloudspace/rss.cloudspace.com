@@ -247,3 +247,7 @@ feeds.each do |feed_attrs|
 end
 
 AdminUser.create!(email: 'admin@example.com', password: '12345!', password_confirmation: '12345!') if direction == :up
+
+# Default settings
+Setting.create_with(value: 2).find_or_create_by(name: "backoff_min")
+Setting.create_with(value: 6).find_or_create_by(name: "backoff_max")
