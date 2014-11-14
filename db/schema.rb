@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141112153204) do
+ActiveRecord::Schema.define(version: 20141113163524) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -123,6 +123,7 @@ ActiveRecord::Schema.define(version: 20141112153204) do
     t.boolean  "scheduled"
     t.datetime "process_killed"
     t.integer  "feed_items_count",    default: 0
+    t.integer  "feed_errors_count",   default: 0
   end
 
   add_index "feeds", ["approved"], name: "index_feeds_on_approved", using: :btree

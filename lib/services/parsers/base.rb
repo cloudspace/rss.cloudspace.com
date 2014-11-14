@@ -17,15 +17,15 @@ class Service::Parser::Base
 
   PARSER_EXCEPTIONS = {
     0 => 'Not a URL',
-    400 => 'Bad Request',
-    401 => 'Unauthorized',
-    403 => 'Forbidden',
-    404 => 'Not Found',
-    408 => 'Timeout',
-    500 => 'Internal Server Error',
-    502 => 'Bad Gateway',
-    503 => 'Server Unavailable',
-    504 => 'Gateway Timeout'
+    400 => '400 Bad Request',
+    401 => '401 Unauthorized',
+    403 => '403 Forbidden',
+    404 => '404 Not Found',
+    408 => '408 Timeout',
+    500 => '500 Internal Server Error',
+    502 => '502 Bad Gateway',
+    503 => '503 Server Unavailable',
+    504 => '504 Gateway Timeout'
   }
 
   def self.parse_exceptions(code)
