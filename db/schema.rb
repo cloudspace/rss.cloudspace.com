@@ -85,6 +85,7 @@ ActiveRecord::Schema.define(version: 20141113163524) do
     t.boolean  "image_processing",   default: false
     t.datetime "process_start"
     t.datetime "process_end"
+    t.datetime "process_killed"
     t.boolean  "scheduled"
     t.datetime "process_killed"
   end
@@ -120,6 +121,7 @@ ActiveRecord::Schema.define(version: 20141113163524) do
     t.json     "parser_options"
     t.datetime "process_start"
     t.datetime "process_end"
+    t.datetime "process_killed"
     t.boolean  "scheduled"
     t.datetime "process_killed"
     t.integer  "feed_items_count",    default: 0
@@ -133,6 +135,15 @@ ActiveRecord::Schema.define(version: 20141113163524) do
   add_index "feeds", ["name"], name: "index_feeds_on_name", using: :btree
   add_index "feeds", ["next_parse_at"], name: "index_feeds_on_next_parse_at", using: :btree
   add_index "feeds", ["processing"], name: "index_feeds_on_processing", using: :btree
+
+  create_table "settings", force: true do |t|
+    t.string   "name"
+    t.integer  "value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "settings", ["name"], name: "index_settings_on_name", unique: true, using: :btree
 
   create_table "worker_errors", force: true do |t|
     t.string   "element_type"
