@@ -64,7 +64,7 @@ class FeedItem < ActiveRecord::Base
   }
 
   # destroys all but the newest 10 processed and un_processed feed items per feed
-  def self.cull!(max_per_feed = 300)
+  def self.cull!(max_per_feed = Setting.max_per_feed)
     ready_for_cull(max_per_feed).destroy_all
   end
 
