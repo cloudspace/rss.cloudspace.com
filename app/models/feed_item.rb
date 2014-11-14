@@ -50,22 +50,28 @@ class FeedItem < ActiveRecord::Base
     )
   }
 
+  # limits the results to (default 10) feed items per distinct feed
+  scope :ready_for_cull, lambda { |max = 10|
+    where(<<-EOS
+      id IN (
+        SELECT id FROM (
+          SELECT ROW_NUMBER() OVER (
+            PARTITION BY feed_id order by #{FeedItem.since_field} DESC)
+          AS r, t.* from feed_items t)
+        x where x.r > #{max})
+    EOS
+    )
+  }
+
   # destroys all but the newest 10 processed and un_processed feed items per feed
   def self.cull!(max_per_feed = 300)
-    processed.where.not(id: FeedItem.processed.most_recent.limit_per_feed(max_per_feed)).destroy_all
-    not_processed.where.not(id: FeedItem.not_processed.most_recent.limit_per_feed(max_per_feed)).destroy_all
+    ready_for_cull(max_per_feed).destroy_all
   end
 
   # fetches, parses, and updates the feed item and images
   def fetch_and_process
     update_attributes(parser.attributes.merge(image_processing: true)) if parser
   end
-
-  # when the image_url attribute is changed, update and process the image
-  # def image_url=(url)
-  #   self.image = url && URI.parse(url)
-  #   super(url)
-  # end
 
   def parser_options
     feed.image_options
