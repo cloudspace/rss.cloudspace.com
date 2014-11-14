@@ -5,12 +5,14 @@ class FeedItem < ActiveRecord::Base
   # instruct the parseable module to use the specified parser
   @parser_type = :metadata
 
-  belongs_to :feed, counter_cache: true
+  belongs_to :feed
   has_many :worker_errors, as: :element, dependent: :destroy
 
   validates :title, presence: true
   validates :url, presence: true
   validates :feed, presence: true
+
+  after_save :update_feed_count
 
   scope :processed, -> { where(processed: true) }
 
@@ -148,4 +150,8 @@ class FeedItem < ActiveRecord::Base
 
   validates_attachment_content_type :image, content_type: ['image/jpeg', 'image/png', 'image/gif']
   do_not_validate_attachment_file_type :image
+
+  def update_feed_count
+    feed.update_attribute(:feed_items_count, feed.feed_items_count + 1)
+  end
 end
