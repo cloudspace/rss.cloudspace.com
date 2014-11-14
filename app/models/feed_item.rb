@@ -63,7 +63,7 @@ class FeedItem < ActiveRecord::Base
 
   # destroys all but the newest 10 processed and un_processed feed items per feed
   def self.cull!(max_per_feed = 300)
-    ready_for_cull.destroy_all
+    ready_for_cull(max_per_feed).destroy_all
   end
 
   # fetches, parses, and updates the feed item and images
