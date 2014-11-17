@@ -103,7 +103,7 @@ class Feed < ActiveRecord::Base
     if new_items_found.present?
       self.parse_backoff_level = Setting.backoff_min
     else
-      [parse_backoff_level + 1, Setting.backoff_max].min
+      self.parse_backoff_level = [parse_backoff_level + 1, Setting.backoff_max].min
     end
     interval = [2**(parse_backoff_level + 2), 1440].min
     self.last_parsed_at = Time.now
