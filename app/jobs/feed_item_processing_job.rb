@@ -6,6 +6,7 @@ class FeedItemProcessingJob < BaseResqueJob
 
   def perform
     Timeout.timeout(120) do
+      feed_item.lock_element!
       feed_item.fetch_and_process
       FeedItemImageProcessingJob.schedule(feed_item)
     end
