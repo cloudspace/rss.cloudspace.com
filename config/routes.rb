@@ -5,6 +5,7 @@ EasyReaderRSS::Application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
   namespace :v2 do
+    get "/", :to => redirect("https://github.com/cloudspace/rss.cloudspace.com")
     resources :feeds, only: [:create, :show] do
       collection do
         get 'default'
@@ -16,4 +17,5 @@ EasyReaderRSS::Application.routes.draw do
   end
 
   mount ResqueWeb::Engine => '/resque_web'
+  get "/", :to => redirect("https://github.com/cloudspace/rss.cloudspace.com")
 end
