@@ -1,3 +1,5 @@
+# rubocop:disable all
+
 require 'resque_web'
 ResqueWeb::Engine.eager_load!
 
@@ -19,3 +21,5 @@ EasyReaderRSS::Application.routes.draw do
   mount ResqueWeb::Engine => '/resque_web'
   get "/", :to => redirect("https://github.com/cloudspace/rss.cloudspace.com")
 end
+
+# rubocop:enable all
