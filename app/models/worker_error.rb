@@ -9,7 +9,7 @@ class WorkerError < ActiveRecord::Base
            element_state: element.inspect,
            message: exception.message,
            exception_class: exception.class.to_s,
-           backtrace: exception.backtrace.join("\n"))
+           backtrace: exception.backtrace.nil? ? nil : exception.backtrace.join("\n"))
   end
 
   def self.glance
