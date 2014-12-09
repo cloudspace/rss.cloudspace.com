@@ -12,6 +12,7 @@ Vagrant.configure(2) do |config|
   config.ssh.private_key_path = ['./devops/vagrant.pem', File.join(ENV['HOME'], '.ssh', 'id_rsa')]
   config.ssh.forward_agent = true
   config.vm.network "private_network", ip: $vagrant_ip
+  config.vm.network "public_network", bridge: "en1: Wi-Fi (AirPort)"
   config.vm.synced_folder "./", "/srv/#{org}", :nfs => { :mount_options => ["dmode=777","fmode=777"] }
 
   config.vm.provider "virtualbox" do |v|

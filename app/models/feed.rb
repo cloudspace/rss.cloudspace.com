@@ -115,6 +115,13 @@ class Feed < ActiveRecord::Base
     uri && URI(uri).normalize.to_s
   end
 
+  # removes http from url passed in, and matches url to end of column value
+  # will find with http://www.test.com, www.test.com, test.com, http://test.com
+  def self.find_with_url(url)
+    processed = url.split('//').delete_if { |part| part.downcase == 'http:' || part.downcase == 'https:' }
+    Feed.where('url like ?', "%#{processed.join('//')}").first
+  end
+
   # used for arel
   def self.feeds
     arel_table
