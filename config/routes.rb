@@ -13,6 +13,12 @@ EasyReaderRSS::Application.routes.draw do
       end
     end
 
+    resources :callbacks do
+      collection do
+        match 'feed_item', via: [:get, :post]
+      end
+    end
+
     resources :feed_items, only: [:index]
   end
 
