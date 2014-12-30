@@ -77,6 +77,23 @@ class FeedItem < ActiveRecord::Base
     feed.image_options
   end
 
+  def complete(params)
+    update_attributes(title: params['title'],
+                      url: params['url'],
+                      published_at: params['published_at'],
+                      image_file_name: params['image_file_name'],
+                      image_content_type: params['image_content_type'],
+                      image_file_size: params['image_file_size'],
+                      image_url: params['image_url'],
+                      image_updated_at: Time.now)
+    flag_as_bad(errors.messages) unless errors.empty?
+  end
+
+  def flag_as_bad(error)
+    update_attributes(success: false)
+    WorkerError.log(self, Exception.new(error))
+  end
+
   private
 
   # Sets up the since field alias.
