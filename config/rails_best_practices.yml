@@ -22,7 +22,7 @@ ProtectMassAssignmentCheck: { }
 RemoveEmptyHelpersCheck: { }
 #RemoveTabCheck: { }
 #RemoveTrailingWhitespaceCheck: { } # handled by rubocop
-RemoveUnusedMethodsInControllersCheck: { except_methods: [] }
+RemoveUnusedMethodsInControllersCheck: { except_methods: ['V2::FeedItemsController#callback'] }
 RemoveUnusedMethodsInHelpersCheck: { except_methods: ['ActiveAdmin::ViewsHelper#processing_order_string_for'] }
 RemoveUnusedMethodsInModelsCheck: { except_methods: ['WorkerError#glance', 'FeedItem#default_image', 'Feed#items_processed_in_last_days'] }
 ReplaceComplexCreationWithFactoryMethodCheck: { attribute_assignment_count: 2 }
