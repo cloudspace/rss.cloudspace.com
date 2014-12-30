@@ -14,7 +14,7 @@ class FeedItem < ActiveRecord::Base
 
   after_save :update_feed_count
 
-  scope :processed, -> { where(processed: true) }
+  scope :processed, -> { where(processed: true).where(success: true) }
 
   scope :image_done, -> { where(image_processing: false) }
 
