@@ -29,7 +29,7 @@ class V2::FeedsController < ApiController
     render json: feeds, status: status, each_serializer: V2::Feeds::FeedWithoutItemsSerializer
   end
 
-  # POST /v2/feeds/create
+  # POST /v2/feeds/
   def create
     if params[:url].present?
       status = ensure_feed
@@ -45,7 +45,7 @@ class V2::FeedsController < ApiController
   end
 
   def ensure_feed
-    if (@current_feed = Feed.find_by(url: params[:url] && URI(params[:url]).normalize.to_s))
+    if (@current_feed = Feed.find_with_url(params[:url]))
       :ok
     else
       current_feed ? :created : :unprocessable_entity
