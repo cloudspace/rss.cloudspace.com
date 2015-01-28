@@ -81,7 +81,7 @@ describe V2::FeedsController, type: :controller do
     end
 
     it 'should return a 200 with a feed if a feed with the same url already existed' do
-      Feed.stub(:find_by).with(url: 'foo').and_return(feed)
+      Feed.stub(:find_with_url).with('foo').and_return(feed)
       post :create, url: 'foo'
       expect(response.status).to eq(200)
       expect(JSON.parse(response.body)['feeds'].map { |f| f['id'] }).to eq([feed.id])
