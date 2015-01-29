@@ -18,19 +18,36 @@ class FeedProcessingJob < BaseResqueJob
     feed.feed_items.ready_for_processing.each do |feed_item|
       feed_item.update_attributes(scheduled: true)
       feed_item.lock_element!
-      url = ENV['MICROSERVICE_API_DEV'] + '/api/flows/17/run?api_key=' + ENV['MICROSERVICE_API_KEY'] + ''\
-            '&url_48=' + feed_item.url.to_s + '&s3_image_prefix_47=feed_items/' + feed_item.id.to_s + ''\
-            '&new_image_name_47=iphone_retina&resize_string_47=640x800'\
-            '&s3_image_prefix_45=feed_items/' + feed_item.id.to_s + '&new_image_name_45=ipad'\
-            '&resize_string_45=768x960&s3_image_prefix_46=feed_items/' + feed_item.id.to_s + ''\
-            '&new_image_name_46=ipad_retina&resize_string_46=1526x1920'\
-            '&s3_prefix_44=feed_items/' + feed_item.id.to_s + '&new_file_name_44=original'\
-            '&feed_item_id_49=' + feed_item.id.to_s + '&feed_id_49=' + feed.id.to_s + ''\
-            '&url_49=' + feed_item.url.to_s + ''\
-            '&published_at_49=' + URI.encode(feed_item.published_at.to_s) + ''\
-            '&title_49=' + URI.encode(feed_item.title) + ''\
-            '&callback=http://33.33.164.176:3000/v2/feed_items/' + feed_item.id.to_s + '/callback'
-      HTTParty.get(url)
+
+      HTTParty.post(ENV['PRODUCTION_MICROSERVICE_API_URL'] + '/jobs',
+                    body: {
+                      client_id: ENV['PRODUCTION_MICROSERVICE_API_KEY'],
+                      client_secret: ENV['PRODUCTION_MICROSERVICE_API_SECRET'],
+                      flow_name: ENV['PRODUCTION_FLOW_NAME'],
+                      callback: "#{ENV['PRODUCTION_APP_HOST']}/v2/feed_items/#{feed_item.id}/callback",
+                      user_params: {
+                        'url_0000000000001' => "#{feed_item.url}",
+                        's3_prefix_0000000000002' => "feed_items/#{feed_item.id}",
+                        'file_security_0000000000002' => '',
+                        'url_security_0000000000002' => '',
+                        's3_image_prefix_0000000000003' => "feed_items/#{feed_item.id}",
+                        'file_security_0000000000003' => '',
+                        'url_security_0000000000003' => '',
+                        's3_image_prefix_0000000000004' => "feed_items/#{feed_item.id}",
+                        'file_security_0000000000004' => '',
+                        'url_security_0000000000004' => '',
+                        's3_image_prefix_0000000000005' => "feed_items/#{feed_item.id}",
+                        'file_security_0000000000005' => '',
+                        'url_security_0000000000005' => '',
+                        'feed_id_0000000000006' => "#{feed.id}",
+                        'feed_item_id_0000000000006' => "#{feed_item.id}",
+                        'url_0000000000006' => "#{feed_item.url}",
+                        'published_at_0000000000006' => "#{feed_item.published_at}",
+                        'title_0000000000006' => "#{feed_item.title}"
+                      }
+                    }.to_json,
+                    headers: { 'Content-Type' => 'application/json' }
+      )
     end
   end
 end
