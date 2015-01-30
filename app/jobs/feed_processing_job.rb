@@ -33,7 +33,7 @@ class FeedProcessingJob < BaseResqueJob
                         'imageprefix_1422648120791' => "feed_items/#{feed_item.id}",
                         'filesecurity_1422648120791' => '',
                         'urlsecurity_1422648120791' => '',
-                        'image_prefix_1422648121028' => "feed_items/#{feed_item.id}",
+                        'imageprefix_1422648121028' => "feed_items/#{feed_item.id}",
                         'filesecurity_1422648121028' => '',
                         'urlsecurity_1422648121028' => '',
                         'imageprefix_1422648121268' => "feed_items/#{feed_item.id}",
