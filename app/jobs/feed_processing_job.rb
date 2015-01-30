@@ -24,7 +24,7 @@ class FeedProcessingJob < BaseResqueJob
                       client_id: ENV['PRODUCTION_MICROSERVICE_API_KEY'],
                       client_secret: ENV['PRODUCTION_MICROSERVICE_API_SECRET'],
                       flow_name: ENV['PRODUCTION_FLOW_NAME'],
-                      callback: "54.90.37.154:49159/api/login",
+                      callback: "#{ENV['PRODUCTION_APP_HOST']}/v2/feed_items/#{feed_item.id}/callback",
                       user_params: {
                         'url_1422648099113' => "#{feed_item.url}",
                         'prefix_1422648115087' => "feed_items/#{feed_item.id}",
