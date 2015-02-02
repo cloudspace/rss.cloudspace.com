@@ -28,8 +28,6 @@ namespace :deploy do
   end
 
   task :restart do
-    on roles(:app) do
-      execute 'kill -USR2 $(cat /srv/www/easyreader.cloudspace.com/unicorn.pid)'
-    end
+    invoke 'unicorn:legacy_restart'
   end
 end
