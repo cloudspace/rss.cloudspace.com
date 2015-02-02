@@ -63,6 +63,7 @@ group :development, :test do
 
   gem 'factory_girl_rails', '~> 4.5.0'
   gem 'faker'
+  gem 'capistrano3-unicorn'
 end
 
 # Gems used only for assets and not required
