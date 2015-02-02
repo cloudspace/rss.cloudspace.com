@@ -19,12 +19,12 @@ class FeedProcessingJob < BaseResqueJob
       feed_item.update_attributes(scheduled: true)
       feed_item.lock_element!
 
-      HTTParty.post(ENV['PRODUCTION_MICROSERVICE_API_URL'] + '/jobs',
+      HTTParty.post(ENV['MICROSERVICE_API_URL'] + '/jobs',
                     body: {
-                      client_id: ENV['PRODUCTION_MICROSERVICE_API_KEY'],
-                      client_secret: ENV['PRODUCTION_MICROSERVICE_API_SECRET'],
-                      flow_name: ENV['PRODUCTION_FLOW_NAME'],
-                      callback: "#{ENV['PRODUCTION_APP_HOST']}/v2/feed_items/#{feed_item.id}/callback",
+                      client_id: ENV['MICROSERVICE_API_KEY'],
+                      client_secret: ENV['MICROSERVICE_API_SECRET'],
+                      flow_name: ENV['MICROSERVICE_FLOW_NAME'],
+                      callback: "#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{feed_item.id}/callback",
                       user_params: {
                         'url_1422648099113' => "#{feed_item.url}",
                         'prefix_1422648115087' => "feed_items/#{feed_item.id}",

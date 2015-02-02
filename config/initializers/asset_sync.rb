@@ -12,6 +12,8 @@ AssetSync.configure do |config|
     config.fog_directory = ENV['STAGING_S3_BUCKET']
   elsif Rails.env.production?
     config.fog_directory = ENV['PRODUCTION_S3_BUCKET']
+  elsif Rails.env.microservice?
+    config.fog_directory = ENV['MICROSERVICE_S3_BUCKET']
   end
 
   # Invalidate a file on a cdn after uploading files

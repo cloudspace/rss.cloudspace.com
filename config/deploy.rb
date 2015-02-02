@@ -4,7 +4,7 @@ lock '3.2.1'
 # the repository url is set in config/environment_variables.rb
 set :repo_url, ENV['REPOSITORY_URL']
 
-set :stages, %w(staging production)
+set :stages, %w(staging production microservice)
 set :default_stage, 'staging'
 
 # Default branch is :master

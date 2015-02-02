@@ -37,7 +37,7 @@ gem 'resque-web', require: 'resque_web'
 gem 'dot_configure', '~> 0.0.1'
 
 
-group :production, :staging do
+group :production, :staging, :microservice do
   gem 'unicorn', '~> 4.8.3'
 end
 

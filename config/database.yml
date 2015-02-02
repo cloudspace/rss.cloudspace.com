@@ -35,3 +35,13 @@ production:
   password: <%= ENV['PRODUCTION_POSTGRES_PASSWORD'] %>
   host: <%= ENV['PRODUCTION_POSTGRES_HOST'] %>
   port: <%= ENV['PRODUCTION_POSTGRES_PORT'] %>
+
+microservice:
+  adapter: postgresql
+  encoding: utf8
+  database: <%= ENV['MICROSERVICE_POSTGRES_DATABASE'] %>
+  pool: 100
+  username: <%= ENV['MICROSERVICE_POSTGRES_USERNAME'] %>
+  password: <%= ENV['MICROSERVICE_POSTGRES_PASSWORD'] %>
+  host: <%= ENV['MICROSERVICE_POSTGRES_HOST'] %>
+  port: <%= ENV['MICROSERVICE_POSTGRES_PORT'] %>
