@@ -80,7 +80,7 @@ class FeedItem < ActiveRecord::Base
   def complete(params)
     update_attributes(title: URI.decode(params['title']),
                       url: params['url'],
-                      published_at: URI.decode(params['publishedat'])
+                      published_at: URI.decode(params['publishedat']))
     if params['imageurl'] != 'null'
       update_attributes(image_file_name: params['imagefilename'],
                         image_content_type: params['imagecontenttype'],
