@@ -6,7 +6,6 @@ preload_app true
 timeout 30
 listen '/srv/www/easyreader.cloudspace.com/unicorn.sock', backlog: 2048
 pid '/srv/www/easyreader.cloudspace.com/unicorn.pid'
-set :unicorn_pid, '/srv/www/easyreader.cloudspace.com/unicorn.pid'
 
 # Setup logging paths
 stderr_path '/srv/www/easyreader.cloudspace.com/shared/log/unicorn_error.log'

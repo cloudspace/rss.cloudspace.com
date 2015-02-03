@@ -9,6 +9,7 @@ set :default_environment, 'RAILS_ENV' => 'microservice'
 set :application, 'easyreader.cloudspace.com'
 
 set :deploy_to, '/srv/www/easyreader.cloudspace.com'
+set :unicorn_pid, '/srv/www/easyreader.cloudspace.com/unicorn.pid'
 
 role :resque_worker, '54.147.248.245'
 role :resque_scheduler, '54.147.248.245'
