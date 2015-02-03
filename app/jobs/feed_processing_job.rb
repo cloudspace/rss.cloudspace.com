@@ -24,7 +24,7 @@ class FeedProcessingJob < BaseResqueJob
                       client_id: ENV['MICROSERVICE_API_KEY'],
                       client_secret: ENV['MICROSERVICE_API_SECRET'],
                       flow_name: ENV['MICROSERVICE_FLOW_NAME'],
-                      callback: "#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{feed_item.id}/callback",
+                      callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{feed_item.id}/callback",
                       user_params: {
                         'url_1422648099113' => "#{feed_item.url}",
                         'prefix_1422648115087' => "feed_items/#{feed_item.id}",

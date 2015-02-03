@@ -43,11 +43,9 @@ set :ssh_options, keys: ['~/.ssh/id_rsa'], forward_agent: true, user: 'ubuntu'
 set :resque_environment_task, true
 
 # Set the resque workers (hash of queue: numworkers)
-set :workers, 'image' => 3,
-              'supervisor' => 1,
+set :workers, 'supervisor' => 1,
               'reaper' => 1,
-              'feed' => 12,
-              'feed_item' => 6
+              'feed' => 12
 
 namespace :resque do
   # Enables at exit hooks after resque jobs, this lets tempfiles get cleaned up
