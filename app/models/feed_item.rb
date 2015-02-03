@@ -78,9 +78,9 @@ class FeedItem < ActiveRecord::Base
   end
 
   def complete(params)
-    update_attributes(title: params['title'],
+    update_attributes(title: URI.decode(params['title']),
                       url: params['url'],
-                      published_at: params['publishedat'],
+                      published_at: URI.decode(params['publishedat']),
                       image_file_name: params['imagefilename'],
                       image_content_type: params['imagecontenttype'],
                       image_file_size: params['imagefilesize'],
