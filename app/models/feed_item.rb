@@ -80,11 +80,11 @@ class FeedItem < ActiveRecord::Base
   def complete(params)
     update_attributes(title: params['title'],
                       url: params['url'],
-                      published_at: params['published_at'],
-                      image_file_name: params['image_file_name'],
-                      image_content_type: params['image_content_type'],
-                      image_file_size: params['image_file_size'],
-                      image_url: params['image_url'],
+                      published_at: params['publishedat'],
+                      image_file_name: params['imagefilename'],
+                      image_content_type: params['imagecontenttype'],
+                      image_file_size: params['imagefilesize'],
+                      image_url: params['imageurl'],
                       image_updated_at: Time.now)
     flag_as_bad(errors.messages) unless errors.empty?
   end
