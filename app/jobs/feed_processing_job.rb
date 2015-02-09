@@ -43,7 +43,7 @@ class FeedProcessingJob < BaseResqueJob
                         'feeditemid_1423510414046' => "#{feed_item.id}",
                         'url_1423510414046' => "#{feed_item.url}",
                         'publishedat_1423510414046' => "#{feed_item.published_at}",
-                        'title_11423510414046' => "#{feed_item.title}"
+                        'title_1423510414046' => "#{feed_item.title}"
                       }
                     }.to_json,
                     headers: { 'Content-Type' => 'application/json' }
