@@ -45,14 +45,14 @@ class V2::FeedsController < ApiController
   end
 
   def processed
-    if params[:feedid]
-      feed = Feed.find(params[:feedid])
+    if params[:id]
+      feed = Feed.find(params[:id])
       if feed && params[:name] != 'null'
         feed.update_attributes(name: params[:name],
                                last_modified_at: params[:lastmodifiedat],
                                site_url: params[:siteurl],
                               )
-        feed.process_feed_items(params[:feeditems])
+        feed.process_feed_items(JSON.parse(params[:feeditems]))
       else
         feed.process_feed_items([])
       end
