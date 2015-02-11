@@ -76,15 +76,15 @@ class Feed < ActiveRecord::Base
   def process_feed_items(feed_items)
     feed_items.each do |item|
       entry_url = Feed.normalize_uri(item['url'])
-      item = FeedItem.find_or_initialize_by(feed_id: id, url: entry_url)
-      next unless item.new_record?
+      feed_item = FeedItem.find_or_initialize_by(feed_id: id, url: entry_url)
+      next unless feed_item.new_record?
 
-      item.update_attributes(title: item['title'],
+      feed_item.update_attributes(title: item['title'],
                              published_at: item['published_at'],
                              scheduled: true)
-      item.lock_element!
-      item.process
-      new_items_found << item
+      feed_item.lock_element!
+      feed_item.process
+      new_items_found << feed_item
     end
   end
 
