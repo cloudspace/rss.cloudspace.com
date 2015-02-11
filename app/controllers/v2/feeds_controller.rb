@@ -57,6 +57,7 @@ class V2::FeedsController < ApiController
         feed.process_feed_items([])
       end
       feed.mark_as_processed!
+      feed.queue_next_parse
     end
   end
 
