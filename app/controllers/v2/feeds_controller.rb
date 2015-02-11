@@ -45,20 +45,19 @@ class V2::FeedsController < ApiController
   end
 
   def processed
-    puts params
-    # if params[:feedid]
-    #   feed = Feed.find(params[:feedid])
-    #   if feed && params[:name] != 'null'
-    #     feed.update_attributes(name: params[:name],
-    #                            last_modified_at: params[:lastmodifiedat],
-    #                            site_url: params[:siteurl],
-    #                           )
-    #     feed.process_feed_items(params[:feeditems])
-    #   else
-    #     feed.process_feed_items([])
-    #   end
-    #   feed.mark_as_processed!
-    # end
+    if params[:feedid]
+      feed = Feed.find(params[:feedid])
+      if feed && params[:name] != 'null'
+        feed.update_attributes(name: params[:name],
+                               last_modified_at: params[:lastmodifiedat],
+                               site_url: params[:siteurl],
+                              )
+        feed.process_feed_items(params[:feeditems])
+      else
+        feed.process_feed_items([])
+      end
+      feed.mark_as_processed!
+    end
   end
 
   def ensure_feed

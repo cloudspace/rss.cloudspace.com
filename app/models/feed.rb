@@ -63,30 +63,30 @@ class Feed < ActiveRecord::Base
     queue_next_parse
   end
 
-  def process_feed_items
-    parser.entries_attributes.each do |attrs|
-      entry_url = Feed.normalize_uri(attrs[:url])
-      item = FeedItem.find_or_initialize_by(feed_id: id, url: entry_url)
-      next unless item.new_record?
-
-      item.update_attributes(attrs)
-      new_items_found << item
-    end
-  end
-  # def process_feed_items(feed_items)
-  #   feed_items.each do |item|
-  #     entry_url = Feed.normalize_uri(item['url'])
+  # def process_feed_items
+  #   parser.entries_attributes.each do |attrs|
+  #     entry_url = Feed.normalize_uri(attrs[:url])
   #     item = FeedItem.find_or_initialize_by(feed_id: id, url: entry_url)
   #     next unless item.new_record?
 
-  #     item.update_attributes(title: item['title'],
-  #                            published_at: item['published_at'],
-  #                            scheduled: true)
-  #     item.lock_element!
-  #     item.process
+  #     item.update_attributes(attrs)
   #     new_items_found << item
   #   end
   # end
+  def process_feed_items(feed_items)
+    feed_items.each do |item|
+      entry_url = Feed.normalize_uri(item['url'])
+      item = FeedItem.find_or_initialize_by(feed_id: id, url: entry_url)
+      next unless item.new_record?
+
+      item.update_attributes(title: item['title'],
+                             published_at: item['published_at'],
+                             scheduled: true)
+      item.lock_element!
+      item.process
+      new_items_found << item
+    end
+  end
 
   def new_items_found
     @new_items_found ||= []
