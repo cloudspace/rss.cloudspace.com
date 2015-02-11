@@ -96,6 +96,38 @@ class FeedItem < ActiveRecord::Base
     WorkerError.log(self, Exception.new(error))
   end
 
+  def process
+    HTTParty.post(ENV['MICROSERVICE_API_URL'] + '/jobs',
+                  body: {
+                    client_id: ENV['MICROSERVICE_API_KEY'],
+                    client_secret: ENV['MICROSERVICE_API_SECRET'],
+                    flow_name: ENV['MICROSERVICE_FLOW_NAME'],
+                    callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{id}/callback",
+                    user_params: {
+                      'url_1423510413360' => "#{url}",
+                      'prefix_1423510420705' => "feed_items/#{id}",
+                      'filesecurity_1423510420705' => '',
+                      'urlsecurity_1423510420705' => '',
+                      'imageprefix_1423510428827' => "feed_items/#{id}",
+                      'filesecurity_1423510428827' => '',
+                      'urlsecurity_1423510428827' => '',
+                      'imageprefix_1423510428530' => "feed_items/#{id}",
+                      'filesecurity_1423510428530' => '',
+                      'urlsecurity_1423510428530' => '',
+                      'imageprefix_1423510428164' => "feed_items/#{id}",
+                      'filesecurity_1423510428164' => '',
+                      'urlsecurity_1423510428164' => '',
+                      'feedid_1423510414046' => "#{feed.id}",
+                      'feeditemid_1423510414046' => "#{id}",
+                      'url_1423510414046' => "#{url}",
+                      'publishedat_1423510414046' => "#{published_at}",
+                      'title_1423510414046' => "#{title}"
+                    }
+                  }.to_json,
+                  headers: { 'Content-Type' => 'application/json' }
+    )
+  end
+
   private
 
   # Sets up the since field alias.
