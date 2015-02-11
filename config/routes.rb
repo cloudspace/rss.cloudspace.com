@@ -11,6 +11,9 @@ EasyReaderRSS::Application.routes.draw do
         get 'default'
         get 'search'
       end
+      member do
+        post 'processed', to: 'feeds#processed'
+      end
     end
 
     resources :feed_items, only: [:index] do
