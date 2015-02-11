@@ -52,7 +52,7 @@ class V2::FeedsController < ApiController
                                last_modified_at: params[:lastmodifiedat],
                                site_url: params[:siteurl],
                               )
-        feed.process_feed_items(JSON.parse(params[:feeditems]))
+        feed.process_feed_items(params[:feeditems])
       else
         feed.process_feed_items([])
       end
