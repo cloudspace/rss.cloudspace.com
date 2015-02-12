@@ -63,16 +63,6 @@ class Feed < ActiveRecord::Base
     queue_next_parse
   end
 
-  # def process_feed_items
-  #   parser.entries_attributes.each do |attrs|
-  #     entry_url = Feed.normalize_uri(attrs[:url])
-  #     item = FeedItem.find_or_initialize_by(feed_id: id, url: entry_url)
-  #     next unless item.new_record?
-
-  #     item.update_attributes(attrs)
-  #     new_items_found << item
-  #   end
-  # end
   def process_feed_items(feed_items)
     feed_items.each do |item|
       entry_url = Feed.normalize_uri(item['url'])
@@ -114,8 +104,6 @@ class Feed < ActiveRecord::Base
     Feed.where('url like ?', "%#{processed.join('//')}").first
   end
 
-  private
-
   # Increments/resets the exponential backoff level, and sets the last and next
   # parse times.
   #
@@ -131,6 +119,8 @@ class Feed < ActiveRecord::Base
     self.next_parse_at = Time.now + interval.minutes
     save
   end
+
+  private
 
   def self.normalize_uri(uri)
     uri && URI(uri).normalize.to_s
