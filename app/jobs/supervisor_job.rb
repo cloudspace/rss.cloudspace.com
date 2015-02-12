@@ -18,7 +18,7 @@ class SupervisorJob < BaseResqueJob
                       client_id: ENV['MICROSERVICE_API_KEY'],
                       client_secret: ENV['MICROSERVICE_API_SECRET'],
                       flow_name: ENV['MICROSERVICE_FEED_FLOW_NAME'],
-                      callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed/#{feed.id}/processed",
+                      callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feeds/#{feed.id}/processed",
                       user_params: {
                         'feedid_1423694287329' => "#{feed.id}",
                         'url_1423694287329' => "#{feed.url}"
