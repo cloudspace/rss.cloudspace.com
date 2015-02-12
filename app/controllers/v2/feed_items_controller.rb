@@ -19,7 +19,8 @@ class V2::FeedItemsController < ApiController
     if params['error']
       feed_item.flag_as_bad(params['error'])
     else
-      feed_item.complete(params)
+      output = JSON.parse(params[:output])
+      feed_item.complete(output)
     end
     feed_item.mark_as_processed!
   end

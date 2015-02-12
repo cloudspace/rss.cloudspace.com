@@ -77,15 +77,15 @@ class FeedItem < ActiveRecord::Base
     feed.image_options
   end
 
-  def complete(params)
-    update_attributes(title: URI.decode(params['title']),
-                      url: params['url'],
-                      published_at: URI.decode(params['publishedat']))
-    if params['imageurl'] != 'null'
-      update_attributes(image_file_name: params['imagefilename'],
-                        image_content_type: params['imagecontenttype'],
-                        image_file_size: params['imagefilesize'],
-                        image_url: params['imageurl'],
+  def complete(output)
+    update_attributes(title: URI.decode(output['title']),
+                      url: output['url'],
+                      published_at: URI.decode(output['publishedat']))
+    if output['imageurl'] != 'null'
+      update_attributes(image_file_name: output['imagefilename'],
+                        image_content_type: output['imagecontenttype'],
+                        image_file_size: output['imagefilesize'],
+                        image_url: output['imageurl'],
                         image_updated_at: Time.now)
     end
     flag_as_bad(errors.messages) unless errors.empty?
@@ -101,7 +101,7 @@ class FeedItem < ActiveRecord::Base
                   body: {
                     client_id: ENV['MICROSERVICE_API_KEY'],
                     client_secret: ENV['MICROSERVICE_API_SECRET'],
-                    flow_name: ENV['MICROSERVICE_FLOW_NAME'],
+                    flow_name: ENV['MICROSERVICE_FEED_ITEM_FLOW_NAME'],
                     callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{id}/callback",
                     user_params: {
                       'url_1423510413360' => "#{url}",
