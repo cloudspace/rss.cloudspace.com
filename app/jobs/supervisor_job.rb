@@ -20,8 +20,8 @@ class SupervisorJob < BaseResqueJob
                       flow_name: ENV['MICROSERVICE_FEED_FLOW_NAME'],
                       callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feeds/#{feed.id}/processed",
                       user_params: {
-                        'feedid_1423694287329' => "#{feed.id}",
-                        'url_1423694287329' => "#{feed.url}"
+                        'feedid_1423779505281' => "#{feed.id}",
+                        'url_1423779505281' => "#{feed.url}"
                       }
                     }.to_json,
                     headers: { 'Content-Type' => 'application/json' }
