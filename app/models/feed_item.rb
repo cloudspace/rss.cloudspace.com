@@ -97,6 +97,7 @@ class FeedItem < ActiveRecord::Base
   end
 
   def process
+    Rails.logger.info("FEED ITEM PROCESSING NOW")
     HTTParty.post(ENV['MICROSERVICE_API_URL'] + '/jobs',
                   body: {
                     client_id: ENV['MICROSERVICE_API_KEY'],
