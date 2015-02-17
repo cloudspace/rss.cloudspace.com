@@ -102,7 +102,7 @@ class FeedItem < ActiveRecord::Base
                   body: {
                     client_id: ENV['MICROSERVICE_API_KEY'],
                     client_secret: ENV['MICROSERVICE_API_SECRET'],
-                    flow_name: 'easyreaderitemrunner',
+                    flow_name: 'feeditemrunner',
                     callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{id}/callback",
                     user_params: {
                       'url_1424182090563' => "#{url}",
