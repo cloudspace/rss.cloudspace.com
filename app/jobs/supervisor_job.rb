@@ -17,11 +17,11 @@ class SupervisorJob < BaseResqueJob
                     body: {
                       client_id: ENV['MICROSERVICE_API_KEY'],
                       client_secret: ENV['MICROSERVICE_API_SECRET'],
-                      flow_name: 'feedrunner',
-                      callback: "",
+                      flow_name: 'easyreaderfeedrunner',
+                      callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feeds/#{feed.id}/processed",
                       user_params: {
-                        'feedid_1424181733598' => "#{feed.id}",
-                        'url_1424181733598' => "#{feed.url}"
+                        'feedid_1424185983370' => "#{feed.id}",
+                        'url_1424185983370' => "#{feed.url}"
                       }
                     }.to_json,
                     headers: { 'Content-Type' => 'application/json' }
