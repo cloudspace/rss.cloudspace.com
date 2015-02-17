@@ -20,8 +20,8 @@ class SupervisorJob < BaseResqueJob
                       flow_name: 'easyreaderfeedrunner',
                       callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feeds/#{feed.id}/processed",
                       user_params: {
-                        'feedid_1423694287329' => "#{feed.id}",
-                        'url_1423694287329' => "#{feed.url}"
+                        'feedid_1424181733598' => "#{feed.id}",
+                        'url_1424181733598' => "#{feed.url}"
                       }
                     }.to_json,
                     headers: { 'Content-Type' => 'application/json' }
