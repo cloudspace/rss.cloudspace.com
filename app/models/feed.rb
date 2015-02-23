@@ -73,7 +73,7 @@ class Feed < ActiveRecord::Base
                              published_at: item['published_at'],
                              scheduled: true)
       feed_item.lock_element!
-      feed_item.process
+      #feed_item.process
       new_items_found << feed_item
     end
   end
