@@ -78,15 +78,16 @@ class FeedItem < ActiveRecord::Base
   end
 
   def complete(output)
-    update_attributes(title: URI.decode(output['title']),
-                      url: output['url'],
-                      published_at: URI.decode(output['publishedat']))
-    if output['imageurl'] != 'null'
-      update_attributes(image_file_name: output['imagefilename'],
-                        image_content_type: output['imagecontenttype'],
-                        image_file_size: output['imagefilesize'],
-                        image_url: output['imageurl'],
-                        image_updated_at: Time.now)
+    if output['imagedata'][0]['filename'] != 'null'
+      output['imagedata'].each do |image|
+        if image['filename'].include? "original"
+          update_attributes(image_file_name: image['filename'],
+                            image_content_type: image['mimetype'],
+                            image_file_size: image['filesize'],
+                            image_url: image['url'],
+                            image_updated_at: Time.now)
+        end
+      end
     end
     flag_as_bad(errors.messages) unless errors.empty?
   end
@@ -102,27 +103,12 @@ class FeedItem < ActiveRecord::Base
                   body: {
                     client_id: ENV['MICROSERVICE_API_KEY'],
                     client_secret: ENV['MICROSERVICE_API_SECRET'],
-                    flow_name: 'easyreaderitemrunner',
-                    callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{id}/callback",
+                    flow_name: 'gofeeditemrunner',
+                    callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{feed_item.id}/callback",
                     user_params: {
-                      'url_1424186493657' => "#{url}",
-                      'prefix_1424186503669' => "feed_items/#{id}",
-                      'filesecurity_1424186503669' => '',
-                      'urlsecurity_1424186503669' => '',
-                      'imageprefix_1424186509508' => "feed_items/#{id}",
-                      'filesecurity_1424186509508' => '',
-                      'urlsecurity_1424186509508' => '',
-                      'imageprefix_1424186509766' => "feed_items/#{id}",
-                      'filesecurity_1424186509766' => '',
-                      'urlsecurity_1424186509766' => '',
-                      'imageprefix_1424186509963' => "feed_items/#{id}",
-                      'filesecurity_1424186509963' => '',
-                      'urlsecurity_1424186509963' => '',
-                      'feedid_1424186495130' => "#{feed.id}",
-                      'feeditemid_1424186495130' => "#{id}",
-                      'url_1424186495130' => "#{url}",
-                      'publishedat_1424186495130' => "#{published_at}",
-                      'title_1424186495130' => "#{title}"
+                      'url_1424722701285' => "#{feed_item.url}",
+                      'prefix_1424722752887' => "feed_items/#{feed_item.id}",
+                      'filesecurity_1424722752887' => ''
                     }
                   }.to_json,
                   headers: { 'Content-Type' => 'application/json' }
