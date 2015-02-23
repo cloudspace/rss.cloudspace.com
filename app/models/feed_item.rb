@@ -104,10 +104,10 @@ class FeedItem < ActiveRecord::Base
                     client_id: ENV['MICROSERVICE_API_KEY'],
                     client_secret: ENV['MICROSERVICE_API_SECRET'],
                     flow_name: 'gofeeditemrunner',
-                    callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{feed_item.id}/callback",
+                    callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{id}/callback",
                     user_params: {
-                      'url_1424722701285' => "#{feed_item.url}",
-                      'prefix_1424722752887' => "feed_items/#{feed_item.id}",
+                      'url_1424722701285' => "#{url}",
+                      'prefix_1424722752887' => "feed_items/#{id}",
                       'filesecurity_1424722752887' => ''
                     }
                   }.to_json,
