@@ -12,7 +12,7 @@ class SupervisorJob < BaseResqueJob
                       client_id: ENV['MICROSERVICE_API_KEY'],
                       client_secret: ENV['MICROSERVICE_API_SECRET'],
                       microservice_name: 'go-feed-processor',
-                      owned_by: 'cloudspace'
+                      owned_by: 'test'
                       callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feeds/#{feed.id}/processed",
                       user_params: {
                         'feedid' => "#{feed.id}",

@@ -103,7 +103,7 @@ class FeedItem < ActiveRecord::Base
                     client_id: ENV['MICROSERVICE_API_KEY'],
                     client_secret: ENV['MICROSERVICE_API_SECRET'],
                     microservice_name: 'canonical-picture',
-                    owned_by: 'cloudspace',
+                    owned_by: 'test',
                     callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{id}/image_processed",
                     user_params: {
                       'url' => "#{url}"
@@ -124,7 +124,7 @@ class FeedItem < ActiveRecord::Base
                       client_id: ENV['MICROSERVICE_API_KEY'],
                       client_secret: ENV['MICROSERVICE_API_SECRET'],
                       microservice_name: 'go-s3-image-resizer',
-                      owned_by: 'cloudspace',
+                      owned_by: 'test',
                       callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{id}/complete",
                       user_params: {
                         'originalimageurl' => "#{url}",
