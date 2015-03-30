@@ -11,11 +11,12 @@ class SupervisorJob < BaseResqueJob
                     body: {
                       client_id: ENV['MICROSERVICE_API_KEY'],
                       client_secret: ENV['MICROSERVICE_API_SECRET'],
-                      flow_name: 'gofeedrunner',
+                      microservice_name: 'go-feed-processor',
+                      owned_by: 'cloudspace'
                       callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feeds/#{feed.id}/processed",
                       user_params: {
-                        'feedid_1424720512793' => "#{feed.id}",
-                        'url_1424720512793' => "#{feed.url}"
+                        'feedid' => "#{feed.id}",
+                        'url' => "#{feed.url}"
                       }
                     }.to_json,
                     headers: { 'Content-Type' => 'application/json' }

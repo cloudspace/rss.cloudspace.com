@@ -78,8 +78,8 @@ class FeedItem < ActiveRecord::Base
   end
 
   def complete(output)
-    if output['imagedata'][0]['filename'] != 'null'
-      output['imagedata'].each do |image|
+    if output[0]['filename'] != 'null'
+      output.each do |image|
         if image['filename'].include? "original"
           update_attributes(image_file_name: image['filename'],
                             image_content_type: image['mimetype'],
@@ -89,30 +89,57 @@ class FeedItem < ActiveRecord::Base
         end
       end
     end
-    flag_as_bad(errors.messages) unless errors.empty?
+    update_attributes(success: false) unless errors.empty?
   end
 
   def flag_as_bad(error)
     update_attributes(success: false)
-    WorkerError.log(self, Exception.new(error))
   end
 
-  def process
-    Rails.logger.info("FEED ITEM PROCESSING NOW")
+  def grab_image
+    Rails.logger.info("FEED ITEM GRABBING CANONICAL IMAGE NOW")
     HTTParty.post(ENV['MICROSERVICE_API_URL'] + '/jobs',
                   body: {
                     client_id: ENV['MICROSERVICE_API_KEY'],
                     client_secret: ENV['MICROSERVICE_API_SECRET'],
-                    flow_name: 'gofeeditemrunner',
-                    callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{id}/callback",
+                    microservice_name: 'canonical-picture',
+                    owned_by: 'cloudspace',
+                    callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{id}/image_processed",
                     user_params: {
-                      'url_1424722701285' => "#{url}",
-                      'prefix_1424722752887' => "feed_items/#{id}",
-                      'filesecurity_1424722752887' => ''
+                      'url' => "#{url}"
                     }
                   }.to_json,
                   headers: { 'Content-Type' => 'application/json' }
     )
+  end
+
+  def process_image(url)
+    if url == 'null'
+      update_attributes(success: false)
+      feed_item.mark_as_processed!
+    else
+      Rails.logger.info("FEED ITEM IMAGE PROCESSING NOW")
+      HTTParty.post(ENV['MICROSERVICE_API_URL'] + '/jobs',
+                    body: {
+                      client_id: ENV['MICROSERVICE_API_KEY'],
+                      client_secret: ENV['MICROSERVICE_API_SECRET'],
+                      microservice_name: 'go-s3-image-resizer',
+                      owned_by: 'cloudspace',
+                      callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{id}/complete",
+                      user_params: {
+                        'originalimageurl' => "#{url}",
+                        'resizearray' => '[{"name":"original","width":0,"height":0},
+                                           {"name":"ipad","width":768,"height":960},
+                                           {"name":"ipad_retina","width":1526,"height":1920},
+                                           {"name":"iphone_retina","width":640,"height":800}]',
+                        'bucket' => "easyreader02",
+                        'region' => "us-east-1",
+                        'prefix' => "feed_items/#{id}"
+                      }
+                    }.to_json,
+                    headers: { 'Content-Type' => 'application/json' }
+      )
+    end
   end
 
   private

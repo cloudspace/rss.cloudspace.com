@@ -6,6 +6,7 @@ EasyReaderRSS::Application.routes.draw do
   ActiveAdmin.routes(self)
   namespace :v2 do
     get '/', to: redirect('https://github.com/cloudspace/rss.cloudspace.com')
+    match 'callback', via: [:get, :post]
     resources :feeds, only: [:create, :show] do
       collection do
         get 'default'
@@ -17,8 +18,12 @@ EasyReaderRSS::Application.routes.draw do
     end
 
     resources :feed_items, only: [:index] do
-      member do
+      collection do
         match 'callback', via: [:get, :post]
+      end
+      member do
+        match 'complete', via: [:get, :post]
+        match 'image_processed', via: [:get, :post]
       end
     end
   end

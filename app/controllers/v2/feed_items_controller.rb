@@ -15,13 +15,18 @@ class V2::FeedItemsController < ApiController
   end
 
   def callback
+    puts params
+  end
+
+  def image_processed
     feed_item = FeedItem.find(params[:id])
-    if params['error']
-      feed_item.flag_as_bad(params['error'])
-    else
-      output = JSON.parse(params[:output])
-      feed_item.complete(output)
-    end
+    feed_item.process_image(params['url'])
+  end
+
+  def complete
+    feed_item = FeedItem.find(params[:id])
+    output = JSON.parse(params['imagedata'])
+    feed_item.complete(output)
     feed_item.mark_as_processed!
   end
 
