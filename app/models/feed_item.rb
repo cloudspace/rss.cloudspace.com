@@ -116,7 +116,7 @@ class FeedItem < ActiveRecord::Base
   def process_image(url)
     if url == 'null'
       update_attributes(success: false)
-      feed_item.mark_as_processed!
+      mark_as_processed!
     else
       Rails.logger.info("FEED ITEM IMAGE PROCESSING NOW")
       HTTParty.post(ENV['MICROSERVICE_API_URL'] + '/jobs',
