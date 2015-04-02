@@ -25,8 +25,7 @@ class V2::FeedItemsController < ApiController
 
   def complete
     feed_item = FeedItem.find(params[:id])
-    output = JSON.parse(params['imagedata'])
-    feed_item.complete(output)
+    feed_item.complete(params['imagedata'])
     feed_item.mark_as_processed!
   end
 
