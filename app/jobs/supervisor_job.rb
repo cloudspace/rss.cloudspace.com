@@ -13,7 +13,7 @@ class SupervisorJob < BaseResqueJob
                       client_secret: ENV['MICROSERVICE_API_SECRET'],
                       microservice_name: 'go-feed-processor',
                       owned_by: 'beattiem',
-                      callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feeds/processed",
+                      callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feeds/#{feed.id}/processed",
                       user_params: {
                         'feedid' => "#{feed.id}",
                         'url' => "#{feed.url}"
