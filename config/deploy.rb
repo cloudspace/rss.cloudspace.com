@@ -44,8 +44,7 @@ set :resque_environment_task, true
 
 # Set the resque workers (hash of queue: numworkers)
 set :workers, 'supervisor' => 1,
-              'reaper' => 1,
-              'feed' => 12
+              'reaper' => 1
 
 namespace :resque do
   # Enables at exit hooks after resque jobs, this lets tempfiles get cleaned up

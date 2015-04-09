@@ -18,6 +18,7 @@ gem 'feedjira', '~> 1.5.0'
 gem 'httparty', '~> 0.13.2'
 gem 'nokogiri', '~> 1.6.4'
 gem 'paperclip', '~> 4.2.0'
+gem 'httparty'
 
 gem 'posix-spawn', '~> 0.3.9' # needed to prevent out of memory errors in paperclip processing
 
