@@ -123,15 +123,12 @@ class FeedItem < ActiveRecord::Base
                     body: {
                       client_id: ENV['MICROSERVICE_API_KEY'],
                       client_secret: ENV['MICROSERVICE_API_SECRET'],
-                      microservice_name: 'go-s3-image-resizer',
+                      microservice_name: 'GO-S3-Image-Resizer',
                       owned_by: 'beattiem',
                       callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{id}/complete",
                       user_params: {
                         'originalimageurl' => "#{url}",
-                        'resizearray' => '[{"name":"original","width":0,"height":0},
-                                           {"name":"ipad","width":768,"height":960},
-                                           {"name":"ipad_retina","width":1526,"height":1920},
-                                           {"name":"iphone_retina","width":640,"height":800}]',
+                        'resizearray' => '[{"name":"original","width":0,"height":0},{"name":"ipad","width":768,"height":960},{"name":"ipad_retina","width":1526,"height":1920},{"name":"iphone_retina","width":640,"height":800}]',
                         'bucket' => "easyreader02",
                         'region' => "us-east-1",
                         'prefix' => "feed_items/#{id}"
