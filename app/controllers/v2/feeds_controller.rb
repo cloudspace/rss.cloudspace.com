@@ -51,7 +51,11 @@ class V2::FeedsController < ApiController
         feed.update_attributes(name: params['name'],
                                last_modified_at: params['lastmodifiedat']
                               )
-        feed.process_feed_items(params['feeditems'])
+        if params['feeditems']
+          feed.process_feed_items(params['feeditems'])
+        else 
+          feed.process_feed_items([])
+        end
       else
         feed.process_feed_items([])
       end

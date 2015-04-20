@@ -20,7 +20,12 @@ class V2::FeedItemsController < ApiController
 
   def image_processed
     feed_item = FeedItem.find(params[:id])
-    feed_item.process_image(params['url'])
+    if params['url']
+      feed_item.process_image(params['url'])
+    else
+      update_attributes(success: false)
+      feed_item.mark_as_processed!
+    end
   end
 
   def complete
