@@ -23,7 +23,7 @@ class V2::FeedItemsController < ApiController
     if params['url']
       feed_item.process_image(params['url'])
     else
-      update_attributes(success: false)
+      feed_item.update_attributes(success: false)
       feed_item.mark_as_processed!
     end
   end
