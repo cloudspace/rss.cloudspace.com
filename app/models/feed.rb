@@ -68,14 +68,17 @@ class Feed < ActiveRecord::Base
       entry_url = Feed.normalize_uri(item['url'])
       feed_item = FeedItem.find_or_initialize_by(feed_id: id, url: entry_url)
       next unless feed_item.new_record?
-
-      feed_item.update_attributes(title: item['title'],
-                             published_at: item['published_at'],
-                             scheduled: true)
-      feed_item.lock_element!
-      feed_item.grab_image
-      new_items_found << feed_item
+      process_feed_item(feed_item, item)
     end
+  end
+
+  def process_feed_item(feed_item, item)
+    feed_item.update_attributes(title: item['title'],
+                                published_at: item['published_at'],
+                                scheduled: true)
+    feed_item.lock_element!
+    feed_item.grab_image
+    new_items_found << feed_item
   end
 
   def new_items_found
@@ -120,8 +123,6 @@ class Feed < ActiveRecord::Base
     save
   end
 
-  private
-
   def self.normalize_uri(uri)
     uri && URI(uri).normalize.to_s
   end
@@ -130,4 +131,6 @@ class Feed < ActiveRecord::Base
   def self.feeds
     arel_table
   end
+
+  private_class_method :normalize_uri, :feeds
 end

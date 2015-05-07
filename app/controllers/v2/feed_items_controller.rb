@@ -2,32 +2,31 @@
 class V2::FeedItemsController < ApiController
   def index
     return head(:not_found) if feed_ids[:valid].blank?
-
     feed_items = fetch_feed_items(feed_ids[:valid], params[:since])
-
     feed_ids[:valid].map { |feed_id| FeedRequest.find_or_create_by(feed_id: feed_id).count_update }
-
     status = feed_ids[:invalid].blank? ? :ok : :partial_content
-
     render json: { feed_items: feed_items, bad_feed_ids: feed_ids[:invalid] },
            status: status,
            serializer: V2::FeedItems::FeedItemsSerializer
   end
 
+  # Test route for checking data returning from Geec clients
   def callback
-    puts params
+    render json: params
   end
 
+  # Return route after grabbing canonical image
   def image_processed
     feed_item = FeedItem.find(params[:id])
     if params['url']
       feed_item.process_image(params['url'])
     else
-      feed_item.update_attributes(success: false)
+      feed_item.flag_as_bad
       feed_item.mark_as_processed!
     end
   end
 
+  # Return route after resizing and uploading canonical image to S3
   def complete
     feed_item = FeedItem.find(params[:id])
     feed_item.complete(params['imagedata']) if params['imagedata']

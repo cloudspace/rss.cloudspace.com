@@ -8,11 +8,13 @@ LineLength:
   Max: 120
   Exclude: 
     - 'config/routes.rb'
+    - 'config/deploy/*'
+    - 'app/models/feed_item.rb'
 
 ClassLength:
   Enabled: true
   CountComments: false
-  Max: 150
+  Max: 160
 
 MethodLength:
   Enabled: false

@@ -44,24 +44,15 @@ class V2::FeedsController < ApiController
     render json: [current_feed], status: status, each_serializer: V2::Feeds::FeedSerializer
   end
 
+  # Return route from grabbing feed items from a feed
   def processed
-    if params[:id]
-      feed = Feed.find(params[:id])
-      if feed && params['name'] != 'null'
-        feed.update_attributes(name: params['name'],
-                               last_modified_at: params['lastmodifiedat']
-                              )
-        if params['feeditems']
-          feed.process_feed_items(params['feeditems'])
-        else 
-          feed.process_feed_items([])
-        end
-      else
-        feed.process_feed_items([])
-      end
-      feed.mark_as_processed!
-      feed.queue_next_parse
+    feed = Feed.find(params[:id])
+    if feed && params['name'] != 'null'
+      process_items(feed, params)
+    else
+      feed.process_feed_items([])
     end
+    finish_processing(feed)
   end
 
   def ensure_feed
@@ -74,5 +65,21 @@ class V2::FeedsController < ApiController
 
   def current_feed
     @current_feed ||= Feed.find_or_generate_by_url(params[:url])
+  end
+
+  def process_items(feed, params)
+    feed.update_attributes(name: params['name'],
+                           last_modified_at: params['lastmodifiedat']
+                          )
+    if params['feeditems']
+      feed.process_feed_items(params['feeditems'])
+    else
+      feed.process_feed_items([])
+    end
+  end
+
+  def finish_processing(feed)
+    feed.mark_as_processed!
+    feed.queue_next_parse
   end
 end

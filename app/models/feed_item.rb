@@ -80,62 +80,41 @@ class FeedItem < ActiveRecord::Base
   def complete(output)
     if output[0]['filename'] != 'null'
       output.each do |image|
-        if image['filename'].include? "original"
-          update_attributes(image_file_name: image['filename'],
-                            image_content_type: image['mimetype'],
-                            image_file_size: image['filesize'],
-                            image_url: image['url'],
-                            image_updated_at: Time.now)
-        end
+        next unless image['filename'].include? 'original'
+        update_attributes(image_file_name: image['filename'],
+                          image_content_type: image['mimetype'],
+                          image_file_size: image['filesize'],
+                          image_url: image['url'],
+                          image_updated_at: Time.now)
       end
     end
-    update_attributes(success: false) unless errors.empty?
+    flag_as_bad unless errors.empty?
   end
 
-  def flag_as_bad(error)
+  def flag_as_bad
     update_attributes(success: false)
   end
 
   def grab_image
-    Rails.logger.info("FEED ITEM GRABBING CANONICAL IMAGE NOW")
-    HTTParty.post(ENV['MICROSERVICE_API_URL'] + '/jobs',
-                  body: {
-                    client_id: ENV['MICROSERVICE_API_KEY'],
-                    client_secret: ENV['MICROSERVICE_API_SECRET'],
-                    microservice_name: 'canonical-picture',
-                    owned_by: 'cloudspace',
-                    callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{id}/image_processed",
-                    user_params: {
-                      'url' => "#{url}"
-                    }
-                  }.to_json,
-                  headers: { 'Content-Type' => 'application/json' }
-    )
+    Rails.logger.info('FEED ITEM GRABBING CANONICAL IMAGE NOW')
+    callback = "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{id}/image_processed"
+    runner = Microservice::Runner.new('canonical-picture', 'cloudspace', callback)
+    runner.run('url' => "#{url}")
   end
 
   def process_image(url)
     if url == 'null'
-      update_attributes(success: false)
+      flag_as_bad
       mark_as_processed!
     else
-      Rails.logger.info("FEED ITEM IMAGE PROCESSING NOW")
-      HTTParty.post(ENV['MICROSERVICE_API_URL'] + '/jobs',
-                    body: {
-                      client_id: ENV['MICROSERVICE_API_KEY'],
-                      client_secret: ENV['MICROSERVICE_API_SECRET'],
-                      microservice_name: 'GO-S3-Image-Resizer',
-                      owned_by: 'beattiem',
-                      callback: "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{id}/complete",
-                      user_params: {
-                        'originalimageurl' => "#{url}",
-                        'resizearray' => '[{"name":"original","width":0,"height":0},{"name":"ipad","width":768,"height":960},{"name":"ipad_retina","width":1526,"height":1920},{"name":"iphone_retina","width":640,"height":800}]',
-                        'bucket' => "easyreader02",
-                        'region' => "us-east-1",
-                        'prefix' => "feed_items/#{id}"
-                      }
-                    }.to_json,
-                    headers: { 'Content-Type' => 'application/json' }
-      )
+      Rails.logger.info('FEED ITEM IMAGE PROCESSING NOW')
+      callback = "http://#{ENV['MICROSERVICE_APP_HOST']}/v2/feed_items/#{id}/complete"
+      runner = Microservice::Runner.new('GO-S3-Image-Resizer', 'beattiem', callback)
+      runner.run('originalimageurl' => "#{url}",
+                 'resizearray' => '[{"name":"original","width":0,"height":0},{"name":"ipad","width":768,"height":960},{"name":"ipad_retina","width":1526,"height":1920},{"name":"iphone_retina","width":640,"height":800}]',
+                 'bucket' => "#{ENV['MICROSERVICE_S3_BUCKET']}",
+                 'region' => "#{ENV['MICROSERVICE_S3_REGION']}",
+                 'prefix' => "feed_items/#{id}")
     end
   end
 
