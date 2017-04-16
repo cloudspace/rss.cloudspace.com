@@ -147,3 +147,16 @@ __Returns__
 - HTTP 200 and an array of `feed_items` if all feeds are found
 - HTTP 206 and arrays of both `feed_items` and `bad_feed_ids` if some but not all feeds were found
 - HTTP 404 if none of the feed_ids provided were found
+
+
+# Running the parser
+
+From any rails console the feed/feeditem parser supervisor can be created as follows:
+
+    supervisor = Service::Supervisor.new
+
+Once created you can start any number of worker threads using `start_workers`.  To start up 8 workers (our determined optimum number for an EC2 large instance) the command would be:
+
+    supervisor.start_workers(8)
+    
+Once started, the workers will fetch and parse feeds and feed items as well as cull the database so that only a reasonable amount of feed items are kept.
